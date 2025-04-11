@@ -2,13 +2,13 @@
 
 static const char *TAG = "Display_ST7789V3";
 // LCD
-static esp_lcd_panel_handle_t panel_handle = NULL;
-static esp_lcd_panel_io_handle_t io_handle = NULL;
+esp_lcd_panel_handle_t panel_handle = NULL;
+esp_lcd_panel_io_handle_t io_handle = NULL;
 
 // LED
 static ledc_channel_config_t ledc_channel;
 
-static esp_err_t display_init(void) {
+esp_err_t display_init(void) {
     // LCD initialization - enable from example
     ESP_LOGI(TAG, "Initialize SPI bus");
     spi_bus_config_t buscfg = { 

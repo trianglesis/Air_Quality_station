@@ -37,11 +37,6 @@ static void lvgl_task(void *arg) {
         ESP_LOGE(TAG, "LVGL Display failed to initialize");
         while (1);
     }
-    ret = lvgl_tick_init();
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Timer failed to initialize");
-        while (1);
-    }
 
     long curtime = esp_timer_get_time()/1000;
     int counter = 0;
