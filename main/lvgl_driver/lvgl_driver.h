@@ -19,20 +19,14 @@ static lv_display_t *display = NULL;
 // LVGL drawing
 static void* buf1 = NULL;
 static void* buf2 = NULL;
-// Reuse vars from discplay driver for visibility.
+
+// Reuse vars from display driver for visibility.
 #define LV_DISP_HOR_RES = DISP_HOR_RES;
 #define LV_DISP_VER_RES = DISP_VER_RES;
 // 
 #define LVGL_TICK_PERIOD_MS    2
 // Display buffer use
 #define BUFFER_SIZE            (LV_DISP_HOR_RES * LV_DISP_HOR_RES * 2 / 10)
-
-// contains internal graphic buffer(s) called draw buffer(s)
-extern lv_disp_draw_buf_t disp_buf;
-// contains callback functions
-extern lv_disp_drv_t disp_drv;
-// Display object
-extern lv_disp_t *display;    
 
 void notify_flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx);
 void flush_cb(lv_display_t* disp, const lv_area_t* area, uint8_t* px_map);

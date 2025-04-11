@@ -7,8 +7,8 @@
 #include "freertos/task.h"
 #include "esp_timer.h"
 
-#include "display_driver/ST7789V3.h"
-#include "lvgl_driver/lvgl_driver.h"
+#include "ST7789V3.h"
+#include "lvgl_driver.h"
 
 #include "esp_log.h"
 #include "esp_check.h"
@@ -21,6 +21,7 @@
 static const char *TAG = "co2station";
 
 
+// 
 static void lvgl_task(void *arg) {
     vTaskDelay(pdMS_TO_TICKS(10));
     esp_log_level_set("lcd_panel", ESP_LOG_VERBOSE);
@@ -68,18 +69,15 @@ static void lvgl_task(void *arg) {
             }
         }
     }
-
 }
 
 void app_main() {
-
     vTaskDelay(pdMS_TO_TICKS(1000));
-
     TaskHandle_t taskHandle = NULL;
     BaseType_t res = xTaskCreatePinnedToCore(lvgl_task, "LVGL task", 8192, NULL, 4, &taskHandle, 0); // stack, params, prio, handle, core
-
     while(true) {
-
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
+
+// 

@@ -2,13 +2,8 @@
 
 static const char *TAG = "LVGL_driver";
 
-// contains internal graphic buffer(s) called draw buffer(s)
-static lv_disp_draw_buf_t display;
-// contains callback functions
-static lv_disp_drv_t disp_drv;
 // Display
 static lv_display_t *display = NULL;
-
 
 // Tell LVGL how many milliseconds have elapsed
 static void lvgl_tick_increment(void *arg) {
