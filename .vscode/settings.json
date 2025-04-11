@@ -18,5 +18,6 @@
         "freertos.h": "c",
         "esp_timer.h": "c",
         "stdio.h": "c"
-    }
+    },
+    "idf.flashType": "UART"
 }

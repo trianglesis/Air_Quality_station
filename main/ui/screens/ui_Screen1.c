@@ -14,6 +14,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_width(ui_Arc1, 150);
     lv_obj_set_height(ui_Arc1, 150);
     lv_obj_set_align(ui_Arc1, LV_ALIGN_CENTER);
+    lv_arc_set_range(ui_Arc1, 0, 3000);
     lv_arc_set_value(ui_Arc1, 50);
 
     ui_Label1 = lv_label_create(ui_Screen1);

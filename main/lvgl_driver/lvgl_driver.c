@@ -45,10 +45,8 @@ void flush_cb(lv_display_t* disp, const lv_area_t* area, uint8_t* px_map) {
     int x2 = area->x2 + Offset_X;
     int y1 = area->y1 + Offset_Y;
     int y2 = area->y2 + Offset_Y;
-    
     // uncomment the following line if the colors are wrong
     lv_draw_sw_rgb565_swap(px_map, (x2 + 1 - x1) * (y2 + 1 - y1));
-
     esp_lcd_panel_draw_bitmap((esp_lcd_panel_handle_t)lv_display_get_user_data(disp), x1, y1, x2 + 1, y2 + 1, px_map);
 }
 
@@ -108,12 +106,12 @@ esp_err_t lvgl_init(void) {
     */
     
     // Manual rotate 270deg, no HAL sensor
-    lv_display_set_rotation(display, LV_DISPLAY_ROTATION_270);
-    esp_lcd_panel_mirror(panel_handle, false, true);
-    esp_lcd_panel_swap_xy(panel_handle, true);
+    // lv_display_set_rotation(display, LV_DISPLAY_ROTATION_270);
+    // esp_lcd_panel_mirror(panel_handle, false, true);
+    // esp_lcd_panel_swap_xy(panel_handle, true);
 
     // you may have to change it to false.
-    // esp_lcd_panel_invert_color(panel_handle, true);
+    esp_lcd_panel_invert_color(panel_handle, false);
 
     // Set this display as defaulkt for UI use
     lv_display_set_default(display);
