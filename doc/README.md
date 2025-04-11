@@ -3,6 +3,7 @@
 
 All steps and problems will keep here.
 
+How to BASICS for a very begginer is also [here](how_to_basics/README.md)
 
 
 ## Changing most common options.
@@ -15,6 +16,7 @@ Make partitions larger by default, utilize all 4Mb is SPI flash.
 - Use `menuconfig` set HTTP header limit to `1024`. (`HTTPD_MAX_REQ_HDR_LEN`)
   - Later to accept mobile browsers UserAgent long string at captive portal
 - Optionally change log level under `LOG_DEFAULT_LEVEL`
+- Optionally change log level under `LOG_MAXIMUM_LEVEL`
 
 - LATER: Add more setup options to save time, like SD Card flash setup, WiFI and etc
 
@@ -22,7 +24,7 @@ Make partitions larger by default, utilize all 4Mb is SPI flash.
 
 ## Add modules
 
-Clean the build `Full clean` and run `menuconfig` option again.
+
 
 
 
@@ -59,6 +61,10 @@ Remember to check this section and enable all fonts you need!
  * https://fonts.google.com/specimen/Montserrat */
 #define LV_FONT_MONTSERRAT_8 1
 ```
+
+Clean the build `Full clean` and run `menuconfig` option again.
+- It should now go into LVGL dir and collect all options there.
+
 
 - Use `menuconfig` set LVGL option `LV_CONF_SKIP` to not skip custom `lvgl_conf.h`!
 - Check if color depth = 16
@@ -110,6 +116,8 @@ Exporting - no need to use `flat export`, run as default:
 
 Modify the `main\CMakeLists.txt`
 
+I used the approach from this [example](https://github.com/serdartoren/ESP32-S3_HMI_Squareline_Example/blob/main/main/CMakeLists.txt)
+
 ```text
 # https://github.com/serdartoren/ESP32-S3_HMI_Squareline_Example/blob/main/main/CMakeLists.txt
 
@@ -121,9 +129,10 @@ idf_component_register(SRCS "main.c"
                     INCLUDE_DIRS "." 
                                  "ui"
                        )
-
 ```
 
+Modify the project `main.c`
+- Add subdir import of exported graphics: `#include "ui/ui.h"`
 
 
 # Links, help, forums and etc
@@ -134,4 +143,8 @@ Use this list to get more info about each step here and all possible workarounds
 - [LVGL](https://docs.lvgl.io/9.2/overview/index.html)
   - [Widgets](https://docs.lvgl.io/9.2/API/widgets/index.html)
 - This [topic](https://forum.lvgl.io/t/gestures-are-slow-perceiving-only-detecting-one-of-5-10-tries/18515/101) helped me a lot to understand the proper LCD driver setup and display rotation and colors.
+  - The [post](https://forum.lvgl.io/t/gestures-are-slow-perceiving-only-detecting-one-of-5-10-tries/18515/59) about display setup.
+  - The [post](https://forum.lvgl.io/t/gestures-are-slow-perceiving-only-detecting-one-of-5-10-tries/18515/60) about rotation.
+  - Fix rotated display dead zones [post](https://forum.lvgl.io/t/gestures-are-slow-perceiving-only-detecting-one-of-5-10-tries/18515/86)
+  - 
 - This [repo](https://github.com/serdartoren/ESP32-S3_HMI_Squareline_Example) helped me to understand `Square Line Studio` expoting and compiling.

@@ -11,6 +11,12 @@
         "IDF_TARGET": "esp32c6"
     },
     "files.associations": {
-        "lvgl.h": "c"
+        "lvgl.h": "c",
+        "st7789v3.h": "c",
+        "ledc.h": "c",
+        "lvgl_driver.h": "c",
+        "freertos.h": "c",
+        "esp_timer.h": "c",
+        "stdio.h": "c"
     }
 }
