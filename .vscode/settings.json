@@ -9,5 +9,8 @@
     "idf.toolsPathWin": "d:\\Projects\\ESP\\Espressif\\.espressif",
     "idf.customExtraVars": {
         "IDF_TARGET": "esp32c6"
+    },
+    "files.associations": {
+        "lvgl.h": "c"
     }
 }
