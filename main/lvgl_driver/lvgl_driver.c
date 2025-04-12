@@ -47,15 +47,13 @@ void flush_cb(lv_display_t* disp, const lv_area_t* area, uint8_t* px_map) {
     int x2 = area->x2 + Offset_X;
     int y1 = area->y1 + Offset_Y;
     int y2 = area->y2 + Offset_Y;
+    
     /*
-        Default normal color is set up here:
-        panel_config
-            .data_endian = LCD_RGB_ENDIAN_BGR, // From example
-        So we don't need swap it no longer
-        But background (only) is still inverted black-to-white
-        - uncomment the following line if the colors are wrong
+        There is usually rgb565 enforcing, but it no longer needed.
+        See how it was implemented in main\display_driver\ST7789V3.c at the panel_config code
+        lv_draw_sw_rgb565_swap(px_map, (x2 + 1 - x1) * (y2 + 1 - y1));
     */
-    lv_draw_sw_rgb565_swap(px_map, (x2 + 1 - x1) * (y2 + 1 - y1));
+    
     esp_lcd_panel_draw_bitmap((esp_lcd_panel_handle_t)lv_display_get_user_data(disp), x1, y1, x2 + 1, y2 + 1, px_map);
 }
 
@@ -68,25 +66,38 @@ void set_resolution(lv_display_t* disp) {
 esp_err_t lvgl_init(void) {
     ESP_LOGI(TAG, "Initialize LVGL library");
     // Init
-    lv_init();
-    // Create display object, and save globally
-    // Old lv_disp_drv_init(); and lv_disp_drv_register();
+    lv_init(); 
+
+    /*
+        Changed the default setup from example with LVGL 8 version to a newer implementation.
+        Old lv_disp_drv_init(); and lv_disp_drv_register();
+    */
+
     display = lv_display_create(DISP_HOR_RES, DISP_VER_RES);
+    
     // Buffers
     buf1 = heap_caps_calloc(1, BUFFER_SIZE, MALLOC_CAP_INTERNAL |  MALLOC_CAP_DMA);
     buf2 = heap_caps_calloc(1, BUFFER_SIZE, MALLOC_CAP_INTERNAL |  MALLOC_CAP_DMA);
-    // Old: lv_disp_draw_buf_init();
-    lv_display_set_buffers(display, buf1, buf2, BUFFER_SIZE, LV_DISPLAY_RENDER_MODE_PARTIAL);
-    lv_display_set_user_data(display, panel_handle);
+
     /*
-        No longer required
-            .data_endian = LCD_RGB_ENDIAN_BGR, // From example
+        Changed the default setup from example with LVGL 8 version to a newer implementation.
+        Old: lv_disp_draw_buf_init();
     */
-    // lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
+    lv_display_set_buffers(display, buf1, buf2, BUFFER_SIZE, LV_DISPLAY_RENDER_MODE_PARTIAL);
+    
+    lv_display_set_user_data(display, panel_handle);
+
+    /*
+        You can force the display to operate in proper color mode, but it's no longer required:
+        See how it was implemented in main\display_driver\ST7789V3.c at the panel_config code
+        lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
+        // Another approach to fix color inversion, also no longer required, 
+        keep it here just as a point for other people.
+        esp_lcd_panel_invert_color(panel_handle, true);
+    */
 
     lv_display_set_flush_cb(display, flush_cb);
-
-     const esp_lcd_panel_io_callbacks_t cbs = {
+    const esp_lcd_panel_io_callbacks_t cbs = {
         .on_color_trans_done = notify_flush_ready,
     };
     // W (1442) lcd_panel.io.spi: Callback on_color_trans_done was already set and now it was overwritten!

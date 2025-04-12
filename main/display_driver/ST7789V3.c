@@ -40,20 +40,19 @@ esp_err_t display_init(void) {
     ESP_RETURN_ON_ERROR(esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &io_handle), TAG, "SPI init failed");
 
     /*
-        Added a few new params:
-        - rgb_endian (old) new data_endian
-        - reset_active_high - when 1 display is off, when none is On too (same as 0)
-            https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/lcd/spi_lcd.html#spi-interfaced-lcd
-        
-        Still cannot set background normally, its inverted. 
-        All other elements colors are fine.
-
+        RGB Order is usual (or can be absent):
+            .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB
+        However blue and red are shifted, so we need to set this (as at the example):
+            .data_endian = LCD_RGB_ENDIAN_BGR,
+        And later use directive LCD_CMD_INVON after display init:
+            esp_lcd_panel_io_tx_param(io_handle, LCD_CMD_INVON, NULL, 0);
+        Now all colors are back to normal, no need to use other inversions.
     */
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = DISP_GPIO_RST,
         .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
         .bits_per_pixel = 16,
-        .data_endian = LCD_RGB_ENDIAN_RGB, // From example
+        .data_endian = LCD_RGB_ENDIAN_BGR,
         .flags = { .reset_active_high = 0 },  // Not in the example
     };
     
@@ -71,17 +70,16 @@ esp_err_t display_init(void) {
         Call last after init.
         #define LCD_CMD_INVON        0x21 // Go into display inversion mode
     */
-
+    
     ESP_LOGI(TAG, "Set display inversion on, to fix black and white.");
     esp_lcd_panel_io_tx_param(io_handle, LCD_CMD_INVON, NULL, 0);
 
+    ESP_LOGI(TAG, "Display turned On");
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
 
     ESP_LOGI(TAG, "Turn on LCD backlight first, to see display content early!");
     BK_Init();  // Back light
-    BK_Light(100);
-
-
+    BK_Light(75);  // Less toxic
     return ESP_OK;
 }
 
