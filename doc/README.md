@@ -66,10 +66,10 @@ Clean the build `Full clean` and run `menuconfig` option again.
 - It should now go into LVGL dir and collect all options there.
 
 
-- Use `menuconfig` set LVGL option `LV_CONF_SKIP` to not skip custom `lvgl_conf.h`!
+- Use `menuconfig` set LVGL option `LV_CONF_SKIP` to not skip custom `lvgl_conf.h`! (actually can build without custom lv_conf.h)
 - Check if color depth = 16
 - Check `Font usage` - optional if you use more fonts
-- Go to `Devices` - check box for `LV_USE_ST7789`
+- Go to `Devices` - check box for `LV_USE_ST7789` (actually does not mater)
 - Examples: disable, do not build.
 - Themes: (optional) you can select default theme. (I have not change anything yet)
 

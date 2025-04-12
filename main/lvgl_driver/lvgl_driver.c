@@ -45,8 +45,11 @@ void flush_cb(lv_display_t* disp, const lv_area_t* area, uint8_t* px_map) {
     int x2 = area->x2 + Offset_X;
     int y1 = area->y1 + Offset_Y;
     int y2 = area->y2 + Offset_Y;
+    
     // uncomment the following line if the colors are wrong
-    lv_draw_sw_rgb565_swap(px_map, (x2 + 1 - x1) * (y2 + 1 - y1));
+    // No need to invert color, but background (only) is still inverted
+    // lv_draw_sw_rgb565_swap(px_map, (x2 + 1 - x1) * (y2 + 1 - y1));
+    
     esp_lcd_panel_draw_bitmap((esp_lcd_panel_handle_t)lv_display_get_user_data(disp), x1, y1, x2 + 1, y2 + 1, px_map);
 }
 
@@ -70,7 +73,8 @@ esp_err_t lvgl_init(void) {
     lv_display_set_buffers(display, buf1, buf2, BUFFER_SIZE, LV_DISPLAY_RENDER_MODE_PARTIAL);
 
     lv_display_set_user_data(display, panel_handle);
-    lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
+    // 
+    // lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
 
     lv_display_set_flush_cb(display, flush_cb);
 
@@ -111,7 +115,8 @@ esp_err_t lvgl_init(void) {
     // esp_lcd_panel_swap_xy(panel_handle, true);
 
     // you may have to change it to false.
-    esp_lcd_panel_invert_color(panel_handle, false);
+    // No need to invert color, but background (only) is still inverted
+    // esp_lcd_panel_invert_color(panel_handle, true);
 
     // Set this display as defaulkt for UI use
     lv_display_set_default(display);

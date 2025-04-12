@@ -1,4 +1,5 @@
 #include "ST7789V3.h"
+#include "esp_lcd_panel_commands.h"
 
 static const char *TAG = "Display_ST7789V3";
 // LCD
@@ -38,20 +39,45 @@ esp_err_t display_init(void) {
     // Attach the LCD to the SPI bus - repeat after example
     ESP_RETURN_ON_ERROR(esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &io_handle), TAG, "SPI init failed");
 
+    /*
+        Added a few new params:
+        - rgb_endian (old) new data_endian
+        - reset_active_high - when 1 display is off, when none is On too (same as 0)
+            https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/lcd/spi_lcd.html#spi-interfaced-lcd
+        
+        Still cannot set background normally, its inverted. 
+        All other elements colors are fine.
+
+    */
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = DISP_GPIO_RST,
         .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_BGR,
         .bits_per_pixel = 16,
+        .data_endian = LCD_RGB_ENDIAN_BGR, // From example
         .flags = { .reset_active_high = 0 },  // Not in the example
     };
     
     ESP_LOGI(TAG, "Install ST7789T panel driver");
     ESP_RETURN_ON_ERROR(esp_lcd_new_panel_st7789(io_handle, &panel_config, &panel_handle), TAG, "Display init failed");
 
+    /* LCM Control, XOR: BGR, MX, MH */
+    esp_lcd_panel_io_tx_param(io_handle, 0xC0, (uint8_t []){0x80}, 1);
+    /* Frame Rate Control, 60Hz, inversion=0 */
+    esp_lcd_panel_io_tx_param(io_handle, 0xC6, (uint8_t []){0x0F}, 1);
+    // Inversion
+    esp_lcd_panel_io_tx_param(io_handle, LCD_CMD_INVON, NULL, 0);
+
+    esp_lcd_panel_io_tx_param(io_handle, LCD_CMD_COLMOD, NULL, 0);
+
+
     // Reset the display
     ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));
     // Initialize LCD panel
     ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
+    
+    // Do not need to rotate, but keep here as in example
+    // ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, true, false));
+    
     // Turn on the screen
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
 

@@ -46,6 +46,7 @@
 #define LEDC_ResolutionRatio   LEDC_TIMER_13_BIT
 #define LEDC_MAX_Duty          ((1 << LEDC_ResolutionRatio) - 1)
 
+
 // Glob
 extern esp_lcd_panel_handle_t panel_handle;
 extern esp_lcd_panel_io_handle_t io_handle;
