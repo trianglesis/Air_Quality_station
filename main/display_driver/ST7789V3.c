@@ -51,39 +51,36 @@ esp_err_t display_init(void) {
     */
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = DISP_GPIO_RST,
-        .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_BGR,
+        .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
         .bits_per_pixel = 16,
-        .data_endian = LCD_RGB_ENDIAN_BGR, // From example
+        .data_endian = LCD_RGB_ENDIAN_RGB, // From example
         .flags = { .reset_active_high = 0 },  // Not in the example
     };
     
     ESP_LOGI(TAG, "Install ST7789T panel driver");
     ESP_RETURN_ON_ERROR(esp_lcd_new_panel_st7789(io_handle, &panel_config, &panel_handle), TAG, "Display init failed");
 
-    /* LCM Control, XOR: BGR, MX, MH */
-    esp_lcd_panel_io_tx_param(io_handle, 0xC0, (uint8_t []){0x80}, 1);
-    /* Frame Rate Control, 60Hz, inversion=0 */
-    esp_lcd_panel_io_tx_param(io_handle, 0xC6, (uint8_t []){0x0F}, 1);
-    // Inversion
-    esp_lcd_panel_io_tx_param(io_handle, LCD_CMD_INVON, NULL, 0);
-
-    esp_lcd_panel_io_tx_param(io_handle, LCD_CMD_COLMOD, NULL, 0);
-
-
     // Reset the display
     ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));
+    
     // Initialize LCD panel
-    ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
-    
-    // Do not need to rotate, but keep here as in example
-    // ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, true, false));
-    
-    // Turn on the screen
+    ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle)); 
+
+    /*
+        Fix color inversion when black is white.
+        Call last after init.
+        #define LCD_CMD_INVON        0x21 // Go into display inversion mode
+    */
+
+    ESP_LOGI(TAG, "Set display inversion on, to fix black and white.");
+    esp_lcd_panel_io_tx_param(io_handle, LCD_CMD_INVON, NULL, 0);
+
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
 
     ESP_LOGI(TAG, "Turn on LCD backlight first, to see display content early!");
     BK_Init();  // Back light
     BK_Light(100);
+
 
     return ESP_OK;
 }
