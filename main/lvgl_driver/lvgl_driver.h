@@ -11,8 +11,8 @@
 
 // Rotate 90deg and compensate buffer change
 // TODO: Move it to the main file for better visibility
-#define Offset_X 34 // 0 IF NOT ROTATED 270deg
-#define Offset_Y 0  // 34 IF ROTATED 270deg
+#define Offset_X 0 // 0 IF NOT ROTATED 270deg
+#define Offset_Y 34  // 34 IF ROTATED 270deg
 
 // Save display when init and use it all over the project
 extern lv_disp_t *display; 

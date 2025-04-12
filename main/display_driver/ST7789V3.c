@@ -48,6 +48,7 @@ esp_err_t display_init(void) {
             esp_lcd_panel_io_tx_param(io_handle, LCD_CMD_INVON, NULL, 0);
         Now all colors are back to normal, no need to use other inversions.
     */
+    
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = DISP_GPIO_RST,
         .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
@@ -79,7 +80,7 @@ esp_err_t display_init(void) {
 
     ESP_LOGI(TAG, "Turn on LCD backlight first, to see display content early!");
     BK_Init();  // Back light
-    BK_Light(75);  // Less toxic
+    BK_Light(50);  // Less toxic
     return ESP_OK;
 }
 

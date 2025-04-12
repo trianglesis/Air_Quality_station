@@ -47,7 +47,7 @@ void flush_cb(lv_display_t* disp, const lv_area_t* area, uint8_t* px_map) {
     int x2 = area->x2 + Offset_X;
     int y1 = area->y1 + Offset_Y;
     int y2 = area->y2 + Offset_Y;
-    
+
     /*
         There is usually rgb565 enforcing, but it no longer needed.
         See how it was implemented in main\display_driver\ST7789V3.c at the panel_config code
@@ -129,9 +129,9 @@ esp_err_t lvgl_init(void) {
     */
     
     // Manual rotate 270deg, no HAL sensor
-    // lv_display_set_rotation(display, LV_DISPLAY_ROTATION_270);
-    // esp_lcd_panel_mirror(panel_handle, false, true);
-    // esp_lcd_panel_swap_xy(panel_handle, true);
+    lv_display_set_rotation(display, LV_DISPLAY_ROTATION_270);
+    esp_lcd_panel_mirror(panel_handle, false, true);
+    esp_lcd_panel_swap_xy(panel_handle, true);
 
     // Set this display as defaulkt for UI use
     lv_display_set_default(display);
