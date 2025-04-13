@@ -96,7 +96,17 @@ Using [example](https://github.com/trianglesis/ESP32-C6-LCD-1.47-Test-LVGL/blob/
 
 ## Tasks and Queues
 
+Use one of two approaches:
+
+Queue len > 1 - is to write multiple messages, and the program can read any of them, even if one is outdated, it will be outdated in matter of ms, which is still good, and can be used as fall back method, because queue is always filled with something.
+
+But this approach requires a reading from queue by desctruction of the message or cleaning the queue if it is half full, to prevent the queue to become 100% full. [Doc](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/freertos_idf.html#_CPPv417xQueueGenericSend13QueueHandle_tPCKv10TickType_tK10BaseType_t)
+
+Queue len = 1 - just rewrite the one message (co2 measurement) and never read from this queue by destructive methods. And no need to clean the queue. [Doc](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/freertos_idf.html#c.xQueueOverwrite)
+
+
+I've tested the 1st, and now will try the second approach.
 
 Doc:
 - https://stackoverflow.com/questions/75908881/esp32-shared-variable-between-tasks
-- 
+- https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/freertos_idf.html#c.xQueueOverwrite

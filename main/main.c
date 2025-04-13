@@ -24,6 +24,8 @@
 
 static const char *TAG = "co2station";
 
+#define wait_co2_next_measure 1000; // How often to measure CO2 level in ms
+#define wait_co2_to_led 1000; // How often change LED colour for CO2 measurements in ms
 
 #define SPIN_ITER   350000  //actual CPU cycles consumed will depend on compiler optimization
 #define CORE0       0
@@ -31,7 +33,10 @@ static const char *TAG = "co2station";
 #define CORE1       ((CONFIG_FREERTOS_NUMBER_OF_CORES > 1) ? 1 : tskNO_AFFINITY)
 
 static QueueHandle_t msg_queue;
-static const uint8_t msg_queue_len = 5;
+// Standard queue with len > 1, can consume any of multiple messages
+// static const uint8_t msg_queue_len = 5;
+// Or overwittable queue
+static const uint8_t msg_queue_len = 1;
 static volatile bool timed_out;
 
 static int fake_co2_counter = 0;     // Faking CO2 levels by simple counter
@@ -74,11 +79,22 @@ static void lvgl_task(void * pvParameters) {
         lv_task_handler();
         if (esp_timer_get_time()/1000 - curtime > 1000) {
             curtime = esp_timer_get_time()/1000;
-            // Queue recieve DESTRICTIVE, the value will no longer be in the queue!
-            if (xQueueReceive(msg_queue, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
-                // ESP_LOGI(TAG, "received data = %d", co2_counter);
+            if (msg_queue_len > 1) {
+                // Destructive read
+                if (xQueueReceive(msg_queue, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
+                    // ESP_LOGI(TAG, "received data = %d", co2_counter);
+                } else {
+                    // Skip drawing if there is no mesages left
+                    // ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
+                }
             } else {
-                ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
+                // Queue recieve, non destructive! Always with xQueueOverwrite
+                if (xQueuePeek(msg_queue, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
+                    // ESP_LOGI(TAG, "received data = %d", co2_counter);
+                } else {
+                    // Skip drawing if there is no mesages left
+                    // ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
+                }
             }
             // Init SQ Line Studio elements
             lv_arc_set_value(ui_Arc1, co2_counter);
@@ -94,19 +110,32 @@ Led HUE based on CO2 levels as task
     xQueuePeek - read the message, not destroying
 */
 static void led_co2(void * pvParameters) {
-    int to_wait_ms = 5000;
+    int to_wait_ms = wait_co2_to_led;
     int co2_counter; // data type should be same as queue item type
     const TickType_t xTicksToWait = pdMS_TO_TICKS(to_wait_ms);
+    // Read from the queue
     while (1) {
         vTaskDelay(pdMS_TO_TICKS(to_wait_ms));  // idle between cycles
-        // Queue recieve, non destructive!
-        if (xQueuePeek(msg_queue, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
-            // ESP_LOGI(TAG, "received data = %d", co2_counter);
+        if (msg_queue_len > 1) {
+            // Destructive read
+            if (xQueueReceive(msg_queue, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
+                // ESP_LOGI(TAG, "received data = %d", co2_counter);
+            } else {
+                // Skip drawing if there is no mesages left
+                // ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
+            }
         } else {
-            ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
+            // Queue recieve, non destructive! Always with xQueueOverwrite
+            if (xQueuePeek(msg_queue, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
+                // ESP_LOGI(TAG, "received data = %d", co2_counter);
+            } else {
+                // Skip drawing if there is no mesages left
+                // ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
+            }
         }
-        led_co2_severity(co2_counter);
     }
+    // Update LED colour
+    led_co2_severity(co2_counter);
 }
 
 /*
@@ -138,22 +167,28 @@ Now work with queue, add the value at the beginning of the queue (first),
 
 */
 static void co2_reading(void * pvParameters) {
-    int to_wait_ms = 1000;
+    int to_wait_ms = wait_co2_next_measure;
     while (1) {
-        int queue_messages = uxQueueMessagesWaiting(msg_queue);
-        int queue_space = uxQueueSpacesAvailable(msg_queue);
-        if (queue_messages > 1 || queue_space < 3) {
-            ESP_LOGI(TAG, "Queue is filled with messages: %d, space left: %d - cleaning the queue!", 
-                queue_messages, 
-                queue_space);
-            xQueueReset(msg_queue);
-        }
-        // Now send CO2 level further, send an item for every 1000ms
-        vTaskDelay(pdMS_TO_TICKS(to_wait_ms));
         // Try to add item to queue, fail immediately if queue is full
         ESP_LOGI(TAG, "sent data = %d", fake_co2_counter);
-        if (xQueueGenericSend(msg_queue, (void *)&fake_co2_counter, 0, queueSEND_TO_FRONT) != pdTRUE) {
-            ESP_LOGE(TAG, "Queue full and it should be emtied!\n");
+        if (msg_queue_len > 1) {
+            // Always check the space and queue len, clean if half-full. Queue read is non-destructive always.
+            int queue_messages = uxQueueMessagesWaiting(msg_queue);
+            int queue_space = uxQueueSpacesAvailable(msg_queue);
+            if (queue_messages > 1 || queue_space < 3) {
+                ESP_LOGI(TAG, "Queue is filled with messages: %d, space left: %d - cleaning the queue!", 
+                    queue_messages, 
+                    queue_space);
+                xQueueReset(msg_queue);
+            }
+            // When queue is len > 1
+            if (xQueueGenericSend(msg_queue, (void *)&fake_co2_counter, 0, queueSEND_TO_FRONT) != pdTRUE) {
+                ESP_LOGE(TAG, "Queue full and it should be emtied!\n");
+            }
+        } else {
+            // No need to clean if xQueueOverwrite
+            // When queue is len = 1, return is negligible
+            xQueueOverwrite(msg_queue, (void *)&fake_co2_counter);
         }
         // Make up and down
         if (fake_co2_counter == 2500) {
@@ -161,6 +196,8 @@ static void co2_reading(void * pvParameters) {
         } else {
             fake_co2_counter++;
         }
+        // Now send CO2 level further, send an item for every 1000ms
+        vTaskDelay(pdMS_TO_TICKS(to_wait_ms));
     }
     // Always should end, when taking measurements if not in loop: https://stackoverflow.com/a/63635154
     // vTaskDelete(NULL);
