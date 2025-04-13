@@ -106,6 +106,9 @@ Queue len = 1 - just rewrite the one message (co2 measurement) and never read fr
 
 
 I've tested the 1st, and now will try the second approach.
+Tested the queue overwrite and it is better to use.
+
+Leaving both examples in code covered by ifs.
 
 Doc:
 - https://stackoverflow.com/questions/75908881/esp32-shared-variable-between-tasks

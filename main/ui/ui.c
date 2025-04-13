@@ -18,6 +18,7 @@ lv_obj_t * ui_Panel1;
 lv_obj_t * ui_Panel2;
 lv_obj_t * ui_Panel3;
 lv_obj_t * ui_Panel4;
+lv_obj_t * ui_Label3;
 // CUSTOM VARIABLES
 
 // EVENTS

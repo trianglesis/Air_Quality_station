@@ -99,7 +99,8 @@ static void lvgl_task(void * pvParameters) {
             // Init SQ Line Studio elements
             lv_arc_set_value(ui_Arc1, co2_counter);
             lv_label_set_text_fmt(ui_Label1, "%d", co2_counter);
-            lv_label_set_text(ui_Label2, "CO2 ppm");
+            lv_label_set_text(ui_Label2, "CO2");
+            lv_label_set_text(ui_Label3, "ppm");
         }
     }
 }
