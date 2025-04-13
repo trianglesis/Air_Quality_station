@@ -41,6 +41,12 @@ Drawing LVGL graphics, run task in between all sensors are collected
 
 Drawing UI between the measurements, CAN? be faster, that measurement itself.
     Set 1 second as default now.
+
+Read the queue message in DESTRICTIVE manner! 
+    OR not, then the co2 measure task should clean the queue if it's near full.
+    xQueueReceive - destroy the message
+    xQueuePeek - read the message, not destroying
+
 */
 static void lvgl_task(void * pvParameters) {
     int to_wait_ms = 10;
@@ -82,7 +88,11 @@ static void lvgl_task(void * pvParameters) {
     }
 }
 
-// Led HUE based on CO2 levels as task
+/*
+Led HUE based on CO2 levels as task
+    xQueueReceive - destroy the message
+    xQueuePeek - read the message, not destroying
+*/
 static void led_co2(void * pvParameters) {
     int to_wait_ms = 5000;
     int co2_counter; // data type should be same as queue item type
@@ -103,52 +113,48 @@ static void led_co2(void * pvParameters) {
 Generating fake CO2 data
 Reuse this function later, adding SDC41 readings
 
+This function will and should always return a lot more values per time, than we usually consume, 
+    thus we always consume most latest value or value before it as fallback option.
+
 Queue fill will hang the process you must recieve from the queue!
-Example: https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/system/freertos/basic_freertos_smp_usage/main/queue_example.c#L33
+    Since this task can also empty the queue, we can now consume with non-destrictive method!
+    Example: https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/system/freertos/basic_freertos_smp_usage/main/queue_example.c#L33
 
 Send to queue should not be faster, than consuming from it!
-    1 second should be alsways enought for any type of measurements!
+    1 second should be alsways enough for any type of measurements!
+
+What if queue is full:
+    If there are too many items in the queue - delete outdated items
+        uxQueueMessagesWaiting - int
+    If queue space become too low - delete older messages
+        uxQueueSpacesAvailable - int
+    TODO: Consider for ONE message
+        xQueueOverwrite for queue of ONE item:
+            https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/freertos_idf.html#c.xQueueOverwrite
+
+Now work with queue, add the value at the beginning of the queue (first), 
+    so each next task can obtain the most recent value, 
+    or the one older (second), if first value accidentally consumed!
+
 */
 static void co2_reading(void * pvParameters) {
     int to_wait_ms = 1000;
     while (1) {
-        /* 
-        What if queue is full? Delete last message if Queue len GT 1?
-        
-        If there are too many items in the queue - delete outdated items
-            uxQueueMessagesWaiting - int
-        
-        If queue space become too low - delete older messages
-            uxQueueSpacesAvailable - int
-        
-        Consider for ONE message
-            xQueueOverwrite for queue of ONE item:
-                https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/freertos_idf.html#c.xQueueOverwrite
-
-        Now: double check if queue is filled with more than 2 messages OR empty space if less than 2
-        */
-
         int queue_messages = uxQueueMessagesWaiting(msg_queue);
         int queue_space = uxQueueSpacesAvailable(msg_queue);
         if (queue_messages > 1 || queue_space < 3) {
-            ESP_LOGI(TAG, "Queue is filled with messages: %d, space left: %d - cleaning the queue!", queue_messages, queue_space);
+            ESP_LOGI(TAG, "Queue is filled with messages: %d, space left: %d - cleaning the queue!", 
+                queue_messages, 
+                queue_space);
             xQueueReset(msg_queue);
         }
-        /*
-        Now work with queue, add the value at the beginning of the queue (first), 
-        so each next task can obtain the most recent value, 
-        or the one older (second), if first value accidentally consumed!
-        */
         // Now send CO2 level further, send an item for every 1000ms
         vTaskDelay(pdMS_TO_TICKS(to_wait_ms));
         // Try to add item to queue, fail immediately if queue is full
         ESP_LOGI(TAG, "sent data = %d", fake_co2_counter);
-        // Don't block if the queue is already full.
-        // Send to the beggining of the queue to always show a most recent value
         if (xQueueGenericSend(msg_queue, (void *)&fake_co2_counter, 0, queueSEND_TO_FRONT) != pdTRUE) {
-            ESP_LOGE(TAG, "Queue full\n");
+            ESP_LOGE(TAG, "Queue full and it should be emtied!\n");
         }
-
         // Make up and down
         if (fake_co2_counter == 2500) {
             fake_co2_counter = 0;
@@ -158,24 +164,6 @@ static void co2_reading(void * pvParameters) {
     }
     // Always should end, when taking measurements if not in loop: https://stackoverflow.com/a/63635154
     // vTaskDelete(NULL);
-}
-
-/*
-Use xQueueReceive to destroy the message after reading!
-*/
-static void clean_queue() {
-    int to_wait_ms = 1000;
-    int co2_counter; // data type should be same as queue item type
-    const TickType_t xTicksToWait = pdMS_TO_TICKS(to_wait_ms);
-    while (1) {
-        vTaskDelay(pdMS_TO_TICKS(to_wait_ms));
-        // Queue recieve
-        if (xQueueReceive(msg_queue, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
-            ESP_LOGI(TAG, "Removing from queue received data = %d", co2_counter);
-        } else {
-            ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
-        }
-}
 }
 
 void app_main() {
@@ -192,7 +180,6 @@ void app_main() {
     xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(lvgl_task, "LVGL task", 8192, NULL, 9, NULL, tskNO_AFFINITY);
-    // xTaskCreatePinnedToCore(clean_queue, "clean_queue", 512, NULL, 10, NULL, tskNO_AFFINITY);
 
     /*
     Old example setup for LVGL, now moving forward and create multiple tasks with message queue.
@@ -207,6 +194,7 @@ void app_main() {
     }
     
     */
+
     // delay to let tasks finish the last loop
     vTaskDelay(pdMS_TO_TICKS(500));
 }
