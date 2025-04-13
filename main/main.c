@@ -133,9 +133,9 @@ static void led_co2(void * pvParameters) {
                 // ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
             }
         }
+        // Update LED colour
+        led_co2_severity(co2_counter);
     }
-    // Update LED colour
-    led_co2_severity(co2_counter);
 }
 
 /*
@@ -213,6 +213,7 @@ void app_main() {
     if (msg_queue == NULL) {
         ESP_LOGE(TAG, "queue creation failed");
     }
+    
     // Create a set of tasks to read sensors and update LCD, LED and other elements
     xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
