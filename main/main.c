@@ -31,7 +31,7 @@ static const char *TAG = "co2station";
 #define CORE1       ((CONFIG_FREERTOS_NUMBER_OF_CORES > 1) ? 1 : tskNO_AFFINITY)
 
 static QueueHandle_t msg_queue;
-static const uint8_t msg_queue_len = 40;
+static const uint8_t msg_queue_len = 5;
 static volatile bool timed_out;
 
 static int fake_co2_counter = 0;     // Faking CO2 levels by simple counter
@@ -112,13 +112,43 @@ Send to queue should not be faster, than consuming from it!
 static void co2_reading(void * pvParameters) {
     int to_wait_ms = 1000;
     while (1) {
+        /* 
+        What if queue is full? Delete last message if Queue len GT 1?
+        
+        If there are too many items in the queue - delete outdated items
+            uxQueueMessagesWaiting - int
+        
+        If queue space become too low - delete older messages
+            uxQueueSpacesAvailable - int
+        
+        Consider for ONE message
+            xQueueOverwrite for queue of ONE item:
+                https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/freertos_idf.html#c.xQueueOverwrite
+
+        Now: double check if queue is filled with more than 2 messages OR empty space if less than 2
+        */
+
+        int queue_messages = uxQueueMessagesWaiting(msg_queue);
+        int queue_space = uxQueueSpacesAvailable(msg_queue);
+        if (queue_messages > 1 || queue_space < 3) {
+            ESP_LOGI(TAG, "Queue is filled with messages: %d, space left: %d - cleaning the queue!", queue_messages, queue_space);
+            xQueueReset(msg_queue);
+        }
+        /*
+        Now work with queue, add the value at the beginning of the queue (first), 
+        so each next task can obtain the most recent value, 
+        or the one older (second), if first value accidentally consumed!
+        */
         // Now send CO2 level further, send an item for every 1000ms
         vTaskDelay(pdMS_TO_TICKS(to_wait_ms));
         // Try to add item to queue, fail immediately if queue is full
         ESP_LOGI(TAG, "sent data = %d", fake_co2_counter);
-        if (xQueueGenericSend(msg_queue, (void *)&fake_co2_counter, portMAX_DELAY, queueSEND_TO_BACK) != pdTRUE) {
+        // Don't block if the queue is already full.
+        // Send to the beggining of the queue to always show a most recent value
+        if (xQueueGenericSend(msg_queue, (void *)&fake_co2_counter, 0, queueSEND_TO_FRONT) != pdTRUE) {
             ESP_LOGE(TAG, "Queue full\n");
         }
+
         // Make up and down
         if (fake_co2_counter == 2500) {
             fake_co2_counter = 0;
@@ -129,7 +159,6 @@ static void co2_reading(void * pvParameters) {
     // Always should end, when taking measurements if not in loop: https://stackoverflow.com/a/63635154
     // vTaskDelete(NULL);
 }
-
 
 /*
 Use xQueueReceive to destroy the message after reading!
@@ -149,7 +178,6 @@ static void clean_queue() {
 }
 }
 
-
 void app_main() {
     //Allow other core to finish initialization
     vTaskDelay(pdMS_TO_TICKS(10));
@@ -161,7 +189,7 @@ void app_main() {
         ESP_LOGE(TAG, "queue creation failed");
     }
     // Create a set of tasks to read sensors and update LCD, LED and other elements
-    xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 3, NULL, tskNO_AFFINITY);
+    xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(lvgl_task, "LVGL task", 8192, NULL, 9, NULL, tskNO_AFFINITY);
     // xTaskCreatePinnedToCore(clean_queue, "clean_queue", 512, NULL, 10, NULL, tskNO_AFFINITY);
