@@ -8,10 +8,12 @@ idf_component_register(
         "main.c"  
         "display_driver/ST7789V3.c"
         "lvgl_driver/lvgl_driver.c"
+        "led_driver/led_driver.c"
         ${SRC_UI}
     INCLUDE_DIRS 
         "." 
         "./display_driver" 
         "./lvgl_driver" 
+        "./led_driver" 
         "ui"
         )

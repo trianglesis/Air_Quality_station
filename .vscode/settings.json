@@ -17,7 +17,12 @@
         "lvgl_driver.h": "c",
         "freertos.h": "c",
         "esp_timer.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "led_driver.h": "c",
+        "led_strip.h": "c",
+        "functional": "c",
+        "task.h": "c",
+        "esp_mac.h": "c"
     },
     "idf.flashType": "UART"
 }

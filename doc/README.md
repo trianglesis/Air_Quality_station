@@ -77,7 +77,12 @@ Can now run build, just to check, not flash.
 
 
 
+### Led
 
+
+`idf.py add-dependency "espressif/led_strip^3.0.1"`
+
+And follow usual setup
 
 
 ### Square Line Studio
@@ -146,5 +151,5 @@ Use this list to get more info about each step here and all possible workarounds
   - The [post](https://forum.lvgl.io/t/gestures-are-slow-perceiving-only-detecting-one-of-5-10-tries/18515/59) about display setup.
   - The [post](https://forum.lvgl.io/t/gestures-are-slow-perceiving-only-detecting-one-of-5-10-tries/18515/60) about rotation.
   - Fix rotated display dead zones [post](https://forum.lvgl.io/t/gestures-are-slow-perceiving-only-detecting-one-of-5-10-tries/18515/86)
-  - 
+  - Fix display invertion [post](https://forum.lvgl.io/t/lvgl-9-2-2-esp32-c6-lcd-1-47-idf-5-4-1-st7789v3/20871)
 - This [repo](https://github.com/serdartoren/ESP32-S3_HMI_Squareline_Example) helped me to understand `Square Line Studio` expoting and compiling.

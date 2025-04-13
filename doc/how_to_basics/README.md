@@ -92,3 +92,11 @@ Updating `main\CMakeLists.txt` as soon as new modules added:
 ```
 
 Using [example](https://github.com/trianglesis/ESP32-C6-LCD-1.47-Test-LVGL/blob/c95cb298858690e018c0155daccdb1463647a111/main/CMakeLists.txt) as ref.
+
+
+## Tasks and Queues
+
+
+Doc:
+- https://stackoverflow.com/questions/75908881/esp32-shared-variable-between-tasks
+- 
