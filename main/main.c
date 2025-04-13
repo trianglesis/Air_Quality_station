@@ -43,7 +43,7 @@ Drawing UI between the measurements, CAN? be faster, that measurement itself.
     Set 1 second as default now.
 */
 static void lvgl_task(void * pvParameters) {
-    int to_wait_ms = 250;
+    int to_wait_ms = 10;
     int co2_counter; // data type should be same as queue item type
     const TickType_t xTicksToWait = pdMS_TO_TICKS(to_wait_ms);
 
@@ -84,10 +84,11 @@ static void lvgl_task(void * pvParameters) {
 
 // Led HUE based on CO2 levels as task
 static void led_co2(void * pvParameters) {
-    int to_wait_ms = 3000;
+    int to_wait_ms = 5000;
     int co2_counter; // data type should be same as queue item type
     const TickType_t xTicksToWait = pdMS_TO_TICKS(to_wait_ms);
     while (1) {
+        vTaskDelay(pdMS_TO_TICKS(to_wait_ms));  // idle between cycles
         // Queue recieve, non destructive!
         if (xQueuePeek(msg_queue, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
             // ESP_LOGI(TAG, "received data = %d", co2_counter);
