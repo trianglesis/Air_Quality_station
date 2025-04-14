@@ -40,7 +40,6 @@
               },
               {
                 "nid": 40,
-                "flags": 1048576,
                 "strtype": "OBJECT/Transform",
                 "InheritedType": 1
               },
@@ -59,8 +58,8 @@
                 "flags": 17,
                 "strtype": "OBJECT/Size",
                 "intarray": [
-                  150,
-                  150
+                  165,
+                  165
                 ],
                 "InheritedType": 7
               },
@@ -216,10 +215,15 @@
                     "strval": "DEFAULT",
                     "childs": [
                       {
-                        "nid": 10340,
-                        "strtype": "_style/Arc_Image",
-                        "strval": "assets/risk_256.png",
-                        "InheritedType": 5
+                        "nid": 10310,
+                        "strtype": "_style/Arc_Color",
+                        "intarray": [
+                          64,
+                          64,
+                          255,
+                          0
+                        ],
+                        "InheritedType": 7
                       }
                     ],
                     "InheritedType": 1
@@ -239,15 +243,16 @@
                     "strval": "DEFAULT",
                     "childs": [
                       {
-                        "nid": 10310,
-                        "strtype": "_style/Arc_Color",
-                        "intarray": [
-                          64,
-                          64,
-                          255,
-                          0
-                        ],
-                        "InheritedType": 7
+                        "nid": 10320,
+                        "strtype": "_style/Arc_Width",
+                        "integer": 18,
+                        "InheritedType": 6
+                      },
+                      {
+                        "nid": 10340,
+                        "strtype": "_style/Arc_Image",
+                        "strval": "assets/risk_165_142.png",
+                        "InheritedType": 5
                       }
                     ],
                     "InheritedType": 1
@@ -260,7 +265,33 @@
               },
               {
                 "part": "lv.PART.KNOB",
-                "childs": [],
+                "childs": [
+                  {
+                    "nid": 10000,
+                    "strtype": "_style/StyleState",
+                    "strval": "DEFAULT",
+                    "childs": [
+                      {
+                        "nid": 10710,
+                        "strtype": "_style/Border_Color",
+                        "intarray": [
+                          255,
+                          255,
+                          255,
+                          255
+                        ],
+                        "InheritedType": 7
+                      },
+                      {
+                        "nid": 10720,
+                        "strtype": "_style/Border width",
+                        "integer": 3,
+                        "InheritedType": 6
+                      }
+                    ],
+                    "InheritedType": 1
+                  }
+                ],
                 "nid": 1090,
                 "strtype": "ARC/Style_knob",
                 "strval": "lv.PART.KNOB, Rectangle, Pad",
@@ -1508,7 +1539,7 @@
     "uiExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main\\ui",
     "projectExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main",
     "custom_variable_prefix": "uic",
-    "backup_cnt": 285,
+    "backup_cnt": 326,
     "autosave_cnt": 0,
     "group_color_cnt": 0,
     "lvgl_version": "9.2.2",

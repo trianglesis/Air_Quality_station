@@ -113,3 +113,10 @@ Leaving both examples in code covered by ifs.
 Doc:
 - https://stackoverflow.com/questions/75908881/esp32-shared-variable-between-tasks
 - https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/freertos_idf.html#c.xQueueOverwrite
+
+
+## Square Line studio
+
+Use pics from:
+- https://www.flaticon.com/search?word=gauge
+

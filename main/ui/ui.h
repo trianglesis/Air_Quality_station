@@ -34,7 +34,7 @@ extern lv_obj_t * ui_Label3;
 extern lv_obj_t * ui____initial_actions0;
 
 // IMAGES AND IMAGE SETS
-LV_IMG_DECLARE(ui_img_risk_256_png);    // assets/risk_256.png
+LV_IMG_DECLARE(ui_img_risk_165_142_png);    // assets/risk_165_142.png
 
 // UI INIT
 void ui_init(void);

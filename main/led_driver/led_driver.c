@@ -77,13 +77,13 @@ void led_init(void) {
 
 
 void led_co2_severity(int co2_ppm) {
-    float co2 = MIN(2000, co2_ppm);
+    float co2 = MIN(3000, co2_ppm);
     /*
-        Example
+    Example
         (800 - 440) / (1560) = 0.2307
-        (1 - 0.2307)*96 = 73.8528 is HUE
+        (1 - 0.2307) * 96 = 73.8528 is HUE
     */
-    int t = (co2 - 440)/(2000 - 440);
+    int t = (co2 - 440)/(3000 - 440);
     float hue_calc = (1 - t) * 96;
     /*
     Generate LED colour based on CO2 severity levels:
@@ -92,7 +92,7 @@ void led_co2_severity(int co2_ppm) {
         Brightness? - MAX
     */
     // https://cplusplus.com/reference/cstdio/printf/
-    ESP_LOGI(TAG, "CO2 lvl = %d HUE = %4.2f", co2_ppm, hue_calc);
+    ESP_LOGI(TAG, "CO2 lvl = %d co2 min = %4.2f HUE = %4.2f t = %d", co2_ppm, co2, hue_calc, t);
     for (int i = 0; i < LED_STRIP_LED_COUNT; i++) {
         led_control_hsv(led_strip, i, hue_calc, 255, 255);
     }
