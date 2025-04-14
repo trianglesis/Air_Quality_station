@@ -9,15 +9,19 @@ idf_component_register(
         "display_driver/ST7789V3.c"
         "lvgl_driver/lvgl_driver.c"
         "led_driver/led_driver.c"
+        "card_driver/card_driver.c"
         ${SRC_UI}
     INCLUDE_DIRS 
         "." 
         "./display_driver" 
         "./lvgl_driver" 
-        "./led_driver" 
+        "./led_driver"
+        "./card_driver"
         "ui"
         )
 
+
+# spiffs_create_partition_image(sdcard ../sd_card FLASH_IN_PROJECT)
 
 # https://www.waveshare.com/wiki/Waveshare_SquareLine_Studio
 # This setup recompiles everything each time!

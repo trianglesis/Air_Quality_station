@@ -140,6 +140,46 @@ Modify the project `main.c`
 - Add subdir import of exported graphics: `#include "ui/ui.h"`
 
 
+### SD Card
+
+Select one of approaches:
+
+- Fast [SD MMC](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/sdmmc_host.html)
+- Simple [SD SPI](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/sdspi_host.html)
+
+Setup first code carcass based on example (from waveshare), read the doc, use another example to add wearing funcs:
+- https://github.com/espressif/esp-idf/blob/master/examples/storage/sd_card/sdmmc/main/sd_card_example_main.c
+- https://github.com/espressif/esp-idf/blob/master/examples/storage/wear_levelling/main/wear_levelling_example_main.c
+
+For FAT creation and auto download files at the board:
+
+- Create custom partitions file: `partitions.csv`
+- Set a proper SD Size max: `64GB=64000MB`
+
+Use example for [SPIFFS](https://github.com/espressif/esp-idf/tree/master/examples/storage/spiffsgen)
+
+Also update `partitions.csv` adding SD card partition, [DOC](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/partition-tables.html#partition-tables)
+
+`Sizes and offsets can be specified as decimal numbers, hex numbers with the prefix 0x, or size multipliers K or M (1024 and 1024*1024 bytes).`
+
+New table for 64GB card, will use half of the storage:
+
+- Use 62000MB, to fit into sizes roudings
+
+```text
+# ESP-IDF Partition Table
+# Name,     Type,   SubType,    Offset,     Size,   Flags
+nvs,        data,   nvs,        0x9000,     24K,
+phy_init,   data,   phy,        0xf000,     4K,
+factory,    app,    factory,    0x10000,    3512K,
+sdcard,     data,   fat,        ,           62000M,
+```
+
+Update `main` dir CMAKE file [with fs gen](https://github.com/espressif/esp-idf/blob/master/examples/storage/spiffsgen/main/CMakeLists.txt):
+
+`spiffs_create_partition_image(storage ../spiffs_image FLASH_IN_PROJECT)`
+
+
 # Links, help, forums and etc
 
 Use this list to get more info about each step here and all possible workarounds.

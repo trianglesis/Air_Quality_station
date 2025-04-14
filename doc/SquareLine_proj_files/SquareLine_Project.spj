@@ -40,6 +40,7 @@
               },
               {
                 "nid": 40,
+                "flags": 1048576,
                 "strtype": "OBJECT/Transform",
                 "InheritedType": 1
               },
@@ -167,7 +168,6 @@
               },
               {
                 "nid": 1010,
-                "flags": 1048576,
                 "strtype": "ARC/Arc",
                 "InheritedType": 1
               },
@@ -361,7 +361,7 @@
                 "strtype": "OBJECT/Position",
                 "intarray": [
                   -70,
-                  12
+                  10
                 ],
                 "InheritedType": 7
               },
@@ -504,6 +504,15 @@
                     "strval": "DEFAULT",
                     "childs": [
                       {
+                        "nid": 10420,
+                        "strtype": "_style/Text_Spacing",
+                        "intarray": [
+                          -2,
+                          -1
+                        ],
+                        "InheritedType": 7
+                      },
+                      {
                         "nid": 10430,
                         "strtype": "_style/Text_Align",
                         "strval": "CENTER",
@@ -512,7 +521,7 @@
                       {
                         "nid": 10450,
                         "strtype": "_style/Text_Font",
-                        "strval": "montserrat_42",
+                        "strval": "montserrat_48",
                         "InheritedType": 3
                       }
                     ],
@@ -569,8 +578,8 @@
                 "flags": 17,
                 "strtype": "OBJECT/Position",
                 "intarray": [
-                  -72,
-                  -28
+                  -71,
+                  -25
                 ],
                 "InheritedType": 7
               },
@@ -717,22 +726,25 @@
                         "strtype": "_style/Text_Color",
                         "intarray": [
                           255,
-                          240,
                           94,
+                          0,
                           255
                         ],
                         "InheritedType": 7
                       },
                       {
-                        "nid": 10430,
-                        "strtype": "_style/Text_Align",
-                        "strval": "CENTER",
-                        "InheritedType": 3
+                        "nid": 10420,
+                        "strtype": "_style/Text_Spacing",
+                        "intarray": [
+                          -1,
+                          0
+                        ],
+                        "InheritedType": 7
                       },
                       {
                         "nid": 10450,
                         "strtype": "_style/Text_Font",
-                        "strval": "montserrat_28",
+                        "strval": "montserrat_32",
                         "InheritedType": 3
                       }
                     ],
@@ -1382,8 +1394,8 @@
                 "flags": 17,
                 "strtype": "OBJECT/Position",
                 "intarray": [
-                  -73,
-                  50
+                  -71,
+                  41
                 ],
                 "InheritedType": 7
               },
@@ -1500,6 +1512,15 @@
                     "strtype": "_style/StyleState",
                     "strval": "DEFAULT",
                     "childs": [
+                      {
+                        "nid": 10420,
+                        "strtype": "_style/Text_Spacing",
+                        "intarray": [
+                          -1,
+                          0
+                        ],
+                        "InheritedType": 7
+                      },
                       {
                         "nid": 10430,
                         "strtype": "_style/Text_Align",
@@ -1681,7 +1702,7 @@
     "uiExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main\\ui",
     "projectExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main",
     "custom_variable_prefix": "uic",
-    "backup_cnt": 341,
+    "backup_cnt": 391,
     "autosave_cnt": 0,
     "group_color_cnt": 0,
     "lvgl_version": "9.2.2",

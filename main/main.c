@@ -9,6 +9,7 @@
 #include "esp_timer.h"
 
 #include "ST7789V3.h"
+#include "card_driver.h"
 #include "lvgl_driver.h"
 #include "led_driver.h"
 
@@ -209,6 +210,12 @@ void app_main() {
     vTaskDelay(pdMS_TO_TICKS(10));
     // Early init
     led_init();
+    // SD Card before display
+    Flash_Searching();
+    card_init();
+    // Test card FS by reading default file README.md at the root
+    file_read_test();
+
     // Message Queue
     msg_queue = xQueueGenericCreate(msg_queue_len, sizeof(int), queueQUEUE_TYPE_SET);
     if (msg_queue == NULL) {

@@ -120,3 +120,8 @@ Doc:
 Use pics from:
 - https://www.flaticon.com/search?word=gauge
 
+
+## SD Card
+
+There is no support for fast driver mode, probably:
+- Fast [SD MMC](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/sdmmc_host.html)
