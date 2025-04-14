@@ -76,23 +76,28 @@ void led_init(void) {
 }
 
 
+/*
+Tested doc\test\co2_interpolation_test.py
+Calculate LED HUE based on the level of CO2
+Using atmospheric level substraction to proper indication.
+Max level 2000 after which any CO2 level is always RED
+
+Generate LED colour based on CO2 severity levels:
+    Hue - colour
+    Saturation - MAX
+    Value - 200 of 255, to make color vibrant, not darker
+
+Example
+    (800 - 440) / (1560) = 0.2307
+    (1 - 0.2307) * 96 = 73.8528 is HUE
+
+*/
 void led_co2_severity(int co2_ppm) {
     float co2_ENV = 427.0;  // Outdoors level
     float co2_MAX = 2000.0; // Max level, all RED
     float co2 = MIN(co2_MAX, co2_ppm);
-    /*
-    Example
-        (800 - 440) / (1560) = 0.2307
-        (1 - 0.2307) * 96 = 73.8528 is HUE
-    */
     float t = (co2 - co2_ENV) / (co2_MAX - co2_ENV);
     float hue_calc = (1 - t) * 96;
-    /*
-    Generate LED colour based on CO2 severity levels:
-        Hue - colour
-        Saturation - MAX
-        Brightness? - MAX
-    */
     // https://cplusplus.com/reference/cstdio/printf/
     ESP_LOGI(TAG, "CO2 lvl = %d co2 min = %4.2f HUE = %4.2f t = %4.2f", co2_ppm, co2, hue_calc, t);
     for (int i = 0; i < LED_STRIP_LED_COUNT; i++) {
