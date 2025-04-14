@@ -42,13 +42,19 @@ void led_control_hsv(led_strip_handle_t strip, uint32_t index, uint16_t hue, uin
     led_strip_refresh(led_strip);
 }
 
+/*
+See the color ordering of the LED: RGB is working fine.
+Led count is 1
+Model WS2812B-0807
+Pin 8
+*/
 void led_init(void) {
     // LED strip general initialization, according to your led board design
     led_strip_config_t strip_config = {
-        .strip_gpio_num = LED_STRIP_GPIO_PIN, // The GPIO that connected to the LED strip's data line
-        .max_leds = LED_STRIP_LED_COUNT,      // The number of LEDs in the strip,
-        .led_model = LED_STRIP_MODEL,        // LED strip model
-        .color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_RGB, // The color order of the strip: GRB
+        .strip_gpio_num = LED_STRIP_GPIO_PIN,
+        .max_leds = LED_STRIP_LED_COUNT,
+        .led_model = LED_STRIP_MODEL,
+        .color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_RGB,
         .flags = {
             .invert_out = false, // don't invert the output signal
         }
@@ -99,7 +105,7 @@ void led_co2_severity(int co2_ppm) {
     float t = (co2 - co2_ENV) / (co2_MAX - co2_ENV);
     float hue_calc = (1 - t) * 96;
     // https://cplusplus.com/reference/cstdio/printf/
-    ESP_LOGI(TAG, "CO2 lvl = %d co2 min = %4.2f HUE = %4.2f t = %4.2f", co2_ppm, co2, hue_calc, t);
+    // ESP_LOGI(TAG, "CO2 lvl = %d co2 min = %4.2f HUE = %4.2f t = %4.2f", co2_ppm, co2, hue_calc, t);
     for (int i = 0; i < LED_STRIP_LED_COUNT; i++) {
         led_control_hsv(led_strip, i, hue_calc, 255, 200);
     }
