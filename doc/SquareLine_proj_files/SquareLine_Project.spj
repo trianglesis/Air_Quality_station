@@ -40,7 +40,6 @@
               },
               {
                 "nid": 40,
-                "flags": 1048576,
                 "strtype": "OBJECT/Transform",
                 "InheritedType": 1
               },
@@ -49,8 +48,8 @@
                 "flags": 17,
                 "strtype": "OBJECT/Position",
                 "intarray": [
-                  -76,
-                  2
+                  -70,
+                  9
                 ],
                 "InheritedType": 7
               },
@@ -184,7 +183,7 @@
               {
                 "nid": 1030,
                 "strtype": "ARC/Value",
-                "integer": 1500,
+                "integer": 500,
                 "InheritedType": 6
               },
               {
@@ -352,6 +351,7 @@
               },
               {
                 "nid": 40,
+                "flags": 1048576,
                 "strtype": "OBJECT/Transform",
                 "InheritedType": 1
               },
@@ -360,8 +360,8 @@
                 "flags": 17,
                 "strtype": "OBJECT/Position",
                 "intarray": [
-                  -76,
-                  0
+                  -70,
+                  12
                 ],
                 "InheritedType": 7
               },
@@ -394,10 +394,58 @@
                 "InheritedType": 2
               },
               {
+                "nid": 130,
+                "strtype": "OBJECT/Press_lock",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 140,
+                "strtype": "OBJECT/Click_focusable",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 210,
+                "strtype": "OBJECT/Gesture_bubble",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 220,
+                "strtype": "OBJECT/Snappable",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
                 "nid": 225,
                 "flags": 1048576,
                 "strtype": "OBJECT/Scrolling",
                 "InheritedType": 1
+              },
+              {
+                "nid": 230,
+                "strtype": "OBJECT/Scrollable",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 240,
+                "strtype": "OBJECT/Scroll_elastic",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 250,
+                "strtype": "OBJECT/Scroll_momentum",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 270,
+                "strtype": "OBJECT/Scroll_chain",
+                "strval": "False",
+                "InheritedType": 2
               },
               {
                 "nid": 300,
@@ -431,6 +479,7 @@
               },
               {
                 "nid": 1010,
+                "flags": 1048576,
                 "strtype": "LABEL/Label",
                 "InheritedType": 1
               },
@@ -520,8 +569,8 @@
                 "flags": 17,
                 "strtype": "OBJECT/Position",
                 "intarray": [
-                  -76,
-                  -35
+                  -72,
+                  -28
                 ],
                 "InheritedType": 7
               },
@@ -554,10 +603,58 @@
                 "InheritedType": 2
               },
               {
+                "nid": 130,
+                "strtype": "OBJECT/Press_lock",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 140,
+                "strtype": "OBJECT/Click_focusable",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 210,
+                "strtype": "OBJECT/Gesture_bubble",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 220,
+                "strtype": "OBJECT/Snappable",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
                 "nid": 225,
                 "flags": 1048576,
                 "strtype": "OBJECT/Scrolling",
                 "InheritedType": 1
+              },
+              {
+                "nid": 230,
+                "strtype": "OBJECT/Scrollable",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 240,
+                "strtype": "OBJECT/Scroll_elastic",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 250,
+                "strtype": "OBJECT/Scroll_momentum",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 270,
+                "strtype": "OBJECT/Scroll_chain",
+                "strval": "False",
+                "InheritedType": 2
               },
               {
                 "nid": 300,
@@ -619,9 +716,9 @@
                         "nid": 10410,
                         "strtype": "_style/Text_Color",
                         "intarray": [
-                          190,
-                          209,
-                          0,
+                          255,
+                          240,
+                          94,
                           255
                         ],
                         "InheritedType": 7
@@ -635,7 +732,7 @@
                       {
                         "nid": 10450,
                         "strtype": "_style/Text_Font",
-                        "strval": "montserrat_26",
+                        "strval": "montserrat_28",
                         "InheritedType": 3
                       }
                     ],
@@ -1257,6 +1354,7 @@
               },
               {
                 "nid": 20,
+                "flags": 1048576,
                 "strtype": "OBJECT/Layout",
                 "InheritedType": 1
               },
@@ -1275,6 +1373,7 @@
               },
               {
                 "nid": 40,
+                "flags": 1048576,
                 "strtype": "OBJECT/Transform",
                 "InheritedType": 1
               },
@@ -1283,8 +1382,8 @@
                 "flags": 17,
                 "strtype": "OBJECT/Position",
                 "intarray": [
-                  -76,
-                  30
+                  -73,
+                  50
                 ],
                 "InheritedType": 7
               },
@@ -1321,6 +1420,30 @@
                 "flags": 1048576,
                 "strtype": "OBJECT/Scrolling",
                 "InheritedType": 1
+              },
+              {
+                "nid": 230,
+                "strtype": "OBJECT/Scrollable",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 240,
+                "strtype": "OBJECT/Scroll_elastic",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 250,
+                "strtype": "OBJECT/Scroll_momentum",
+                "strval": "False",
+                "InheritedType": 2
+              },
+              {
+                "nid": 270,
+                "strtype": "OBJECT/Scroll_chain",
+                "strval": "False",
+                "InheritedType": 2
               },
               {
                 "nid": 300,
@@ -1558,7 +1681,7 @@
     "uiExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main\\ui",
     "projectExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main",
     "custom_variable_prefix": "uic",
-    "backup_cnt": 338,
+    "backup_cnt": 341,
     "autosave_cnt": 0,
     "group_color_cnt": 0,
     "lvgl_version": "9.2.2",
