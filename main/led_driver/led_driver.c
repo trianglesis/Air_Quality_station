@@ -48,7 +48,7 @@ void led_init(void) {
         .strip_gpio_num = LED_STRIP_GPIO_PIN, // The GPIO that connected to the LED strip's data line
         .max_leds = LED_STRIP_LED_COUNT,      // The number of LEDs in the strip,
         .led_model = LED_STRIP_MODEL,        // LED strip model
-        .color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_GRB, // The color order of the strip: GRB
+        .color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_RGB, // The color order of the strip: GRB
         .flags = {
             .invert_out = false, // don't invert the output signal
         }
@@ -77,13 +77,15 @@ void led_init(void) {
 
 
 void led_co2_severity(int co2_ppm) {
-    float co2 = MIN(3000, co2_ppm);
+    float co2_ENV = 427.0;  // Outdoors level
+    float co2_MAX = 2000.0; // Max level, all RED
+    float co2 = MIN(co2_MAX, co2_ppm);
     /*
     Example
         (800 - 440) / (1560) = 0.2307
         (1 - 0.2307) * 96 = 73.8528 is HUE
     */
-    int t = (co2 - 440)/(3000 - 440);
+    float t = (co2 - co2_ENV) / (co2_MAX - co2_ENV);
     float hue_calc = (1 - t) * 96;
     /*
     Generate LED colour based on CO2 severity levels:
@@ -92,9 +94,9 @@ void led_co2_severity(int co2_ppm) {
         Brightness? - MAX
     */
     // https://cplusplus.com/reference/cstdio/printf/
-    ESP_LOGI(TAG, "CO2 lvl = %d co2 min = %4.2f HUE = %4.2f t = %d", co2_ppm, co2, hue_calc, t);
+    ESP_LOGI(TAG, "CO2 lvl = %d co2 min = %4.2f HUE = %4.2f t = %4.2f", co2_ppm, co2, hue_calc, t);
     for (int i = 0; i < LED_STRIP_LED_COUNT; i++) {
-        led_control_hsv(led_strip, i, hue_calc, 255, 255);
+        led_control_hsv(led_strip, i, hue_calc, 255, 200);
     }
 }
 
