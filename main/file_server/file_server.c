@@ -33,12 +33,24 @@ esp_err_t http_resp_dir_html(httpd_req_t *req, const char *dirpath)
     httpd_resp_sendstr_chunk(req, "<!DOCTYPE html><html><body>");
 
     /* Get handle to embedded file upload script */
-    extern const unsigned char upload_script_start[] asm("_binary_upload_script_html_start");
-    extern const unsigned char upload_script_end[]   asm("_binary_upload_script_html_end");
-    const size_t upload_script_size = (upload_script_end - upload_script_start);
+    char upload_script_html[4096];
+    const char *file_path;
+    file_path = UPLOAD_HTML_PATH;
+    struct stat st;
+    // Load html file
+    memset((void *)upload_script_html, 0, sizeof(upload_script_html));
+    if (stat(file_path, &st)) {
+        ESP_LOGE(TAG, "index.html not found at all!");
+        return ESP_FAIL;
+    }
+
+    FILE *fp = fopen(file_path, "r");
+    if (fread(upload_script_html, st.st_size, 1, fp) == 0) {
+        ESP_LOGE(TAG, "fread failed for index html %s", file_path);
+    }
 
     /* Add file upload form and script which on execution sends a POST request to /upload */
-    httpd_resp_send_chunk(req, (const char *)upload_script_start, upload_script_size);
+    httpd_resp_send_chunk(req, upload_script_html, sizeof(upload_script_html));
 
     /* Send file-list table definition and column labels */
     httpd_resp_sendstr_chunk(req,
@@ -89,6 +101,8 @@ esp_err_t http_resp_dir_html(httpd_req_t *req, const char *dirpath)
 
     /* Send empty chunk to signal HTTP response completion */
     httpd_resp_sendstr_chunk(req, NULL);
+
+    fclose(fp);
     return ESP_OK;
 }
 
@@ -384,7 +398,7 @@ esp_err_t delete_post_handler(httpd_req_t *req)
 Function to start the file server 
 Upload files to SD Card, serve upload page from LitteFS!
 */
-esp_err_t start_file_server(void)
+esp_err_t start_file_server(httpd_handle_t server)
 {
 
     /* URI handler for getting uploaded files */

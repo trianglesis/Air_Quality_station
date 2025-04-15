@@ -23,6 +23,11 @@
 /* Scratch buffer size */
 #define SCRATCH_BUFSIZE  8192
 
+// Server upload files capability
+#define UPLOAD_INDEX_PATH       "/littlefs/index.html"
+#define UPLOAD_HTML_PATH        "/littlefs/upload_script.html"
+#define UPLOAD_FAV_PATH         "/littlefs/favicon.ico"
+
 struct file_server_data {
     /* Base path of file storage */
     char base_path[ESP_VFS_PATH_MAX + 1];
@@ -38,4 +43,4 @@ esp_err_t download_get_handler(httpd_req_t *req);
 esp_err_t upload_post_handler(httpd_req_t *req);
 esp_err_t delete_post_handler(httpd_req_t *req);
 
-esp_err_t start_file_server(void);
+esp_err_t start_file_server(httpd_handle_t server);

@@ -171,6 +171,8 @@ See [LittleFS](how_to_basics/README.md#littlefs)
 
 ### WebServer
 
+Check `LWIP_MAX_SOCKETS`
+
 We should have now two storages ready:
 
 - `littlefs` - to store initial html files, for web server to render upload file page.

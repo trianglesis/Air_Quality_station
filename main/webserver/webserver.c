@@ -141,11 +141,20 @@ esp_err_t index_html_get_handler(httpd_req_t *req)
  * This can be overridden by uploading file with same name */
 esp_err_t favicon_get_handler(httpd_req_t *req)
 {
-    extern const unsigned char favicon_ico_start[] asm("_binary_favicon_ico_start");
-    extern const unsigned char favicon_ico_end[]   asm("_binary_favicon_ico_end");
-    const size_t favicon_ico_size = (favicon_ico_end - favicon_ico_start);
+    /* Get handle to embedded file upload script */
+    char upload_fav[4096];
+    const char *file_path;
+    file_path = UPLOAD_FAV_PATH;
+    struct stat st;
+    // Load html file
+    memset((void *)upload_fav, 0, sizeof(upload_fav));
+    if (stat(file_path, &st)) {
+        ESP_LOGE(TAG, "Upload favicon not found at LittleFS!");
+        return ESP_FAIL;
+    }
+
     httpd_resp_set_type(req, "image/x-icon");
-    httpd_resp_send(req, (const char *)favicon_ico_start, favicon_ico_size);
+    httpd_resp_send(req, upload_fav, sizeof(upload_fav));
     return ESP_OK;
 }
 
@@ -207,7 +216,7 @@ esp_err_t start_webserver(void) {
     
     // Use default
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-    // LWIP_MAX_SOCKETS = 20
+    // always check config LWIP_MAX_SOCKETS = 20
     config.max_open_sockets = 13;
     config.lru_purge_enable = true;
     config.max_uri_handlers = 10;
@@ -233,7 +242,7 @@ esp_err_t start_webserver(void) {
     
     // Now start file server:
     /* Initialize file storage */
-    start_file_server();
+    start_file_server(server);
     // Do not rerutn server, it is now in global var
     return ESP_OK;
 }
