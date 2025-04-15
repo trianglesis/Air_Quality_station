@@ -2,8 +2,8 @@
 
 static const char *TAG = "littlefs";
 
-float littlefs_total = 0.0;
-float littlefs_used = 0.0;
+float littlefs_total = 0;
+float littlefs_used = 0;
 
 // Just test
 esp_err_t fs_read(void) {
@@ -49,9 +49,10 @@ esp_err_t fs_setup(void) {
     else {
         ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
     }
-    littlefs_total = total / (1024 * 1024); // Convert to Mb
-    littlefs_used = used / (1024 * 1024); // Convert to Mb
-    ESP_LOGI(TAG, "Partition util: %4.2f/%4.2f MB", littlefs_total, littlefs_used);
+    littlefs_total = (total / 1024); // Convert to Kb
+    littlefs_used = (used / 1024); // Convert to Kb
+    // https://cplusplus.com/reference/cstdio/printf/
+    ESP_LOGI(TAG, "Partition size: %.2f/%.2f KB", littlefs_total, littlefs_used);
     return ESP_OK;
 
 }

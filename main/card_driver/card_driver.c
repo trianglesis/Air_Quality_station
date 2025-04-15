@@ -137,7 +137,7 @@ esp_err_t card_init(void) {
     sdmmc_card_print_info(stdout, card);
     // 3x1024 to only show Gb
     SDCard_Size = ((uint64_t) card->csd.capacity) * card->csd.sector_size / (1024 * 1024 * 1024);
-    ESP_LOGI(TAG, "SD Card detected, size: %ld MB", SDCard_Size);
+    ESP_LOGI(TAG, "SD Card detected, size: %ld GB", SDCard_Size);
     // Test files:
     s_example_write_file("/sdcard/hello.txt", "Test file created!");
     file_sum_test();
