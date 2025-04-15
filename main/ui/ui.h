@@ -22,11 +22,8 @@ extern lv_obj_t * ui_Screen1;
 extern lv_obj_t * ui_Arc1;
 extern lv_obj_t * ui_Label1;
 extern lv_obj_t * ui_Label2;
-extern lv_obj_t * ui_Panel1;
-extern lv_obj_t * ui_Panel2;
-extern lv_obj_t * ui_Panel3;
-extern lv_obj_t * ui_Panel4;
 extern lv_obj_t * ui_Label3;
+extern lv_obj_t * ui_Label4;
 // CUSTOM VARIABLES
 
 // EVENTS

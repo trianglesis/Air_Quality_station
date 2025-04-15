@@ -132,7 +132,27 @@ Examples are fine, but one of my board's SD port is dead!
 
 Seems like you should init SPI only once, use var `SDCard_Size` as check to skip SPI init when LCD load.
 
+```log
+I (457) SD-SPI: Filesystem mounted
+Name: SD64G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 59638MB
+CSD: ver=2, sector_size=512, capacity=122138624 read_bl_len=9
+SSR: bus_width=1
+I (457) SD-SPI: SD Card detected, size: 59638 MB
+I (467) SD-SPI: Opening file /sdcard/hello.txt
+I (487) SD-SPI: File written
+I (487) SD-SPI: Computing hello.txt MD5 hash and test reading
+I (487) SD-SPI: Computed MD5 hash of alice.txt: 25602f001b1b12367cfc90b905f0c6e7
+I (497) SD-SPI: Reading hello.txt
+I (497) SD-SPI: Read from hello.txt: Test file created!
+I (497) Display_ST7789V3: Skip SPI Bus init at LCD as it was initialized at SD Card driver!
+```
 
 Next write a log to SD card, or serve a SQLite something?
 
 Use this example for proper log writing on SD Card: [example](https://github.com/i400s/tmp-sdcard/blob/main/main/sdcard_main.c)
+
+Or can I load SD Card data from the build?
+- https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/storage/fatfs.html#fatfs-partition-generator

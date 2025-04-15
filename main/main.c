@@ -100,6 +100,7 @@ static void lvgl_task(void * pvParameters) {
             lv_label_set_text_fmt(ui_Label1, "%d", co2_counter);
             lv_label_set_text(ui_Label2, "CO2");
             lv_label_set_text(ui_Label3, "ppm");
+            lv_label_set_text_fmt(ui_Label4, "SD: %ld MB", SDCard_Size);
         }
     }
 }
