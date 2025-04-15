@@ -237,7 +237,7 @@ void app_main() {
     ESP_LOGI(TAG, "ESP_WIFI_MODE_AP");
     wifi_setup();
     // Simple webserver
-    start_webserver();
+    ESP_ERROR_CHECK(start_webserver());
 
     // Message Queue
     msg_queue = xQueueGenericCreate(msg_queue_len, sizeof(int), queueQUEUE_TYPE_SET);

@@ -28,11 +28,9 @@ typedef struct {
 
 #endif
 
-extern httpd_handle_t server = NULL;
+extern httpd_handle_t server;
 
-// Server index.htnl
-#define INDEX_HTML_PATH             "/littlefs/index.html"
-#define INDEX_HTML_PATH_SD_CARD     "/sdcard/index.html"
+
 // Server upload files capability
 #define UPLOAD_HTML_PATH            "/littlefs/upload_script.html"
 
@@ -41,7 +39,10 @@ extern httpd_handle_t server = NULL;
 // Upload INIT server root dir - do not upload files here, but use as initial page for upload
 #define FILESERVER_INIT_ROOT        LFS_MOUNT_POINT
 
-void index_html_get_handler(httpd_req_t *req);
-void favicon_get_handler(httpd_req_t *req);
+
+esp_err_t index_html_get_handler(httpd_req_t *req);
+esp_err_t favicon_get_handler(httpd_req_t *req);
+esp_err_t root_get_handler(httpd_req_t *req);
+esp_err_t http_404_error_handler(httpd_req_t *req, httpd_err_code_t err);
 
 esp_err_t start_webserver(void);

@@ -1,5 +1,5 @@
 #include "webserver.h"
-#include "fileserver.h"
+#include "file_server.h"
 
 char response_data[4096];
 
@@ -126,12 +126,9 @@ static void httpd_register_basic_auth(httpd_handle_t server) {
 
 #endif
 
-
-// WEB
-
 /* Handler to redirect incoming GET request for /index.html to /
  * This can be overridden by uploading file with same name */
-static esp_err_t index_html_get_handler(httpd_req_t *req)
+esp_err_t index_html_get_handler(httpd_req_t *req)
 {
     httpd_resp_set_status(req, "307 Temporary Redirect");
     httpd_resp_set_hdr(req, "Location", "/");
@@ -142,7 +139,7 @@ static esp_err_t index_html_get_handler(httpd_req_t *req)
 /* Handler to respond with an icon file embedded in flash.
  * Browsers expect to GET website icon at URI /favicon.ico.
  * This can be overridden by uploading file with same name */
-static esp_err_t favicon_get_handler(httpd_req_t *req)
+esp_err_t favicon_get_handler(httpd_req_t *req)
 {
     extern const unsigned char favicon_ico_start[] asm("_binary_favicon_ico_start");
     extern const unsigned char favicon_ico_end[]   asm("_binary_favicon_ico_end");
@@ -153,30 +150,30 @@ static esp_err_t favicon_get_handler(httpd_req_t *req)
 }
 
 // Root page if present
-static esp_err_t root_get_handler(httpd_req_t *req) {
+esp_err_t root_get_handler(httpd_req_t *req) {
     char index_html[4096];
-    char file_path;
-    ESP_LOGI(TAG, "Serve root from LittleFS but later change to SDCard?");
-    // Load index
+    const char *file_path;
     struct stat st;
-    // Serve index html from LittleFS if there is no index at SD Card yet.
-    if (stat(WEBSERVER_ROOT + "index.html", &st) == 0) {
-        file_path = WEBSERVER_ROOT + "index.html";
-    } else if (stat(WEBSERVER_ROOT + "index.html", &st) == 0) {
-        file_path = LFS_MOUNT_POINT + "index.html";
+    
+    // Serve index html from LittleFS if there is no index at SD Card yet.   
+    if (stat("/sdcard/index.html", &st) == 0) {
+        file_path = "/sdcard/index.html";
+        ESP_LOGI(TAG, "Serve root from SD Card index.html is found!");
+    } else {
+        file_path = "/littlefs/index.html";
+        ESP_LOGI(TAG, "Serve root from LittleFS index.html is not found at SD Card!");
     }
 
     // Load html file
     memset((void *)index_html, 0, sizeof(index_html));
-    struct stat st;
     if (stat(file_path, &st)) {
-        ESP_LOGE(TAG, "index.html not found");
+        ESP_LOGE(TAG, "index.html not found at all!");
         return ESP_FAIL;
     }
 
     FILE *fp = fopen(file_path, "r");
     if (fread(index_html, st.st_size, 1, fp) == 0) {
-        ESP_LOGE(TAG, "fread failed");
+        ESP_LOGE(TAG, "fread failed for index html %s", file_path);
     }
     fclose(fp);
 
@@ -185,7 +182,7 @@ static esp_err_t root_get_handler(httpd_req_t *req) {
     return ESP_OK;
 }
 
-static const httpd_uri_t root = {
+const httpd_uri_t root = {
     .uri = "/",
     .method = HTTP_GET,
     .handler = root_get_handler
@@ -237,6 +234,6 @@ esp_err_t start_webserver(void) {
     // Now start file server:
     /* Initialize file storage */
     start_file_server();
-
-    return server;
+    // Do not rerutn server, it is now in global var
+    return ESP_OK;
 }

@@ -7,7 +7,7 @@ static const char *TAG = "file_server";
  * a list of all files and folders under the requested path.
  * In case of SPIFFS this returns empty list when path is any
  * string other than '/', since SPIFFS doesn't support directories */
-static esp_err_t http_resp_dir_html(httpd_req_t *req, const char *dirpath)
+esp_err_t http_resp_dir_html(httpd_req_t *req, const char *dirpath)
 {
     char entrypath[FILE_PATH_MAX];
     char entrysize[16];
@@ -96,7 +96,7 @@ static esp_err_t http_resp_dir_html(httpd_req_t *req, const char *dirpath)
     (strcasecmp(&filename[strlen(filename) - sizeof(ext) + 1], ext) == 0)
 
 /* Set HTTP response content type according to file extension */
-static esp_err_t set_content_type_from_file(httpd_req_t *req, const char *filename)
+esp_err_t set_content_type_from_file(httpd_req_t *req, const char *filename)
 {
     if (IS_FILE_EXT(filename, ".pdf")) {
         return httpd_resp_set_type(req, "application/pdf");
@@ -142,7 +142,7 @@ static const char* get_path_from_uri(char *dest, const char *base_path, const ch
 }
 
 /* Handler to download a file kept on the server */
-static esp_err_t download_get_handler(httpd_req_t *req)
+esp_err_t download_get_handler(httpd_req_t *req)
 {
     char filepath[FILE_PATH_MAX];
     FILE *fd = NULL;
@@ -223,7 +223,7 @@ static esp_err_t download_get_handler(httpd_req_t *req)
 }
 
 /* Handler to upload a file onto the server */
-static esp_err_t upload_post_handler(httpd_req_t *req)
+esp_err_t upload_post_handler(httpd_req_t *req)
 {
     char filepath[FILE_PATH_MAX];
     FILE *fd = NULL;
@@ -337,7 +337,7 @@ static esp_err_t upload_post_handler(httpd_req_t *req)
 }
 
 /* Handler to delete a file from the server */
-static esp_err_t delete_post_handler(httpd_req_t *req)
+esp_err_t delete_post_handler(httpd_req_t *req)
 {
     char filepath[FILE_PATH_MAX];
     struct stat file_stat;
