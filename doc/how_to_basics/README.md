@@ -126,22 +126,13 @@ Use pics from:
 There is no support for fast driver mode, probably:
 - Fast [SD MMC](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/sdmmc_host.html)
 
-
 Initial tests are working with Kingston 128Gb and GoodRam 64Gb SD Cards [test](https://github.com/trianglesis/ESP32-C6-LCD-1.47-Test-LVGL/blob/c95cb298858690e018c0155daccdb1463647a111/main/LVGL_UI/LVGL_Example.c)
 
 Examples are fine, but one of my board's SD port is dead!
 
-```log
-I (571) SD-SPI: Filesystem mounted
-Name: SD64G
-Type: SDHC
-Speed: 20.00 MHz (limit: 20.00 MHz)
-Size: 59638MB
-CSD: ver=2, sector_size=512, capacity=122138624 read_bl_len=9
-SSR: bus_width=1
-I (571) SD-SPI: SD Card detected, size: 59638 MB
-I (581) SD-SPI: Opening file sdcard/hello.txt
-E (581) SD-SPI: Failed to open file for writing
-I (581) SD-SPI: Computing hello.txt MD5 hash and test reading
-E (591) SD-SPI: Failed to open hello.txt
-```
+Seems like you should init SPI only once, use var `SDCard_Size` as check to skip SPI init when LCD load.
+
+
+Next write a log to SD card, or serve a SQLite something?
+
+Use this example for proper log writing on SD Card: [example](https://github.com/i400s/tmp-sdcard/blob/main/main/sdcard_main.c)

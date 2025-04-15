@@ -1,4 +1,6 @@
 #include "card_driver.h"
+// Use display
+#include "ST7789V3.h"
 
 #define EXAMPLE_MAX_CHAR_SIZE    64
 
@@ -56,8 +58,8 @@ void file_sum_test(void) {
         sprintf(&digest_str[i * 2], "%02x", (unsigned int)digest[i]);
     }
 
-    // For reference, MD5 should be deeb71f585cbb3ae5f7976d5127faf2a
-    ESP_LOGI(TAG, "Computed MD5 hash of alice.txt: %s", digest_str);
+    // For reference, MD5 should be 25602f001b1b12367cfc90b905f0c6e7
+    ESP_LOGI(TAG, "Computed MD5 hash of hello.txt: %s", digest_str);
 
     fclose(f);
 }
@@ -94,19 +96,22 @@ esp_err_t card_init(void) {
 
     ESP_LOGI(TAG, "Using SPI peripheral");
     sdmmc_host_t host = SDSPI_HOST_DEFAULT();
+
     spi_bus_config_t bus_cfg = {
         .mosi_io_num = PIN_NUM_MOSI,
         .miso_io_num = PIN_NUM_MISO,
         .sclk_io_num = PIN_NUM_SCLK,
-        .quadwp_io_num = -1,
-        .quadhd_io_num = -1,
-        .max_transfer_sz = 4000,
+        .quadwp_io_num = GPIO_NUM_NC,
+        .quadhd_io_num = GPIO_NUM_NC,
+        .max_transfer_sz = BUFFER_SIZE,
     };
 
     ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to initialize bus.");
         return ret;
+    } else {        
+        ESP_LOGI(TAG, "Initialized SPI bus as SD Card init, and skip this step for LCD!");
     }
     // This initializes the slot without card detect (CD) and write protect (WP) signals.
     // Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
@@ -128,13 +133,12 @@ esp_err_t card_init(void) {
     }
     ESP_LOGI(TAG, "Filesystem mounted");
 
-   
     // There is wait_fort_idle function can be usefull on device powering off or SD remove
     sdmmc_card_print_info(stdout, card);
     SDCard_Size = ((uint64_t) card->csd.capacity) * card->csd.sector_size / (1024 * 1024);
     ESP_LOGI(TAG, "SD Card detected, size: %ld MB", SDCard_Size);
     // Test files:
-    s_example_write_file("sdcard/hello.txt", "Test file created!");
+    s_example_write_file("/sdcard/hello.txt", "Test file created!");
     file_sum_test();
     file_read_test();
 

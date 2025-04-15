@@ -208,17 +208,11 @@ void app_main() {
     vTaskDelay(pdMS_TO_TICKS(10));
     // Early init
     led_init();
-    
     // SD Card before display
     ESP_ERROR_CHECK(card_init());
-    
     // Display after SD, before LVGL:
     ESP_ERROR_CHECK(display_init());
-    // esp_err_t ret = display_init();
-    // if (ret != ESP_OK) {
-    //     ESP_LOGE(TAG, "ST7789 failed to initilize");
-    //     while (1);
-    // }
+
     // Message Queue
     msg_queue = xQueueGenericCreate(msg_queue_len, sizeof(int), queueQUEUE_TYPE_SET);
     if (msg_queue == NULL) {

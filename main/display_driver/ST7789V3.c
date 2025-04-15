@@ -1,4 +1,5 @@
 #include "ST7789V3.h"
+#include "card_driver.h"
 #include "esp_lcd_panel_commands.h"
 
 static const char *TAG = "Display_ST7789V3";
@@ -10,17 +11,23 @@ esp_lcd_panel_io_handle_t io_handle = NULL;
 static ledc_channel_config_t ledc_channel;
 
 esp_err_t display_init(void) {
+    
+    // Skip SPI init, if SD Card is already there
     // LCD initialization - enable from example
-    ESP_LOGI(TAG, "Initialize SPI bus");
-    spi_bus_config_t buscfg = { 
-        .sclk_io_num = DISP_GPIO_SCLK,
-        .mosi_io_num = DISP_GPIO_MOSI,
-        .miso_io_num = GPIO_NUM_NC,
-        .quadwp_io_num = GPIO_NUM_NC,
-        .quadhd_io_num = GPIO_NUM_NC,
-        .max_transfer_sz = BUFFER_SIZE, // DISP_HOR_RES * DISP_DRAW_BUFF_HEIGHT * sizeof(uint16_t);
-    };
-    ESP_RETURN_ON_ERROR(spi_bus_initialize(SPI2_HOST, &buscfg, SPI_DMA_CH_AUTO), TAG, "SPI init failed");
+    if (SDCard_Size) {
+        ESP_LOGI(TAG, "Skip SPI Bus init at LCD as it was initialized at SD Card driver!");
+    } else {
+        ESP_LOGI(TAG, "Initialize SPI bus");
+        spi_bus_config_t buscfg = { 
+            .sclk_io_num = DISP_GPIO_SCLK,
+            .mosi_io_num = DISP_GPIO_MOSI,
+            .miso_io_num = GPIO_NUM_NC,
+            .quadwp_io_num = GPIO_NUM_NC,
+            .quadhd_io_num = GPIO_NUM_NC,
+            .max_transfer_sz = BUFFER_SIZE, // DISP_HOR_RES * DISP_DRAW_BUFF_HEIGHT * sizeof(uint16_t);
+        };
+        ESP_RETURN_ON_ERROR(spi_bus_initialize(SPI2_HOST, &buscfg, SPI_DMA_CH_AUTO), TAG, "SPI init failed");
+    }
 
     //  - repeat after example
     // https://docs.espressif.com/projects/esp-iot-solution/en/latest/display/lcd/spi_lcd.html
