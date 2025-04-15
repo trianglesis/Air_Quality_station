@@ -82,6 +82,7 @@ Note: use this when display is rotated:
 #define Offset_Y 0  // 34 IF ROTATED 270deg
 ```
 
+PRO: Later check how to add events to LVGL objects, so it will show WiFi AP icon automatically when AP is active and user is connected
 
 ## CMAKE
 

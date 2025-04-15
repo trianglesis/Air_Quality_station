@@ -26,6 +26,7 @@ extern lv_obj_t * ui_Label3;
 extern lv_obj_t * ui_Label4;
 extern lv_obj_t * ui_Label5;
 extern lv_obj_t * ui_Image1;
+extern lv_obj_t * ui_Label6;
 // CUSTOM VARIABLES
 
 // EVENTS
