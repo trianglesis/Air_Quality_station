@@ -22,7 +22,7 @@
 // Will format SD card on failed mount each time
 #define FORMAT_IF_MOUNT_FAILED True
 #define FORMAT_AT_MOUNT False
-#define PARTITION_LABEL "SD_Card"
+// #define PARTITION_LABEL "SD_Card"
 #define MOUNT_POINT "/sdcard"
 
 

@@ -1,16 +1,13 @@
 #include "webserver.h"
+#include "fileserver.h"
+
+char response_data[4096];
 
 static const char *TAG = "webserver";
 
 #if BASIC_AUTH
 
-typedef struct {
-    char    *username;
-    char    *password;
-} basic_auth_info_t;
-
-static char *http_auth_basic(const char *username, const char *password)
-{
+static char *http_auth_basic(const char *username, const char *password) {
     size_t out;
     char *user_info = NULL;
     char *digest = NULL;
@@ -116,8 +113,7 @@ static httpd_uri_t basic_auth = {
     .handler   = basic_auth_get_handler,
 };
 
-static void httpd_register_basic_auth(httpd_handle_t server)
-{
+static void httpd_register_basic_auth(httpd_handle_t server) {
     basic_auth_info_t *basic_auth_info = calloc(1, sizeof(basic_auth_info_t));
     if (basic_auth_info) {
         basic_auth_info->username = USERNAME;
@@ -130,15 +126,8 @@ static void httpd_register_basic_auth(httpd_handle_t server)
 
 #endif
 
-// WEB
-// HTTP GET Handler
-static esp_err_t root_get_handler(httpd_req_t *req) {
-    ESP_LOGI(TAG, "Serve root");
-    httpd_resp_set_type(req, "text/html");
-    httpd_resp_send(req, index_html, HTTPD_RESP_USE_STRLEN);
-    return ESP_OK;
-}
 
+// WEB
 
 /* Handler to redirect incoming GET request for /index.html to /
  * This can be overridden by uploading file with same name */
@@ -163,13 +152,58 @@ static esp_err_t favicon_get_handler(httpd_req_t *req)
     return ESP_OK;
 }
 
+// Root page if present
+static esp_err_t root_get_handler(httpd_req_t *req) {
+    char index_html[4096];
+    char file_path;
+    ESP_LOGI(TAG, "Serve root from LittleFS but later change to SDCard?");
+    // Load index
+    struct stat st;
+    // Serve index html from LittleFS if there is no index at SD Card yet.
+    if (stat(WEBSERVER_ROOT + "index.html", &st) == 0) {
+        file_path = WEBSERVER_ROOT + "index.html";
+    } else if (stat(WEBSERVER_ROOT + "index.html", &st) == 0) {
+        file_path = LFS_MOUNT_POINT + "index.html";
+    }
+
+    // Load html file
+    memset((void *)index_html, 0, sizeof(index_html));
+    struct stat st;
+    if (stat(file_path, &st)) {
+        ESP_LOGE(TAG, "index.html not found");
+        return ESP_FAIL;
+    }
+
+    FILE *fp = fopen(file_path, "r");
+    if (fread(index_html, st.st_size, 1, fp) == 0) {
+        ESP_LOGE(TAG, "fread failed");
+    }
+    fclose(fp);
+
+    httpd_resp_set_type(req, "text/html");
+    httpd_resp_send(req, index_html, HTTPD_RESP_USE_STRLEN);
+    return ESP_OK;
+}
+
 static const httpd_uri_t root = {
     .uri = "/",
     .method = HTTP_GET,
     .handler = root_get_handler
 };
 
-esp_err_t start_webserver(const char *base_path) {
+// HTTP Error (404) Handler - Redirects all requests to the root page
+esp_err_t http_404_error_handler(httpd_req_t *req, httpd_err_code_t err) {
+    // Set status
+    httpd_resp_set_status(req, "302 Temporary Redirect");
+    // Redirect to the "/" root directory
+    httpd_resp_set_hdr(req, "Location", "/");
+    // iOS requires content in the response to detect a captive portal, simply redirecting is not sufficient.
+    httpd_resp_send(req, "Redirect...", HTTPD_RESP_USE_STRLEN);
+    ESP_LOGI(TAG, "Redirecting to root");
+    return ESP_OK;
+}
+
+esp_err_t start_webserver(void) {
     
     // Set global
     static httpd_handle_t server = NULL;
@@ -182,13 +216,27 @@ esp_err_t start_webserver(const char *base_path) {
     config.max_uri_handlers = 10;
     config.max_resp_headers = 10;
 
+    /* Use the URI wildcard matching function in order to
+     * allow the same handler to respond to multiple different
+     * target URIs which match the wildcard scheme */
+    config.uri_match_fn = httpd_uri_match_wildcard;
+
     // Start the httpd server
-    ESP_LOGI(TAG, "Starting server on port: '%d'", config.server_port);
-    if (httpd_start(&server, &config) == ESP_OK) {
-        // Set URI handlers
-        ESP_LOGI(TAG, "Registering URI handlers");
-        httpd_register_uri_handler(server, &root);
-        httpd_register_err_handler(server, HTTPD_404_NOT_FOUND, http_404_error_handler);
+    ESP_LOGI(TAG, "Starting HTTP Server on port: '%d'", config.server_port);
+    if (httpd_start(&server, &config) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to start file server!");
+        return ESP_FAIL;
     }
+
+    httpd_register_uri_handler(server, &root);
+    httpd_register_err_handler(server, HTTPD_404_NOT_FOUND, http_404_error_handler);
+    #if BASIC_AUTH
+    httpd_register_basic_auth(server);
+    #endif
+    
+    // Now start file server:
+    /* Initialize file storage */
+    start_file_server();
+
     return server;
 }

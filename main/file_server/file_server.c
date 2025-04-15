@@ -3,38 +3,6 @@
 
 static const char *TAG = "file_server";
 
-struct file_server_data {
-    /* Base path of file storage */
-    char base_path[ESP_VFS_PATH_MAX + 1];
-
-    /* Scratch buffer for temporary storage during file transfer */
-    char scratch[SCRATCH_BUFSIZE];
-};
-
-
-/* Handler to redirect incoming GET request for /index.html to /
- * This can be overridden by uploading file with same name */
-static esp_err_t index_html_get_handler(httpd_req_t *req)
-{
-    httpd_resp_set_status(req, "307 Temporary Redirect");
-    httpd_resp_set_hdr(req, "Location", "/");
-    httpd_resp_send(req, NULL, 0);  // Response body can be empty
-    return ESP_OK;
-}
-
-/* Handler to respond with an icon file embedded in flash.
- * Browsers expect to GET website icon at URI /favicon.ico.
- * This can be overridden by uploading file with same name */
-static esp_err_t favicon_get_handler(httpd_req_t *req)
-{
-    extern const unsigned char favicon_ico_start[] asm("_binary_favicon_ico_start");
-    extern const unsigned char favicon_ico_end[]   asm("_binary_favicon_ico_end");
-    const size_t favicon_ico_size = (favicon_ico_end - favicon_ico_start);
-    httpd_resp_set_type(req, "image/x-icon");
-    httpd_resp_send(req, (const char *)favicon_ico_start, favicon_ico_size);
-    return ESP_OK;
-}
-
 /* Send HTTP response with a run-time generated html consisting of
  * a list of all files and folders under the requested path.
  * In case of SPIFFS this returns empty list when path is any
@@ -412,45 +380,19 @@ static esp_err_t delete_post_handler(httpd_req_t *req)
     return ESP_OK;
 }
 
-/* Function to start the file server */
-esp_err_t example_start_file_server(const char *base_path)
+/* 
+Function to start the file server 
+Upload files to SD Card, serve upload page from LitteFS!
+*/
+esp_err_t start_file_server(void)
 {
-    static struct file_server_data *server_data = NULL;
-
-    if (server_data) {
-        ESP_LOGE(TAG, "File server already started");
-        return ESP_ERR_INVALID_STATE;
-    }
-
-    /* Allocate memory for server data */
-    server_data = calloc(1, sizeof(struct file_server_data));
-    if (!server_data) {
-        ESP_LOGE(TAG, "Failed to allocate memory for server data");
-        return ESP_ERR_NO_MEM;
-    }
-    strlcpy(server_data->base_path, base_path,
-            sizeof(server_data->base_path));
-
-    httpd_handle_t server = NULL;
-    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-
-    /* Use the URI wildcard matching function in order to
-     * allow the same handler to respond to multiple different
-     * target URIs which match the wildcard scheme */
-    config.uri_match_fn = httpd_uri_match_wildcard;
-
-    ESP_LOGI(TAG, "Starting HTTP Server on port: '%d'", config.server_port);
-    if (httpd_start(&server, &config) != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to start file server!");
-        return ESP_FAIL;
-    }
 
     /* URI handler for getting uploaded files */
     httpd_uri_t file_download = {
         .uri       = "/*",  // Match all URIs of type /path/to/file
         .method    = HTTP_GET,
         .handler   = download_get_handler,
-        .user_ctx  = server_data    // Pass server data as context
+        .user_ctx  = server    // Pass server data as context
     };
 
     /* URI handler for uploading files to server */
@@ -458,7 +400,7 @@ esp_err_t example_start_file_server(const char *base_path)
         .uri       = "/upload/*",   // Match all URIs of type /upload/path/to/file
         .method    = HTTP_POST,
         .handler   = upload_post_handler,
-        .user_ctx  = server_data    // Pass server data as context
+        .user_ctx  = server    // Pass server data as context
     };
 
     /* URI handler for deleting files from server */
@@ -466,7 +408,7 @@ esp_err_t example_start_file_server(const char *base_path)
         .uri       = "/delete/*",   // Match all URIs of type /delete/path/to/file
         .method    = HTTP_POST,
         .handler   = delete_post_handler,
-        .user_ctx  = server_data    // Pass server data as context
+        .user_ctx  = server    // Pass server data as context
     };
 
     if (BASIC_AUTH) {
@@ -474,7 +416,6 @@ esp_err_t example_start_file_server(const char *base_path)
         httpd_register_uri_handler(server, &file_download);
         httpd_register_uri_handler(server, &file_upload);
         httpd_register_uri_handler(server, &file_delete);
-    
     } else {
         ESP_LOGI(TAG, "Do not register file server upload and delete URIs if there is no Basic Auth enabled!");
         httpd_register_uri_handler(server, &file_download);

@@ -14,6 +14,8 @@
 #include "led_driver.h"
 #include "local_flash.h"
 #include "wifi_ap.h"
+#include "webserver.h"
+#include "file_server.h"
 
 #include "esp_log.h"
 #include "esp_check.h"
@@ -234,6 +236,8 @@ void app_main() {
     // Start Wifi AP
     ESP_LOGI(TAG, "ESP_WIFI_MODE_AP");
     wifi_setup();
+    // Simple webserver
+    start_webserver();
 
     // Message Queue
     msg_queue = xQueueGenericCreate(msg_queue_len, sizeof(int), queueQUEUE_TYPE_SET);
