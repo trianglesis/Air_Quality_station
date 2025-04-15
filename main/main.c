@@ -55,6 +55,8 @@ Read the queue message in DESTRICTIVE manner!
 
 */
 static void lvgl_task(void * pvParameters) {
+    esp_err_t ret;
+
     int to_wait_ms = 10;
     int co2_counter; // data type should be same as queue item type
     const TickType_t xTicksToWait = pdMS_TO_TICKS(to_wait_ms);
@@ -62,11 +64,7 @@ static void lvgl_task(void * pvParameters) {
     esp_log_level_set("lcd_panel", ESP_LOG_VERBOSE);
     esp_log_level_set("lcd_panel.st7789", ESP_LOG_VERBOSE);
     esp_log_level_set(TAG, ESP_LOG_VERBOSE);
-    esp_err_t ret = display_init();
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "ST7789 failed to initilize");
-        while (1);
-    }
+    // Moved display init in the main
     ret = lvgl_init();
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "LVGL Display failed to initialize");
@@ -210,12 +208,17 @@ void app_main() {
     vTaskDelay(pdMS_TO_TICKS(10));
     // Early init
     led_init();
+    
     // SD Card before display
-    Flash_Searching();
-    card_init();
-    // Test card FS by reading default file README.md at the root
-    file_read_test();
-
+    ESP_ERROR_CHECK(card_init());
+    
+    // Display after SD, before LVGL:
+    ESP_ERROR_CHECK(display_init());
+    // esp_err_t ret = display_init();
+    // if (ret != ESP_OK) {
+    //     ESP_LOGE(TAG, "ST7789 failed to initilize");
+    //     while (1);
+    // }
     // Message Queue
     msg_queue = xQueueGenericCreate(msg_queue_len, sizeof(int), queueQUEUE_TYPE_SET);
     if (msg_queue == NULL) {

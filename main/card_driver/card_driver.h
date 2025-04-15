@@ -42,5 +42,5 @@ void file_read_test(void);
 extern uint32_t SDCard_Size;
 extern uint32_t Flash_Size;
 
-void card_init(void);
+esp_err_t card_init(void);
 void Flash_Searching(void);

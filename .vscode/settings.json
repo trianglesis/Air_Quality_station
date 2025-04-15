@@ -5,7 +5,7 @@
     "idf.openOcdConfigs": [
         "board/esp32c6-lpcore-builtin.cfg"
     ],
-    "idf.portWin": "COM7",
+    "idf.portWin": "COM16",
     "idf.toolsPathWin": "d:\\Projects\\ESP\\Espressif\\.espressif",
     "idf.customExtraVars": {
         "IDF_TARGET": "esp32c6"
