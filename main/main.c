@@ -12,6 +12,7 @@
 #include "card_driver.h"
 #include "lvgl_driver.h"
 #include "led_driver.h"
+#include "local_flash.h"
 
 #include "esp_log.h"
 #include "esp_check.h"
@@ -100,7 +101,8 @@ static void lvgl_task(void * pvParameters) {
             lv_label_set_text_fmt(ui_Label1, "%d", co2_counter);
             lv_label_set_text(ui_Label2, "CO2");
             lv_label_set_text(ui_Label3, "ppm");
-            lv_label_set_text_fmt(ui_Label4, "SD: %ld MB", SDCard_Size);
+            lv_label_set_text_fmt(ui_Label4, "SD: %ld GB", SDCard_Size);
+            lv_label_set_text_fmt(ui_Label5, "LFS: %4.2f/%4.2f MB", littlefs_used, littlefs_total);
         }
     }
 }
@@ -209,6 +211,8 @@ void app_main() {
     vTaskDelay(pdMS_TO_TICKS(10));
     // Early init
     led_init();
+    // SPI (local) flash partition mount and check:
+    ESP_ERROR_CHECK(fs_setup());
     // SD Card before display
     ESP_ERROR_CHECK(card_init());
     // Display after SD, before LVGL:

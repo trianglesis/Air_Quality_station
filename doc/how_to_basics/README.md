@@ -156,3 +156,36 @@ Use this example for proper log writing on SD Card: [example](https://github.com
 
 Or can I load SD Card data from the build?
 - https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/storage/fatfs.html#fatfs-partition-generator
+
+
+NOTE: It seems we MUST have an SPI flash partition to serve initial files like `index.html` to be able to upload other files to SD Card
+
+OR: We need to plug-unplug SD Card to upload html files, OR create a write method at the firmware itself, which is actually recreating the `littlefs` approach but more complex. However we can use SD card almost limitless!
+
+
+## Web Server
+
+Can use any example:
+
+- [IDF Example file serving](https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/protocols/http_server/file_serving/README.md)
+- [My example of web server but no upload](https://github.com/trianglesis/webserver-w-ap-portal-dns-redirect/blob/3c77dccb4fd825f2f68bc036e616b9afba420bd2/README.md)
+- Add more
+
+### File serving
+
+Initially we must to have an SPI `folder` made directly at board flash, to store the most basic files, like: `index.html`
+But there is no need to keep this file as main page, only serve the `/upload/` url with this SPI flash.
+Later using this endpoing we can upload `real` site and files at the root of SD Card, and place the webserver root `/` index file at sd card!
+
+
+#### LittleFS
+
+
+Add this at `main\CMakeLists.txt` to be able to flash local files using build firmware.
+
+- `flash_data` is a dir name at the root of current project
+
+```text
+littlefs_create_partition_image(littlefs ../flash_data FLASH_IN_PROJECT)
+
+```

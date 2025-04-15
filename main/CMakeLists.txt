@@ -10,6 +10,7 @@ idf_component_register(
         "lvgl_driver/lvgl_driver.c"
         "led_driver/led_driver.c"
         "card_driver/card_driver.c"
+        "littlefs_driver/local_flash.c"
         ${SRC_UI}
     INCLUDE_DIRS 
         "." 
@@ -17,11 +18,14 @@ idf_component_register(
         "./lvgl_driver" 
         "./led_driver"
         "./card_driver"
+        "./littlefs_driver"
         "ui"
         )
 
 
-# spiffs_create_partition_image(sdcard ../sd_card FLASH_IN_PROJECT)
+# Note: you must have a partition named the first argument (here it's "littlefs")
+# in your partition table csv file.
+littlefs_create_partition_image(littlefs ../flash_data FLASH_IN_PROJECT)
 
 # https://www.waveshare.com/wiki/Waveshare_SquareLine_Studio
 # This setup recompiles everything each time!

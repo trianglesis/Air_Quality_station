@@ -135,12 +135,15 @@ esp_err_t card_init(void) {
 
     // There is wait_fort_idle function can be usefull on device powering off or SD remove
     sdmmc_card_print_info(stdout, card);
-    SDCard_Size = ((uint64_t) card->csd.capacity) * card->csd.sector_size / (1024 * 1024);
+    // 3x1024 to only show Gb
+    SDCard_Size = ((uint64_t) card->csd.capacity) * card->csd.sector_size / (1024 * 1024 * 1024);
     ESP_LOGI(TAG, "SD Card detected, size: %ld MB", SDCard_Size);
     // Test files:
     s_example_write_file("/sdcard/hello.txt", "Test file created!");
     file_sum_test();
     file_read_test();
+
+    // esp_vfs_fat_info(base_path);
 
     return ESP_OK;
 }

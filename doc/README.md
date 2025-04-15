@@ -24,9 +24,10 @@ Make partitions larger by default, utilize all 4Mb is SPI flash.
 
 ## Add modules
 
-
-
-
+All modules from component req:
+- `idf.py add-dependency "joltwallet/littlefs^1.19.1"`
+- `idf.py add-dependency "lvgl/lvgl^9.2.2"`
+- `idf.py add-dependency "espressif/led_strip^3.0.1"`
 
 
 ### LVGL
@@ -75,12 +76,16 @@ Clean the build `Full clean` and run `menuconfig` option again.
 
 Can now run build, just to check, not flash.
 
+#### Extras
+
+Check float enabled, or UI will not show you float numbers.
+
+`LV_USE_FLOAT`
 
 
 ### Led
 
-
-`idf.py add-dependency "espressif/led_strip^3.0.1"`
+- `idf.py add-dependency "espressif/led_strip^3.0.1"`
 
 And follow usual setup
 
@@ -154,7 +159,16 @@ But first!
 Use Waveshare default example where it prints SD Card size, to validate the SD Card itself and board integrity!
 I have a fault SD card port at one of the boards, checking it beforehand can save you a lot of time!
 
+#### Service files
 
+`idf.py add-dependency "joltwallet/littlefs^1.19.1"`
+
+It required to have an SPI flash storage to host initial webserver files to enable upload to SD Card after.
+Use examples like:
+- [IDF Example file serving](https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/protocols/http_server/file_serving/README.md)
+- [My example of web server but no upload](https://github.com/trianglesis/webserver-w-ap-portal-dns-redirect/blob/3c77dccb4fd825f2f68bc036e616b9afba420bd2/README.md)
+
+See [LittleFS](how_to_basics/README.md#littlefs)
 
 # Links, help, forums and etc
 

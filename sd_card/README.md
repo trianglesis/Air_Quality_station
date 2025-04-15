@@ -1,3 +1,3 @@
 # SD Card dir
 
-The build will automatically upload the content of this dir into the SD Card.
+Use web server upload feature to add files into this dir
