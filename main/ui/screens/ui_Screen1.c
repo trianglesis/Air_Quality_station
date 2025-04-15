@@ -83,7 +83,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_width(ui_Label4, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_Label4, LV_SIZE_CONTENT);    /// 1
     lv_obj_set_x(ui_Label4, -3);
-    lv_obj_set_y(ui_Label4, -4);
+    lv_obj_set_y(ui_Label4, -22);
     lv_obj_set_align(ui_Label4, LV_ALIGN_BOTTOM_RIGHT);
     lv_label_set_text(ui_Label4, "SD: 00 GB");
     lv_obj_remove_flag(ui_Label4, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
@@ -97,14 +97,25 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_width(ui_Label5, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_Label5, LV_SIZE_CONTENT);    /// 1
     lv_obj_set_x(ui_Label5, -3);
-    lv_obj_set_y(ui_Label5, -22);
+    lv_obj_set_y(ui_Label5, -4);
     lv_obj_set_align(ui_Label5, LV_ALIGN_BOTTOM_RIGHT);
-    lv_label_set_text(ui_Label5, "LFS: 0/0 MB");
+    lv_label_set_text(ui_Label5, "LFS: 0.00/0.00 MB");
     lv_obj_remove_flag(ui_Label5, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
                        LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
     lv_obj_set_style_text_color(ui_Label5, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label5, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui_Label5, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_Image1 = lv_image_create(ui_Screen1);
+    lv_image_set_src(ui_Image1, &ui_img_signal_x16_png);
+    lv_obj_set_width(ui_Image1, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Image1, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Image1, 149);
+    lv_obj_set_y(ui_Image1, -74);
+    lv_obj_set_align(ui_Image1, LV_ALIGN_CENTER);
+    lv_obj_remove_flag(ui_Image1, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+                       LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
 
 }

@@ -25,6 +25,7 @@ extern lv_obj_t * ui_Label2;
 extern lv_obj_t * ui_Label3;
 extern lv_obj_t * ui_Label4;
 extern lv_obj_t * ui_Label5;
+extern lv_obj_t * ui_Image1;
 // CUSTOM VARIABLES
 
 // EVENTS
@@ -33,6 +34,7 @@ extern lv_obj_t * ui____initial_actions0;
 
 // IMAGES AND IMAGE SETS
 LV_IMG_DECLARE(ui_img_risk_165_142_png);    // assets/risk_165_142.png
+LV_IMG_DECLARE(ui_img_signal_x16_png);    // assets/signal_x16.png
 
 // UI INIT
 void ui_init(void);

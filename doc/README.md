@@ -1,10 +1,9 @@
 # Setup
 
-
 All steps and problems will keep here.
 
 How to BASICS for a very begginer is also [here](how_to_basics/README.md)
-
+I will add there my walkthrough with all details
 
 ## Changing most common options.
 
@@ -25,9 +24,9 @@ Make partitions larger by default, utilize all 4Mb is SPI flash.
 ## Add modules
 
 All modules from component req:
-- `idf.py add-dependency "joltwallet/littlefs^1.19.1"`
-- `idf.py add-dependency "lvgl/lvgl^9.2.2"`
 - `idf.py add-dependency "espressif/led_strip^3.0.1"`
+- `idf.py add-dependency "lvgl/lvgl^9.2.2"`
+- `idf.py add-dependency "joltwallet/littlefs^1.19.1"`
 
 
 ### LVGL
@@ -169,6 +168,18 @@ Use examples like:
 - [My example of web server but no upload](https://github.com/trianglesis/webserver-w-ap-portal-dns-redirect/blob/3c77dccb4fd825f2f68bc036e616b9afba420bd2/README.md)
 
 See [LittleFS](how_to_basics/README.md#littlefs)
+
+### WebServer
+
+We should have now two storages ready:
+
+- `littlefs` - to store initial html files, for web server to render upload file page.
+- `SD card` - to store all new files uploaded or where to write logs
+
+We need to create a web view for page to upload files, but only render the main page `/` index.html from sd card.
+- Initially, there is no html page at root, or, maybe we need to put there a placeholder html with just a redirect?
+
+Reuse my setup from [Wifi AP](https://github.com/trianglesis/webserver-w-ap-portal-dns-redirect/blob/3c77dccb4fd825f2f68bc036e616b9afba420bd2/components/access_point_wifi/access_point_wifi.c) or use IDF example as the same way
 
 # Links, help, forums and etc
 

@@ -13,6 +13,7 @@
 #include "lvgl_driver.h"
 #include "led_driver.h"
 #include "local_flash.h"
+#include "wifi_ap.h"
 
 #include "esp_log.h"
 #include "esp_check.h"
@@ -103,6 +104,12 @@ static void lvgl_task(void * pvParameters) {
             lv_label_set_text(ui_Label3, "ppm");
             lv_label_set_text_fmt(ui_Label4, "SD: %ld GB", SDCard_Size);
             lv_label_set_text_fmt(ui_Label5, "LFS: %4.2f/%4.2f MB", littlefs_used, littlefs_total);
+            // Show Wifi AP icon if it's active
+            if (wifi_ap_mode) {
+                lv_obj_clear_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);
+            } else {
+                lv_obj_add_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);
+            }
         }
     }
 }
@@ -217,6 +224,11 @@ void app_main() {
     ESP_ERROR_CHECK(card_init());
     // Display after SD, before LVGL:
     ESP_ERROR_CHECK(display_init());
+    
+    // NVS SET by Wifi module externally
+    // Start Wifi AP
+    ESP_LOGI(TAG, "ESP_WIFI_MODE_AP");
+    wifi_setup();
 
     // Message Queue
     msg_queue = xQueueGenericCreate(msg_queue_len, sizeof(int), queueQUEUE_TYPE_SET);

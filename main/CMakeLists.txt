@@ -11,6 +11,7 @@ idf_component_register(
         "led_driver/led_driver.c"
         "card_driver/card_driver.c"
         "littlefs_driver/local_flash.c"
+        "wifi/wifi_ap.c"
         ${SRC_UI}
     INCLUDE_DIRS 
         "." 
@@ -19,6 +20,7 @@ idf_component_register(
         "./led_driver"
         "./card_driver"
         "./littlefs_driver"
+        "./wifi"
         "ui"
         )
 
@@ -37,7 +39,6 @@ littlefs_create_partition_image(littlefs ../flash_data FLASH_IN_PROJECT)
 #                          "ui/components/*.c"
 #                          "ui/screens/*.c"
 # )
-
 
 # idf_component_register(
 #     SRCS 
