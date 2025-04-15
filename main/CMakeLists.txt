@@ -12,6 +12,7 @@ idf_component_register(
         "card_driver/card_driver.c"
         "littlefs_driver/local_flash.c"
         "wifi/wifi_ap.c"
+        "file_server/file_server.c"
         ${SRC_UI}
     INCLUDE_DIRS 
         "." 
@@ -21,6 +22,7 @@ idf_component_register(
         "./card_driver"
         "./littlefs_driver"
         "./wifi"
+        "./file_server"
         "ui"
         )
 

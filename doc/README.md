@@ -181,6 +181,8 @@ We need to create a web view for page to upload files, but only render the main 
 
 Reuse my setup from [Wifi AP](https://github.com/trianglesis/webserver-w-ap-portal-dns-redirect/blob/3c77dccb4fd825f2f68bc036e616b9afba420bd2/components/access_point_wifi/access_point_wifi.c) or use IDF example as the same way
 
+Then use example file server, which is good enough already: [file](https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/protocols/http_server/file_serving/main/file_server.c)
+
 # Links, help, forums and etc
 
 Use this list to get more info about each step here and all possible workarounds.

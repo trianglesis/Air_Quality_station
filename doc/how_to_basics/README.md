@@ -190,3 +190,15 @@ Add this at `main\CMakeLists.txt` to be able to flash local files using build fi
 littlefs_create_partition_image(littlefs ../flash_data FLASH_IN_PROJECT)
 
 ```
+
+### Web Server
+
+Split example on two logical parts:
+
+Web Server Core module:
+- Is just an empty webserver with default host `/` of root and redirection to `/upload` of root is empty.
+- All other methods and APIs are here
+
+File server methods and URI at `file_server` module:
+- [file_server.c](https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/protocols/http_server/file_serving/main/file_server.c)
+- Only functions related to upload files

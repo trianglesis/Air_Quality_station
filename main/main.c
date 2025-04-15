@@ -19,6 +19,7 @@
 #include "esp_check.h"
 #include "esp_err.h"
 #include "esp_mac.h"
+
 // LVGL locally installed
 #include "lvgl.h"
 // For SQ Line Studio

@@ -27,7 +27,8 @@
         "spi_master.h": "c",
         "local_flash.h": "c",
         "wifi_ap.h": "c",
-        "esp_system.h": "c"
+        "esp_system.h": "c",
+        "esp_event.h": "c"
     },
     "idf.flashType": "UART"
 }
