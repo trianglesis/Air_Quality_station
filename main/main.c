@@ -234,7 +234,7 @@ void app_main() {
     
     // NVS SET by Wifi module externally
     // Start Wifi AP
-    ESP_LOGI(TAG, "ESP_WIFI_MODE_AP");
+    ESP_LOGI(TAG, "Start Wifi and try to connect");
     wifi_setup();
     // Simple webserver
     ESP_ERROR_CHECK(start_webserver());

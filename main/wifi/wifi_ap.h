@@ -13,11 +13,14 @@
 #include "lwip/err.h"
 #include "lwip/sys.h"
 
-
-// Connect to local WIFi
+// Connect to local WIFi (STA)
 #define SSID                        CONFIG_WIFI_SSID
 #define PWD                         CONFIG_WIFI_PASSWORD
 #define RSSI                        CONFIG_FAST_SCAN_MINIMUM_SIGNAL
+#define ESP_MAXIMUM_RETRY           CONFIG_ESP_MAXIMUM_STA_RETRY
+
+#define DEFAULT_SCAN_LIST_SIZE      20
+
 
 #if CONFIG_WIFI_ALL_CHANNEL_SCAN
 #define SCAN_METHOD WIFI_ALL_CHANNEL_SCAN
@@ -62,15 +65,25 @@
 #endif /*CONFIG_FAST_SCAN_THRESHOLD*/
 
 
-
 // Access point create
-#define WIFI_SSID      "CO2.local"
-#define WIFI_PASS      "" // Empty str len 0 = No password, this AP is KIOSK-like
-#define WIFI_CHANNEL   1
-#define MAX_STA_CONN   10
+/* AP Configuration */
+#define WIFI_SSID                   CONFIG_ESP_WIFI_AP_SSID
+#define WIFI_PASS                   CONFIG_ESP_WIFI_AP_PASSWORD // Empty str len 0 = No password, this AP is KIOSK-like
+#define WIFI_CHANNEL                CONFIG_ESP_WIFI_AP_CHANNEL
+#define MAX_STA_CONN                CONFIG_ESP_MAX_STA_CONN_AP
+
+/* The event group allows multiple bits for each event, but we only care about two events:
+ * - we are connected to the AP with an IP
+ * - we failed to connect after the maximum amount of retries */
+#define WIFI_CONNECTED_BIT BIT0
+#define WIFI_FAIL_BIT      BIT1
+
+/*DHCP server option*/
+#define DHCPS_OFFER_DNS             0x02
 
 extern int connected_users;
 extern bool wifi_ap_mode;
+extern bool found_wifi;
 
 // Start AP
 void wifi_setup(void);
