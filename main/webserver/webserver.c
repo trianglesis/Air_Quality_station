@@ -1,4 +1,6 @@
 #include "wifi_ap.h"
+#include "card_driver.h"
+#include "local_flash.h"
 #include "webserver.h"
 
 char response_data[4096];
@@ -48,6 +50,8 @@ struct file_server_data {
          /* Respond with 404 Not Found */
          httpd_resp_send_err(req, HTTPD_404_NOT_FOUND, "Directory does not exist");
          return ESP_FAIL;
+     } else {
+        ESP_LOGI(TAG_FS, "Dir exist: %s", dirpath);
      }
  
      /* Send HTML file header */
@@ -59,7 +63,6 @@ struct file_server_data {
     //  const size_t upload_script_size = (upload_script_end - upload_script_start);
 
     // File size
-    char upload_html[4096];
     memset((void *)upload_html, 0, sizeof(upload_html));
 
     if (stat(UPLOAD_HTML_PATH, &st) == 0) {
@@ -71,6 +74,7 @@ struct file_server_data {
         int cb = fread(upload_html, st.st_size, sizeof(upload_html), f_r);
         if (cb == 0) {
             // File OK, close after
+            ESP_LOGE(TAG_FS, "fread (%d) OK for upload html script at path %s", cb, UPLOAD_HTML_PATH);
             fclose(f_r);
         } else {
             // File not ok, show it
@@ -79,7 +83,6 @@ struct file_server_data {
         }
     }
 
- 
      /* Add file upload form and script which on execution sends a POST request to /upload */
      httpd_resp_send_chunk(req, (const char *)upload_html, sizeof(upload_html));
  
@@ -134,7 +137,6 @@ struct file_server_data {
      httpd_resp_sendstr_chunk(req, NULL);
      return ESP_OK;
  }
-
 
 #define IS_FILE_EXT(filename, ext) \
     (strcasecmp(&filename[strlen(filename) - sizeof(ext) + 1], ext) == 0)
@@ -203,6 +205,7 @@ esp_err_t download_get_handler(httpd_req_t *req)
 
     /* If name has trailing '/', respond with directory contents */
     if (filename[strlen(filename) - 1] == '/') {
+        ESP_LOGI(TAG_FS, "Show conent of dir %s ", filepath);
         return http_resp_dir_html(req, filepath);
     }
 
@@ -308,7 +311,7 @@ esp_err_t upload_post_handler(httpd_req_t *req)
         return ESP_FAIL;
     }
 
-    FILE *f_d = fopen(filepath, "wb+");
+    FILE *f_d = fopen(filepath, "wb");
     if (f_d == NULL) {
         ESP_LOGE(TAG_FS, "Failed to create file : %s", filepath);
         /* Respond with 500 Internal Server Error */
@@ -585,17 +588,24 @@ esp_err_t favicon_get_handler(httpd_req_t *req)
 
 /*
 Everything else is working
-I (18438) webserver: Load HTML from local store path
-I (18438) webserver: LittleFS HTML Exist: 0
-I (18438) webserver: LittleFS SD Exist: -1
-I (18438) webserver: Root index.html is not found at SD Card, use LittleFS!
+I (126672) webserver: Load HTML from local store path
+I (126672) webserver: LFS HTML Exist: 0
+I (126672) webserver: SD HTML Exist: -1
+W (126672) webserver: Root index.html is not found at SD Card, use LittleFS!
+E (126682) webserver: fread (1) failed for html at path /littlefs/index.html
 */
 static void load_index_file_buffer_dyn(char* file_path) {
     ESP_LOGI(TAG, "Load HTML from local store path");
     struct stat st;
-    // ESP_LOGI(TAG, "LittleFS HTML Exist: %d", stat("/littlefs/index.html", &st));
-    // ESP_LOGI(TAG, "LittleFS SD Exist: %d", stat("/sdcard/index.html", &st));
     
+    char lfs_index_html[64];
+    snprintf(lfs_index_html, sizeof(lfs_index_html), "%s/index.html", LFS_MOUNT_POINT);
+    char sd_index_html[64];
+    snprintf(sd_index_html, sizeof(sd_index_html), "%s/index.html", MOUNT_POINT);
+
+    // ESP_LOGI(TAG, "LFS HTML Exist: %d", stat(lfs_index_html, &st));
+    // ESP_LOGI(TAG, "SD HTML Exist: %d", stat(sd_index_html, &st));
+
     // Actual path, check if exist
     if (file_path != NULL) {
         ESP_LOGI(TAG, "Load HTML from path: %s", file_path);
@@ -604,21 +614,20 @@ static void load_index_file_buffer_dyn(char* file_path) {
         } else {
             ESP_LOGW(TAG, "HTML is not exist at path: %s", file_path);
             // Always exist with firmware
-            file_path = "/littlefs/index.html";
+            file_path = lfs_index_html;
         }
     } else {
         // Serve index html from LittleFS if there is no index at SD Card yet.   
-        if (stat("/sdcard/index.html", &st) == 0) {
-            file_path = "/sdcard/index.html";
+        if (stat(sd_index_html, &st) == 0) {
+            file_path = sd_index_html;
             ESP_LOGI(TAG, "Root index.html found at SD Card!");
         } else {
-            file_path = "/littlefs/index.html";
+            file_path = lfs_index_html;
             ESP_LOGW(TAG, "Root index.html is not found at SD Card, use LittleFS!");
         }
     }
     
     // File size
-    // char index_html_buff[4096];
     memset((void *)index_html, 0, sizeof(index_html));
 
     FILE *f_r = fopen(file_path, "r");
@@ -628,12 +637,17 @@ static void load_index_file_buffer_dyn(char* file_path) {
             // File OK, close after
             ESP_LOGI(TAG, "fread (%d) OK for html at path %s", cb, file_path);
             fclose(f_r);
+        } else if (cb == -1) {
+            // File not ok, show it
+            ESP_LOGE(TAG, "fread (%d) failed for html at path %s", cb, file_path);
+            fclose(f_r);
         } else {
             // File not ok, show it
             ESP_LOGE(TAG, "fread (%d) failed for html at path %s", cb, file_path);
             fclose(f_r);
         }
     }
+    fclose(f_r);
     // Does not work as expected
     // return buf;
 }
@@ -679,7 +693,7 @@ esp_err_t start_webserver(void) {
         ESP_LOGE(TAG, "Failed to allocate memory for server data");
         return ESP_ERR_NO_MEM;
     }
-    strlcpy(server_data->base_path, SD_ROOT,
+    strlcpy(server_data->base_path, MOUNT_POINT,
             sizeof(server_data->base_path));
 
     // Set global

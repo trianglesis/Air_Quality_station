@@ -194,6 +194,35 @@ W (158022) httpd_uri: httpd_uri: uri handler execution failed
 I (32682) file_server: Sending file : /index.txt (307 bytes)...
 I (32682) file_server: File sending complete
 
+I (112102) co2station: sent data = 111
+I (113102) co2station: sent data = 112
+I (114112) co2station: sent data = 113
+I (115122) co2station: sent data = 114
+I (115902) file_server: Receiving file : /index.s...
+I (115902) file_server: Remaining size : 307
+I (115912) file_server: File reception complete
+I (116132) co2station: sent data = 115
+I (117142) co2station: sent data = 116
+I (118152) co2station: sent data = 117
+I (118762) file_server: Receiving file : /index.h...
+I (118762) file_server: Remaining size : 307
+I (118772) file_server: File reception complete
+I (119162) co2station: sent data = 118
+I (120172) co2station: sent data = 119
+I (120602) file_server: Receiving file : /index.ht...
+I (120602) file_server: Remaining size : 307
+I (120622) file_server: File reception complete
+I (121182) co2station: sent data = 120
+I (122202) co2station: sent data = 121
+I (122452) file_server: Receiving file : /index.htm...
+I (122452) file_server: Remaining size : 307
+I (122462) file_server: File reception complete
+I (123202) co2station: sent data = 122
+I (124222) co2station: sent data = 123
+E (124292) file_server: Failed to create file : /sdcard/index.html
+W (124292) httpd_txrx: httpd_resp_send_err: 500 Internal Server Error - Failed to create file
+W (124292) httpd_uri: httpd_uri: uri handler execution failed
+
 ```
 
 #### LittleFS

@@ -23,7 +23,11 @@ esp_err_t s_example_write_file(const char *path, char *data) {
     fprintf(f, data);
     fclose(f);
     ESP_LOGI(TAG, "File written");
-
+    // Create a few dirs
+    mkdir("log", 0755);
+    mkdir("upload", 0755);
+    mkdir("download", 0755);
+    mkdir("test", 0755);
     return ESP_OK;
 }
 
@@ -83,7 +87,7 @@ void file_read_test(void) {
 }
 
 esp_err_t card_init(void) {
-    const char* base_path = "/sdcard";
+    const char* base_path = MOUNT_POINT;
     ESP_LOGI(TAG, "Initializing SD card");
     // https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/storage/fatfs.html#_CPPv426esp_vfs_fat_mount_config_t
     // https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/protocols/http_server/file_serving/main/mount.c

@@ -52,12 +52,10 @@ extern httpd_handle_t server;
 #define UPLOAD_INDEX_PATH       "/littlefs/index.html"
 #define UPLOAD_HTML_PATH        "/littlefs/upload_script.html"
 #define UPLOAD_FAV_PATH         "/littlefs/favicon.ico"
-#define SD_ROOT                 "/sdcard"
-
 
 
 esp_err_t index_html_get_handler(httpd_req_t *req);
 esp_err_t favicon_get_handler(httpd_req_t *req);
-esp_err_t root_get_handler(httpd_req_t *req);
-esp_err_t http_404_error_handler(httpd_req_t *req, httpd_err_code_t err);
+// esp_err_t root_get_handler(httpd_req_t *req);
+// esp_err_t http_404_error_handler(httpd_req_t *req, httpd_err_code_t err);
 esp_err_t start_webserver(void);
