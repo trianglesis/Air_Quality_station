@@ -86,4 +86,4 @@ extern bool wifi_ap_mode;
 extern bool found_wifi;
 
 // Start AP
-void wifi_setup(void);
+esp_err_t wifi_setup(void);

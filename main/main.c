@@ -231,13 +231,6 @@ void app_main() {
     ESP_ERROR_CHECK(card_init());
     // Display after SD, before LVGL:
     ESP_ERROR_CHECK(display_init());
-    
-    // NVS SET by Wifi module externally
-    // Start Wifi AP
-    ESP_LOGI(TAG, "Start Wifi and try to connect");
-    wifi_setup();
-    // Simple webserver
-    ESP_ERROR_CHECK(start_webserver());
 
     // Message Queue
     msg_queue = xQueueGenericCreate(msg_queue_len, sizeof(int), queueQUEUE_TYPE_SET);
@@ -263,6 +256,13 @@ void app_main() {
     }
     
     */
+
+    // NVS SET by Wifi module externally
+    // Start Wifi AP
+    ESP_LOGI(TAG, "Start Wifi and try to connect");
+    ESP_ERROR_CHECK(wifi_setup());
+    // Simple webserver
+    ESP_ERROR_CHECK(start_webserver());
 
     // delay to let tasks finish the last loop
     vTaskDelay(pdMS_TO_TICKS(500));

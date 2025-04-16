@@ -4,7 +4,7 @@ int connected_users = 0;
 bool wifi_ap_mode = false;
 bool found_wifi = false;
 
-static const char *TAG = "wifi";
+static const char *TAG = "wifi-init";
 static const char *TAG_AP = "WiFi SoftAP";
 static const char *TAG_STA = "WiFi Sta";
 
@@ -16,14 +16,15 @@ static EventGroupHandle_t s_wifi_event_group;
 
 // Both AP and STA
 static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data) {
+    // When AP connected\disconnected
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_AP_STACONNECTED) {
         wifi_event_ap_staconnected_t *event = (wifi_event_ap_staconnected_t *) event_data;
-        ESP_LOGI(TAG_AP, "Station "MACSTR" joined, AID=%d",
-                 MAC2STR(event->mac), event->aid);
+        ESP_LOGI(TAG_AP, "Station "MACSTR" joined, AID=%d", MAC2STR(event->mac), event->aid);
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_AP_STADISCONNECTED) {
         wifi_event_ap_stadisconnected_t *event = (wifi_event_ap_stadisconnected_t *) event_data;
-        ESP_LOGI(TAG_AP, "Station "MACSTR" left, AID=%d, reason:%d",
-                 MAC2STR(event->mac), event->aid, event->reason);
+        ESP_LOGI(TAG_AP, "Station "MACSTR" left, AID=%d, reason:%d", MAC2STR(event->mac), event->aid, event->reason);
+
+        // WiFI Station connect to and got IP:
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
         ESP_LOGI(TAG_STA, "Station started");
@@ -72,11 +73,12 @@ esp_netif_t *wifi_init_sta(void) {
             .ssid = SSID,
             .password = PWD,
             .scan_method = SCAN_METHOD,
-            .sort_method = SORT_METHOD,
+            // .sort_method = SORT_METHOD,
             .failure_retry_cnt = ESP_MAXIMUM_RETRY,
-            .threshold.rssi = RSSI,
+            // .threshold.rssi = RSSI,
             .threshold.authmode = AUTHMODE,
-            .threshold.rssi_5g_adjustment = RSSI_5G_ADJUSTMENT,
+            // .threshold.rssi_5g_adjustment = RSSI_5G_ADJUSTMENT,
+            .sae_pwe_h2e = WPA3_SAE_PWE_BOTH,
         },
     };
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_sta_config) );
@@ -142,7 +144,7 @@ TODO: Add fallback method:
 2. Host AP if not 1
 
 */
-void wifi_setup(void) {
+esp_err_t wifi_setup(void) {
     ESP_LOGI(TAG, "Starting Wifi - check known networks");
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -168,6 +170,7 @@ void wifi_setup(void) {
                     &wifi_event_handler,
                     NULL,
                     NULL));
+    
     /*Initialize WiFi */
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
@@ -205,7 +208,7 @@ void wifi_setup(void) {
         ESP_LOGI(TAG_STA, "Failed to connect to SSID:%s, password:%s", SSID, PWD);
     } else {
         ESP_LOGE(TAG_STA, "UNEXPECTED EVENT");
-        return;
+        return ESP_FAIL;
     }
     
     /* Set sta as the default interface */
@@ -214,4 +217,5 @@ void wifi_setup(void) {
     if (esp_netif_napt_enable(esp_netif_ap) != ESP_OK) {
         ESP_LOGE(TAG_STA, "NAPT not enabled on the netif: %p", esp_netif_ap);
     }
+    return ESP_OK;
 }
