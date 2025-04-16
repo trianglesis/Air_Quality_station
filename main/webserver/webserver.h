@@ -52,7 +52,7 @@ extern httpd_handle_t server;
 #define UPLOAD_INDEX_PATH       "/littlefs/index.html"
 #define UPLOAD_HTML_PATH        "/littlefs/upload_script.html"
 #define UPLOAD_FAV_PATH         "/littlefs/favicon.ico"
-
+#define QUERY_KEY_MAX_LEN  (64)
 
 esp_err_t index_html_get_handler(httpd_req_t *req);
 esp_err_t favicon_get_handler(httpd_req_t *req);

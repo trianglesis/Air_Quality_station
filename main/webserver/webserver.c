@@ -292,11 +292,32 @@ esp_err_t upload_post_handler(httpd_req_t *req)
         return ESP_FAIL;
     }
 
-    if (stat(filepath, &file_stat) == 0) {
-        ESP_LOGE(TAG_FS, "File already exists : %s", filepath);
-        /* Respond with 400 Bad Request */
-        httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "File already exists");
-        return ESP_FAIL;
+    /*
+    Try to get URL query params
+        Read URL query string length and allocate memory for length + 1, * extra byte for null termination 
+    */
+    bool replace = false;
+    bool load_as_html = false;
+    char *buf_q = NULL;
+    size_t buf_len;
+    buf_len = httpd_req_get_url_query_len(req) + 1;
+    if (buf_len > 1) {
+        buf_q = malloc(buf_len);
+        ESP_RETURN_ON_FALSE(buf_q, ESP_ERR_NO_MEM, TAG, "buffer alloc failed");
+        if (httpd_req_get_url_query_str(req, buf_q, buf_len) == ESP_OK) {
+            ESP_LOGI(TAG, "Found URL query => %s", buf_q);
+            char param[QUERY_KEY_MAX_LEN] = {0};
+            /* Get value of expected key from query string */
+            if (httpd_query_key_value(buf_q, "load_as_html", param, sizeof(param)) == ESP_OK) {
+                ESP_LOGI(TAG, "Found URL query parameter => load_as_html=%s", param);
+                load_as_html = true;
+            }
+            if (httpd_query_key_value(buf_q, "replace", param, sizeof(param)) == ESP_OK) {
+                ESP_LOGI(TAG, "Found URL query parameter => replace=%s", param);
+                replace = true;
+            }
+        }
+        free(buf_q);
     }
 
     /* File cannot be larger than a limit */
@@ -308,6 +329,20 @@ esp_err_t upload_post_handler(httpd_req_t *req)
                             MAX_FILE_SIZE_STR "!");
         /* Return failure to close underlying connection else the
          * incoming file content will keep the socket busy */
+        return ESP_FAIL;
+    }
+
+    /*
+    Check and delete if needed to replace with a new file
+    */
+    if (replace == true) {
+        ESP_LOGE(TAG_FS, "File replace url arg, delete old file and upload new: %s", filepath);
+        remove(filepath);
+    }
+    if (stat(filepath, &file_stat) == 0) {
+        ESP_LOGE(TAG_FS, "File already exists : %s", filepath);
+        /* Respond with 400 Bad Request */
+        httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "File already exists");
         return ESP_FAIL;
     }
 
@@ -371,6 +406,23 @@ esp_err_t upload_post_handler(httpd_req_t *req)
     /* Close file upon upload completion */
     fclose(f_d);
     ESP_LOGI(TAG_FS, "File reception complete");
+
+    char name_src[64];
+    char name_copy[64];
+    snprintf(name_src, sizeof(name_src), "%s", filepath); // Original file
+    snprintf(name_copy, sizeof(name_copy), "%s.html", filepath);  // New file
+    if (load_as_html == true) {
+        /*        
+        I (302722) webserver: Found URL query => load_as_html=1
+        I (302722) webserver: Found URL query parameter => load_as_html=1
+        I (302722) file_server: Receiving file : /index.txt...
+        I (302732) file_server: Remaining size : 307
+        I (302742) file_server: File reception complete
+        I (302742) file_server: Received file: /sdcard/index.txt should be renamed into /sdcard/index.txt.html!
+        */
+        ESP_LOGI(TAG_FS, "Received file: %s should be renamed into %s!", name_src, name_copy);
+        rename(name_src, name_copy);
+    }
 
     /* Redirect onto root to see the updated file list */
     httpd_resp_set_status(req, "303 See Other");

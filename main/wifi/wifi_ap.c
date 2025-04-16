@@ -51,7 +51,7 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t e
         wifi_ap_mode = false;   // Not an AP mode
         found_wifi = true;      // Show is local WiFI icon
 
-        char address_str[128];  // Making STR from ipv4
+        // Making STR from ipv4
         char *res = NULL;
         res = inet_ntoa_r(event->ip_info.ip, ip_string, sizeof(ip_string) - 1);
         if (!res) {
