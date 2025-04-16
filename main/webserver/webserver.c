@@ -715,7 +715,7 @@ esp_err_t start_webserver(void) {
         
         /* URI handler for getting uploaded files */
         httpd_uri_t file_download = {
-            .uri       = "/download/*",  // Match all URIs of type /path/to/file
+            .uri       = "/*",  // Match all URIs of type /path/to/file
             .method    = HTTP_GET,
             .handler   = download_get_handler,
             .user_ctx  = server_data    // Pass server data as context
