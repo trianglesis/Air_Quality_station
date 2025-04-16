@@ -115,8 +115,7 @@ static void lvgl_task(void * pvParameters) {
                 lv_obj_remove_flag(ui_Label6, LV_OBJ_FLAG_HIDDEN);
             } else if (found_wifi == true) {
                 // Show WiFi local Icon and IP
-                // lv_label_set_text_fmt(ui_Label7, "%s", ip_string);
-                lv_label_set_text(ui_Label7, ip_string);
+                lv_label_set_text_fmt(ui_Label7, "%s", ip_string);
                 lv_obj_remove_flag(ui_Image2, LV_OBJ_FLAG_HIDDEN);
                 lv_obj_remove_flag(ui_Label7, LV_OBJ_FLAG_HIDDEN);
                 // Hide AP mode icons

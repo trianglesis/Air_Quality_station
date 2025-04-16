@@ -12,6 +12,7 @@
 
 #include "lwip/err.h"
 #include "lwip/sys.h"
+#include "lwip/inet.h"
 
 // Connect to local WIFi (STA)
 #define SSID                        CONFIG_WIFI_SSID
@@ -85,7 +86,7 @@ extern int connected_users;  // Display connected users
 extern bool wifi_ap_mode;    // Display AP mode ICON
 extern bool found_wifi;      // Hide AP mode icon and connected users, and show local IP
 
-extern char* ip_string;
+extern char ip_string[128];
 
 // Start AP
 esp_err_t wifi_setup(void);

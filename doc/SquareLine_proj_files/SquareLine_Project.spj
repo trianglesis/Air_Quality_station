@@ -994,7 +994,7 @@
                 "strtype": "OBJECT/Position",
                 "intarray": [
                   -3,
-                  -22
+                  -17
                 ],
                 "InheritedType": 7
               },
@@ -1150,6 +1150,12 @@
                         "nid": 10430,
                         "strtype": "_style/Text_Align",
                         "strval": "LEFT",
+                        "InheritedType": 3
+                      },
+                      {
+                        "nid": 10450,
+                        "strtype": "_style/Text_Font",
+                        "strval": "montserrat_10",
                         "InheritedType": 3
                       }
                     ],
@@ -1362,6 +1368,12 @@
                         "nid": 10430,
                         "strtype": "_style/Text_Align",
                         "strval": "LEFT",
+                        "InheritedType": 3
+                      },
+                      {
+                        "nid": 10450,
+                        "strtype": "_style/Text_Font",
+                        "strval": "montserrat_10",
                         "InheritedType": 3
                       }
                     ],
@@ -2574,7 +2586,7 @@
     "uiExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main\\ui",
     "projectExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main",
     "custom_variable_prefix": "uic",
-    "backup_cnt": 650,
+    "backup_cnt": 655,
     "autosave_cnt": 0,
     "group_color_cnt": 0,
     "lvgl_version": "9.2.2",

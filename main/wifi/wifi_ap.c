@@ -3,7 +3,8 @@
 int connected_users = 0;
 bool wifi_ap_mode = false;
 bool found_wifi = false;
-char* ip_string = "192.168.255.255";
+char ip_string[128];
+
 
 static const char *TAG = "wifi-init";
 static const char *TAG_AP = "WiFi SoftAP";
@@ -50,9 +51,13 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t e
         wifi_ap_mode = false;   // Not an AP mode
         found_wifi = true;      // Show is local WiFI icon
 
-        ip_string = IPSTR, IP2STR(&event->ip_info.ip);
-        ESP_LOGI(TAG_STA, "Got IP:", ip_string);
-        
+        char address_str[128];  // Making STR from ipv4
+        char *res = NULL;
+        res = inet_ntoa_r(event->ip_info.ip, ip_string, sizeof(ip_string) - 1);
+        if (!res) {
+            ip_string[0] = '\0'; // Returns empty string if conversion didn't succeed
+        }
+        ESP_LOGI(TAG_STA, "Got IP address_str: %s", ip_string);
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
