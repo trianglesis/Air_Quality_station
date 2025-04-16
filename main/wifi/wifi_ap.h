@@ -15,13 +15,14 @@
 
 
 // Connect to local WIFi
-#define DEFAULT_SSID                "Home Wifi"
-#define DEFAULT_PWD                 "Home Passwd"
-#define DEFAULT_SCAN_METHOD         WIFI_FAST_SCAN
-#define DEFAULT_SORT_METHOD         WIFI_CONNECT_AP_BY_SIGNAL
-#define DEFAULT_RSSI                -127
-#define DEFAULT_AUTHMODE            WIFI_AUTH_WPA2_PSK
-#define DEFAULT_RSSI_5G_ADJUSTMENT  0
+#define SSID                        CONFIG_WIFI_SSID
+#define PWD                         CONFIG_WIFI_PASSWORD
+#define SCAN_METHOD                 CONFIG_SCAN_METHOD
+#define SORT_METHOD                 CONFIG_SORT_METHOD
+#define FAST_SCAN_THRESHOLD         CONFIG_FAST_SCAN_THRESHOLD
+#define RSSI                        CONFIG_FAST_SCAN_MINIMUM_SIGNAL
+#define AUTHMODE                    CONFIG_FAST_SCAN_WEAKEST_AUTHMODE
+#define RSSI_5G_ADJUSTMENT          CONFIG_FAST_SCAN_RSSI_5G_ADJUSTMENT
 
 // Access point create
 #define WIFI_SSID      "CO2.local"
