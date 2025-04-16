@@ -84,7 +84,8 @@
 extern int connected_users;  // Display connected users
 extern bool wifi_ap_mode;    // Display AP mode ICON
 extern bool found_wifi;      // Hide AP mode icon and connected users, and show local IP
-extern char *local_ip;      // Hide AP mode icon and connected users, and show local IP
+
+extern char* ip_string;
 
 // Start AP
 esp_err_t wifi_setup(void);

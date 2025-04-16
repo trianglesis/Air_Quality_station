@@ -108,20 +108,29 @@ static void lvgl_task(void * pvParameters) {
             lv_label_set_text_fmt(ui_Label4, "SD: %ld GB", SDCard_Size);
             // Hardcode total as string 2Mb and save LCD space
             lv_label_set_text_fmt(ui_Label5, "LFS: %.1fKB/2MB", littlefs_used);
-            if (wifi_ap_mode) {
+            if (wifi_ap_mode == true && found_wifi == false) {
                 // Show Wifi AP icon if it's active and users connected count
                 lv_label_set_text_fmt(ui_Label6, "%d", connected_users);
-                lv_obj_clear_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_clear_flag(ui_Label6, LV_OBJ_FLAG_HIDDEN);
-            } else if (found_wifi) {
+                lv_obj_remove_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_remove_flag(ui_Label6, LV_OBJ_FLAG_HIDDEN);
+            } else if (found_wifi == true) {
                 // Show WiFi local Icon and IP
-                lv_label_set_text_fmt(ui_Label7, "%s", local_ip);
-                lv_obj_clear_flag(ui_Image2, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_clear_flag(ui_Label7, LV_OBJ_FLAG_HIDDEN);
+                // lv_label_set_text_fmt(ui_Label7, "%s", ip_string);
+                lv_label_set_text(ui_Label7, ip_string);
+                lv_obj_remove_flag(ui_Image2, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_remove_flag(ui_Label7, LV_OBJ_FLAG_HIDDEN);
+                // Hide AP mode icons
+                lv_obj_add_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(ui_Label6, LV_OBJ_FLAG_HIDDEN);
             } else {
                 // Lables and icons are hidden by default!
+                // Hide all other connection icons
+                lv_obj_add_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(ui_Label6, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(ui_Image2, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(ui_Label7, LV_OBJ_FLAG_HIDDEN);
                 // Show no WiFi Icon
-                lv_obj_clear_flag(ui_Image3, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_remove_flag(ui_Image3, LV_OBJ_FLAG_HIDDEN);
             }
         }
     }

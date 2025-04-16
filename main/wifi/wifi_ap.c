@@ -3,7 +3,7 @@
 int connected_users = 0;
 bool wifi_ap_mode = false;
 bool found_wifi = false;
-char *local_ip;
+char* ip_string = "192.168.255.255";
 
 static const char *TAG = "wifi-init";
 static const char *TAG_AP = "WiFi SoftAP";
@@ -45,10 +45,14 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t e
         ip_event_got_ip_t *event = (ip_event_got_ip_t *) event_data;
         ESP_LOGI(TAG_STA, "Got IP:" IPSTR, IP2STR(&event->ip_info.ip));
         s_retry_num = 0;
-        connected_users = 0;  // No users count when local WiFI is ok
-        wifi_ap_mode = false;  // Not an AP mode
-        found_wifi = true;  // Show is local WiFI icon
-        local_ip = IPSTR, IP2STR(&event->ip_info.ip);  // Display IP on LCD
+
+        connected_users = 0;    // No users count when local WiFI is ok
+        wifi_ap_mode = false;   // Not an AP mode
+        found_wifi = true;      // Show is local WiFI icon
+
+        ip_string = IPSTR, IP2STR(&event->ip_info.ip);
+        ESP_LOGI(TAG_STA, "Got IP:", ip_string);
+        
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
@@ -76,9 +80,8 @@ esp_netif_t *wifi_init_softap(void) {
     }
 
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &wifi_ap_config));
-
     ESP_LOGI(TAG_AP, "wifi_init_softap finished. SSID:%s password:%s channel:%d", WIFI_SSID, WIFI_PASS, WIFI_CHANNEL);
-    wifi_ap_mode = true;
+    wifi_ap_mode = true;  // Initial AP mode, if connected to WiFI found_wifi will be true
     return esp_netif_ap;
 }
 

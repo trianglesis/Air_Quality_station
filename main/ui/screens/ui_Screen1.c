@@ -138,8 +138,8 @@ void ui_Screen1_screen_init(void)
     lv_image_set_src(ui_Image2, &ui_img_wifi_x16_png);
     lv_obj_set_width(ui_Image2, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_Image2, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Image2, -148);
-    lv_obj_set_y(ui_Image2, 75);
+    lv_obj_set_x(ui_Image2, -145);
+    lv_obj_set_y(ui_Image2, 73);
     lv_obj_set_align(ui_Image2, LV_ALIGN_CENTER);
     lv_obj_add_flag(ui_Image2, LV_OBJ_FLAG_HIDDEN);     /// Flags
     lv_obj_remove_flag(ui_Image2, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
@@ -149,8 +149,8 @@ void ui_Screen1_screen_init(void)
     ui_Label7 = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_Label7, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_Label7, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label7, 23);
-    lv_obj_set_y(ui_Label7, 78);
+    lv_obj_set_x(ui_Label7, 26);
+    lv_obj_set_y(ui_Label7, 76);
     lv_obj_set_align(ui_Label7, LV_ALIGN_LEFT_MID);
     lv_label_set_text(ui_Label7, "192.168.255.255");
     lv_obj_add_flag(ui_Label7, LV_OBJ_FLAG_HIDDEN);     /// Flags
@@ -167,6 +167,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_Image3, -148);
     lv_obj_set_y(ui_Image3, -74);
     lv_obj_set_align(ui_Image3, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_Image3, LV_OBJ_FLAG_HIDDEN);     /// Flags
     lv_obj_remove_flag(ui_Image3, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
                        LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
