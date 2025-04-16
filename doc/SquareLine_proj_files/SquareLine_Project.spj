@@ -1124,7 +1124,7 @@
               {
                 "nid": 1030,
                 "strtype": "LABEL/Text",
-                "strval": "SD: 00 GB",
+                "strval": "SD: %.0fGB/%.0fGB free",
                 "InheritedType": 10
               },
               {
@@ -1342,7 +1342,7 @@
               {
                 "nid": 1030,
                 "strtype": "LABEL/Text",
-                "strval": "LFS: 0.00/0.00 MB",
+                "strval": "LFS: %.0fKB/%.0fKB used",
                 "InheritedType": 10
               },
               {
@@ -2586,7 +2586,7 @@
     "uiExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main\\ui",
     "projectExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main",
     "custom_variable_prefix": "uic",
-    "backup_cnt": 655,
+    "backup_cnt": 661,
     "autosave_cnt": 0,
     "group_color_cnt": 0,
     "lvgl_version": "9.2.2",

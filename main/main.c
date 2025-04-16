@@ -105,9 +105,10 @@ static void lvgl_task(void * pvParameters) {
             lv_label_set_text_fmt(ui_Label1, "%d", co2_counter);
             lv_label_set_text(ui_Label2, "CO2");
             lv_label_set_text(ui_Label3, "ppm");
-            lv_label_set_text_fmt(ui_Label4, "SD: %ld GB", SDCard_Size);
+            // lv_label_set_text_fmt(ui_Label4, "SD: %ld GB", SDCard_Size);
+            lv_label_set_text_fmt(ui_Label4, "SD: %.0fGB/%.0fGB free", sd_free, sd_total);
             // Hardcode total as string 2Mb and save LCD space
-            lv_label_set_text_fmt(ui_Label5, "LFS: %.1fKB/2MB", littlefs_used);
+            lv_label_set_text_fmt(ui_Label5, "LFS: %.0fKB/%.0fKB used", littlefs_used, littlefs_total);
             if (wifi_ap_mode == true && found_wifi == false) {
                 // Show Wifi AP icon if it's active and users connected count
                 lv_label_set_text_fmt(ui_Label6, "%d", connected_users);

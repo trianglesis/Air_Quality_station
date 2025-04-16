@@ -9,8 +9,8 @@ static const char *TAG = "SD-SPI";
 
 uint32_t Flash_Size = 0;
 uint32_t SDCard_Size = 0;
-uint64_t total_bytes = 0;
-uint64_t free_bytes = 0;
+float sd_total = 0;
+float sd_free = 0;
 
 // Leave it as in example
 esp_err_t s_example_write_file(const char *path, char *data) {
@@ -146,9 +146,17 @@ esp_err_t card_init(void) {
     file_read_test();
 
     // Check space
-    esp_vfs_fat_info(base_path, &total_bytes, &free_bytes);
-    ESP_LOGI(TAG, "total_bytes=%llu, free_bytes=%llu", total_bytes, free_bytes);
-
+    uint64_t total = 0, free = 0;
+    ret = esp_vfs_fat_info(base_path, &total, &free);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get SD Card partition information (%s)", esp_err_to_name(ret));
+    }
+    else {
+        ESP_LOGI(TAG, "SD card Partition size: total: %llu, free: %llu", total, free);
+    }
+    sd_total = (total / (1024 * 1024 * 1024)); // Convert to Gb
+    sd_free = (free / (1024 * 1024 * 1024)); // Convert to Gb
+    ESP_LOGI(TAG, "SD Card size total/free: %.2f/%.2f KB", sd_total, sd_free);
     return ESP_OK;
 }
 
