@@ -270,7 +270,6 @@ esp_err_t download_get_handler(httpd_req_t *req)
 esp_err_t upload_post_handler(httpd_req_t *req)
 {
     char filepath[FILE_PATH_MAX];
-    FILE *fd = NULL;
     struct stat file_stat;
 
     /* Skip leading "/upload" from URI to get filename */
@@ -309,8 +308,8 @@ esp_err_t upload_post_handler(httpd_req_t *req)
         return ESP_FAIL;
     }
 
-    fd = fopen(filepath, "w");
-    if (!fd) {
+    FILE *f_d = fopen(filepath, "wb+");
+    if (f_d == NULL) {
         ESP_LOGE(TAG_FS, "Failed to create file : %s", filepath);
         /* Respond with 500 Internal Server Error */
         httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to create file");
@@ -339,7 +338,7 @@ esp_err_t upload_post_handler(httpd_req_t *req)
 
             /* In case of unrecoverable error,
              * close and delete the unfinished file*/
-            fclose(fd);
+            fclose(f_d);
             unlink(filepath);
 
             ESP_LOGE(TAG_FS, "File reception failed!");
@@ -349,10 +348,10 @@ esp_err_t upload_post_handler(httpd_req_t *req)
         }
 
         /* Write buffer content to file on storage */
-        if (received && (received != fwrite(buf, 1, received, fd))) {
+        if (received && (received != fwrite(buf, 1, received, f_d))) {
             /* Couldn't write everything to file!
              * Storage may be full? */
-            fclose(fd);
+            fclose(f_d);
             unlink(filepath);
 
             ESP_LOGE(TAG_FS, "File write failed!");
@@ -367,15 +366,12 @@ esp_err_t upload_post_handler(httpd_req_t *req)
     }
 
     /* Close file upon upload completion */
-    fclose(fd);
+    fclose(f_d);
     ESP_LOGI(TAG_FS, "File reception complete");
 
     /* Redirect onto root to see the updated file list */
     httpd_resp_set_status(req, "303 See Other");
     httpd_resp_set_hdr(req, "Location", "/");
-#ifdef CONFIG_EXAMPLE_HTTPD_CONN_CLOSE_HEADER
-    httpd_resp_set_hdr(req, "Connection", "close");
-#endif
     httpd_resp_sendstr(req, "File uploaded successfully");
     return ESP_OK;
 }

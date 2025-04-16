@@ -184,12 +184,15 @@ It's working, try to upload files to SD Card
 curl -X POST --data-binary @sd_card/index.html  http://192.168.1.225:80/upload/index.html
 curl -X POST --data-binary @index.html  http://192.168.1.225:80/upload/index.html
 ```
+Cannot upload ONLY html files!
 
-Failed:
 ```log
-E (379242) file_server: Failed to create file : /index.html
-W (379242) httpd_txrx: httpd_resp_send_err: 500 Internal Server Error - Failed to create file
-W (379252) httpd_uri: httpd_uri: uri handler execution failed
+E (158022) file_server: Failed to create file : /sdcard/tst.html
+W (158022) httpd_txrx: httpd_resp_send_err: 500 Internal Server Error - Failed to create file
+W (158022) httpd_uri: httpd_uri: uri handler execution failed
+
+I (32682) file_server: Sending file : /index.txt (307 bytes)...
+I (32682) file_server: File sending complete
 
 ```
 
