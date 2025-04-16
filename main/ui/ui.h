@@ -27,6 +27,9 @@ extern lv_obj_t * ui_Label4;
 extern lv_obj_t * ui_Label5;
 extern lv_obj_t * ui_Image1;
 extern lv_obj_t * ui_Label6;
+extern lv_obj_t * ui_Image2;
+extern lv_obj_t * ui_Label7;
+extern lv_obj_t * ui_Image3;
 // CUSTOM VARIABLES
 
 // EVENTS
@@ -36,6 +39,8 @@ extern lv_obj_t * ui____initial_actions0;
 // IMAGES AND IMAGE SETS
 LV_IMG_DECLARE(ui_img_risk_165_142_png);    // assets/risk_165_142.png
 LV_IMG_DECLARE(ui_img_signal_x16_png);    // assets/signal_x16.png
+LV_IMG_DECLARE(ui_img_wifi_x16_png);    // assets/wifi_x16.png
+LV_IMG_DECLARE(ui_img_1678184450);    // assets/no-wifi_x16.png
 
 // UI INIT
 void ui_init(void);
