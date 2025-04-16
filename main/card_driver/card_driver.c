@@ -9,6 +9,8 @@ static const char *TAG = "SD-SPI";
 
 uint32_t Flash_Size = 0;
 uint32_t SDCard_Size = 0;
+uint64_t total_bytes = 0;
+uint64_t free_bytes = 0;
 
 // Leave it as in example
 esp_err_t s_example_write_file(const char *path, char *data) {
@@ -143,7 +145,9 @@ esp_err_t card_init(void) {
     file_sum_test();
     file_read_test();
 
-    // esp_vfs_fat_info(base_path);
+    // Check space
+    esp_vfs_fat_info(base_path, &total_bytes, &free_bytes);
+    ESP_LOGI(TAG, "total_bytes=%llu, free_bytes=%llu", total_bytes, free_bytes);
 
     return ESP_OK;
 }
