@@ -176,12 +176,21 @@ static void load_index_file_buffer(void) {
     fclose(fp);
 }
 
-static void load_index_file_buffer_dyn(char* file_path, char *buf) {
+/*
+I cannot get this function to work with buffer as arg, so will use it as it is for now.a64l
+Everything else is working:a64l
+
+I (18438) webserver: Load HTML from local store path
+I (18438) webserver: LittleFS HTML Exist: 0
+I (18438) webserver: LittleFS SD Exist: -1
+I (18438) webserver: Root index.html is not found at SD Card, use LittleFS!
+*/
+static void load_index_file_buffer_dyn(char* file_path) {
     ESP_LOGI(TAG, "Load HTML from local store path");
     struct stat st;
+    // ESP_LOGI(TAG, "LittleFS HTML Exist: %d", stat("/littlefs/index.html", &st));
+    // ESP_LOGI(TAG, "LittleFS SD Exist: %d", stat("/sdcard/index.html", &st));
     
-    ESP_LOGI(TAG, "LittleFS HTML Exist: %d", stat("/littlefs/index.html", &st));
-    ESP_LOGI(TAG, "LittleFS SD Exist: %d", stat("/sdcard/index.html", &st));
     // Actual path, check if exist
     if (file_path != NULL) {
         ESP_LOGI(TAG, "Load HTML from path: %s", file_path);
@@ -205,11 +214,11 @@ static void load_index_file_buffer_dyn(char* file_path, char *buf) {
     
     // File size
     // char index_html_buff[4096];
-    memset((void *)buf, 0, sizeof(buf));
+    memset((void *)index_html, 0, sizeof(index_html));
 
     FILE *f_r = fopen(file_path, "r");
     if (f_r != NULL) {
-        int cb = fread(buf, st.st_size, sizeof(buf), f_r);
+        int cb = fread(index_html, st.st_size, sizeof(index_html), f_r);
         if (cb == 0) {
             // Check if read and close
             ESP_LOGE(TAG, "fread failed for html at path %s", file_path);
@@ -219,14 +228,13 @@ static void load_index_file_buffer_dyn(char* file_path, char *buf) {
             fclose(f_r);
         }
     }
+    // Does not work as expected
     // return buf;
 }
 
 // Root page if present
 esp_err_t root_get_handler(httpd_req_t *req) {
-    // char index_html_buff[4096];
-    // load_index_file_buffer(NULL, index_html_buff);
-
+    load_index_file_buffer_dyn(NULL);
     httpd_resp_set_type(req, "text/html");
     httpd_resp_send(req, index_html, HTTPD_RESP_USE_STRLEN);
     return ESP_OK;
@@ -274,8 +282,6 @@ esp_err_t start_webserver(void) {
         ESP_LOGE(TAG, "Failed to start file server!");
         return ESP_FAIL;
     }
-
-    load_index_file_buffer();
 
     httpd_register_uri_handler(server, &root);
     httpd_register_err_handler(server, HTTPD_404_NOT_FOUND, http_404_error_handler);
