@@ -194,8 +194,13 @@ esp_err_t download_get_handler(httpd_req_t *req)
     FILE *fd = NULL;
     struct stat file_stat;
 
+    /* Skip leading "/upload" from URI to get filename */
+    /* Note sizeof() counts NULL termination hence the -1 */
     const char *filename = get_path_from_uri(filepath, ((struct file_server_data *)req->user_ctx)->base_path,
-                                             req->uri, sizeof(filepath));
+                                             req->uri + sizeof("/download") - 1, sizeof(filepath));
+    // const char *filename = get_path_from_uri(filepath, ((struct file_server_data *)req->user_ctx)->base_path,
+    //                                          req->uri, sizeof(filepath));
+    
     if (!filename) {
         ESP_LOGE(TAG_FS, "Filename is too long");
         /* Respond with 500 Internal Server Error */
@@ -297,7 +302,6 @@ esp_err_t upload_post_handler(httpd_req_t *req)
         Read URL query string length and allocate memory for length + 1, * extra byte for null termination 
     */
     bool replace = false;
-    bool load_as_html = false;
     char *buf_q = NULL;
     size_t buf_len;
     buf_len = httpd_req_get_url_query_len(req) + 1;
@@ -308,10 +312,6 @@ esp_err_t upload_post_handler(httpd_req_t *req)
             ESP_LOGI(TAG, "Found URL query => %s", buf_q);
             char param[QUERY_KEY_MAX_LEN] = {0};
             /* Get value of expected key from query string */
-            if (httpd_query_key_value(buf_q, "load_as_html", param, sizeof(param)) == ESP_OK) {
-                ESP_LOGI(TAG, "Found URL query parameter => load_as_html=%s", param);
-                load_as_html = true;
-            }
             if (httpd_query_key_value(buf_q, "replace", param, sizeof(param)) == ESP_OK) {
                 ESP_LOGI(TAG, "Found URL query parameter => replace=%s", param);
                 replace = true;
@@ -406,23 +406,6 @@ esp_err_t upload_post_handler(httpd_req_t *req)
     /* Close file upon upload completion */
     fclose(f_d);
     ESP_LOGI(TAG_FS, "File reception complete");
-
-    char name_src[64];
-    char name_copy[64];
-    snprintf(name_src, sizeof(name_src), "%s", filepath); // Original file
-    snprintf(name_copy, sizeof(name_copy), "%s.html", filepath);  // New file
-    if (load_as_html == true) {
-        /*        
-        I (302722) webserver: Found URL query => load_as_html=1
-        I (302722) webserver: Found URL query parameter => load_as_html=1
-        I (302722) file_server: Receiving file : /index.txt...
-        I (302732) file_server: Remaining size : 307
-        I (302742) file_server: File reception complete
-        I (302742) file_server: Received file: /sdcard/index.txt should be renamed into /sdcard/index.txt.html!
-        */
-        ESP_LOGI(TAG_FS, "Received file: %s should be renamed into %s!", name_src, name_copy);
-        rename(name_src, name_copy);
-    }
 
     /* Redirect onto root to see the updated file list */
     httpd_resp_set_status(req, "303 See Other");
@@ -691,6 +674,14 @@ static void load_index_file_buffer_dyn(char* file_path) {
             fclose(f_r);
         } else if (cb == -1) {
             // File not ok, show it
+            /*
+            Strange log but works
+            W (6563) httpd_uri: httpd_uri: URI '/favicon.ico' not found
+            I (6563) webserver: Redirecting to root
+            I (6643) webserver: Load HTML from local store path
+            I (6643) webserver: Root index.html found at SD Card!
+            E (6643) webserver: fread (1) failed for html at path /sdcard/index.html
+            */
             ESP_LOGE(TAG, "fread (%d) failed for html at path %s", cb, file_path);
             fclose(f_r);
         } else {
@@ -777,7 +768,7 @@ esp_err_t start_webserver(void) {
         
         /* URI handler for getting uploaded files */
         httpd_uri_t file_download = {
-            .uri       = "/*",  // Match all URIs of type /path/to/file
+            .uri       = "/download/*",  // Match all URIs of type /path/to/file
             .method    = HTTP_GET,
             .handler   = download_get_handler,
             .user_ctx  = server_data    // Pass server data as context

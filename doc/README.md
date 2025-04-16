@@ -186,10 +186,34 @@ Reuse my setup from [Wifi AP](https://github.com/trianglesis/webserver-w-ap-port
 Then use example file server, which is good enough already: [file](https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/protocols/http_server/file_serving/main/file_server.c)
 
 
+NOTE: I have not yet get the part work, where it shows an HTML page with all files!
+Now works.
+
 ### Webserver + FS + SPI + SD Card
 
 The working idea is following:
 
+Start WEB server with small `index.html` stored and served from `littlefs` - local SPI flash.
+Open upload to place a new `index.html` and everything needed: css, js, etc to SD Card
+Now serve the site page from SD Card, instead of SPI Flash
+
+The struggle is [here](how_to_basics/README.md#file-serving)
+
+It's now working:
+
+```shell
+# Upload new index.html file from sd_card directory from current repo
+curl -X POST --data-binary @index.html http://192.168.1.225:80/upload/index.html
+File uploaded successfully
+
+# New added replace ARG
+curl -X POST --data-binary @index.html http://192.168.1.225:80/upload/index.html?replace=1
+
+# Delete
+curl -X POST  http://192.168.1.225:80/delete/index.html?replace=1
+```
+
+And check web `/` to see  `This is SD card web page`
 
 # Links, help, forums and etc
 

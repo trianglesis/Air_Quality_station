@@ -189,9 +189,6 @@ curl -X POST http://192.168.1.225:80/delete/index3.txt
 curl -X POST --data-binary @index.html  http://192.168.1.225:80/upload/index.txt?replace=1
 File uploaded successfully
 
-# New added rename ARG
-curl -X POST --data-binary @index.html  http://192.168.1.225:80/upload/index.txt?load_as_html=1
-File uploaded successfully
 ```
 Cannot upload ONLY html files!
 
@@ -234,7 +231,6 @@ W (124292) httpd_uri: httpd_uri: uri handler execution failed
 
 ```
 
-Let's try to send html as text, with URL q: `load_as_html=1` to later rename it to HTML!
 Now check this: https://stackoverflow.com/a/72530185 `FATFS_LONG_FILENAMES`
 
 It was the reason!
