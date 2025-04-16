@@ -15,7 +15,6 @@
 #include "local_flash.h"
 #include "wifi_ap.h"
 #include "webserver.h"
-// #include "file_server.h"
 
 #include "esp_log.h"
 #include "esp_check.h"
