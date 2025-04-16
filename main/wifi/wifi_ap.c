@@ -3,7 +3,7 @@
 int connected_users = 0;
 bool wifi_ap_mode = false;
 bool found_wifi = false;
-char local_ip = NULL;
+char *local_ip;
 
 static const char *TAG = "wifi-init";
 static const char *TAG_AP = "WiFi SoftAP";
@@ -48,7 +48,7 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t e
         connected_users = 0;  // No users count when local WiFI is ok
         wifi_ap_mode = false;  // Not an AP mode
         found_wifi = true;  // Show is local WiFI icon
-        local_ip = IPSTR;  // Display IP on LCD
+        local_ip = IPSTR, IP2STR(&event->ip_info.ip);  // Display IP on LCD
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
