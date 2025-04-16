@@ -3,7 +3,7 @@
 int connected_users = 0;
 bool wifi_ap_mode = false;
 
-static const char *TAG = "wifi-ap";
+static const char *TAG = "wifi";
 
 // Wifi Connecti to AP
 static void event_handler(void* arg, esp_event_base_t event_base,
@@ -48,14 +48,7 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t e
     }
 }
 
-/*
-Host a Wifi AP
 
-TODO: Add fallback method:
-1. Try to find and connect to known WiFi
-2. Host AP if not 1
-
-*/
 void wifi_init_softap_start(void) {
     // Network services
     ESP_ERROR_CHECK(esp_netif_init());
@@ -120,22 +113,30 @@ static void fast_scan(void)
     // Initialize and start WiFi
     wifi_config_t wifi_config = {
         .sta = {
-            .ssid = DEFAULT_SSID,
-            .password = DEFAULT_PWD,
-            .scan_method = DEFAULT_SCAN_METHOD,
-            .sort_method = DEFAULT_SORT_METHOD,
-            .threshold.rssi = DEFAULT_RSSI,
-            .threshold.authmode = DEFAULT_AUTHMODE,
-            .threshold.rssi_5g_adjustment = DEFAULT_RSSI_5G_ADJUSTMENT,
+            .ssid = SSID,
+            .password = PWD,
+            .scan_method = SCAN_METHOD,
+            .sort_method = SORT_METHOD,
+            .threshold.rssi = RSSI,
+            .threshold.authmode = AUTHMODE,
+            .threshold.rssi_5g_adjustment = RSSI_5G_ADJUSTMENT,
         },
     };
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());
-    
+
 }
 
 
+/*
+Host a Wifi AP
+
+TODO: Add fallback method:
+1. Try to find and connect to known WiFi
+2. Host AP if not 1
+
+*/
 void wifi_setup(void) {
     //Initialize NVS
     esp_err_t ret = nvs_flash_init();
