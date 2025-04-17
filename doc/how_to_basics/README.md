@@ -261,3 +261,62 @@ File server methods and URI at `file_server` module:
 - Only functions related to upload files
 
 Allow upload files ONLY when connected to a trusted Wifi, but not at AP mode?
+
+
+### Queue and messages
+
+You shoud decide how to work with the queue better.
+Adding new messages and check each time if queue is not full or empty.
+Rewriting the message with queue len = 1 without thinking about full\empty\old values in the queue.
+
+Thewre are two ways to insert messages:
+- `xQueueGenericSend` - just send appending a new mesage. (to front of the queue for example)
+- `xQueueOverwrite` - overwrite the last message with new.
+
+```code
+if (mq_co2_len > 1) {
+    // Always check the space and queue len, clean if half-full. Queue read is non-destructive always.
+    int queue_messages = uxQueueMessagesWaiting(mq_co2);
+    int queue_space = uxQueueSpacesAvailable(mq_co2);
+    if (queue_messages > 1 || queue_space < 3) {
+        ESP_LOGI(TAG, "Queue is filled with messages: %d, space left: %d - cleaning the queue!", 
+            queue_messages, 
+            queue_space);
+        xQueueReset(mq_co2);
+    }
+    // When queue is len > 1
+    if (xQueueGenericSend(mq_co2, (void *)&fake_co2_counter, 0, queueSEND_TO_FRONT) != pdTRUE) {
+        ESP_LOGE(TAG, "Queue full and it should be emtied!\n");
+    }
+} else {
+    // No need to clean if xQueueOverwrite
+    // When queue is len = 1, return is negligible
+    xQueueOverwrite(mq_co2, (void *)&fake_co2_counter);
+}
+```
+
+
+There are two ways to get the message from the queue:
+- `xQueuePeek` to get without removing
+- `xQueueReceive` to get with removing
+
+
+```code
+if (mq_co2 > 1) {
+    // Destructive read
+    if (xQueueReceive(mq_co2, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
+        // ESP_LOGI(TAG, "received data = %d", co2_counter);
+    } else {
+        // Skip drawing if there is no mesages left
+        // ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
+    }
+} else {
+    // Queue recieve, non destructive! Always with xQueueOverwrite
+    if (xQueuePeek(mq_co2, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
+        // ESP_LOGI(TAG, "received data = %d", co2_counter);
+    } else {
+        // Skip drawing if there is no mesages left
+        // ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
+    }
+}
+```

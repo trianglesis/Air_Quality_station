@@ -13,6 +13,7 @@ idf_component_register(
         "littlefs_driver/local_flash.c"
         "wifi/wifi_ap.c"
         "webserver/webserver.c"
+        "co2_sensor/co2_sensor.c"
         ${SRC_UI}
     INCLUDE_DIRS 
         "." 
@@ -23,6 +24,7 @@ idf_component_register(
         "./littlefs_driver"
         "./wifi"
         "./webserver"
+        "./co2_sensor"
         "ui"
         )
 

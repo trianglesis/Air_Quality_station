@@ -618,14 +618,7 @@ esp_err_t favicon_get_handler(httpd_req_t *req)
     return ESP_OK;
 }
 
-/*
-Everything else is working
-I (126672) webserver: Load HTML from local store path
-I (126672) webserver: LFS HTML Exist: 0
-I (126672) webserver: SD HTML Exist: -1
-W (126672) webserver: Root index.html is not found at SD Card, use LittleFS!
-E (126682) webserver: fread (1) failed for html at path /littlefs/index.html
-*/
+
 static void load_index_file_buffer_dyn(char* file_path) {
     ESP_LOGI(TAG, "Load HTML from local store path");
     struct stat st;
