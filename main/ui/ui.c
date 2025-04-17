@@ -22,16 +22,15 @@ lv_obj_t * ui_LabelApUsers;
 lv_obj_t * ui_ImageLocalWiFI;
 lv_obj_t * ui_LabelipAdress;
 lv_obj_t * ui_ImageNoWiFi;
-lv_obj_t * ui_BarTemperature;
 lv_obj_t * ui_BarHumidity;
-lv_obj_t * ui_BarPressure;
-lv_obj_t * ui_ImageTemperature;
-lv_obj_t * ui_ImageHumidity;
-lv_obj_t * ui_ImagePressure;
 lv_obj_t * ui_LabelTemperature;
 lv_obj_t * ui_LabelHumidity;
 lv_obj_t * ui_LabelPressure;
 lv_obj_t * ui_LabelAirQualityIndx;
+lv_obj_t * ui_BarTemperature;
+lv_obj_t * ui_Image1;
+lv_obj_t * ui_Image2;
+lv_obj_t * ui_Image3;
 // CUSTOM VARIABLES
 
 // EVENTS

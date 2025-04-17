@@ -177,144 +177,122 @@ void ui_Screen1_screen_init(void)
                        LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
 
-    ui_BarTemperature = lv_bar_create(ui_Screen1);
-    lv_bar_set_range(ui_BarTemperature, -20, 40);
-    lv_bar_set_value(ui_BarTemperature, 20, LV_ANIM_OFF);
-    lv_bar_set_start_value(ui_BarTemperature, 20, LV_ANIM_OFF);
-    lv_obj_set_width(ui_BarTemperature, 15);
-    lv_obj_set_height(ui_BarTemperature, 70);
-    lv_obj_set_x(ui_BarTemperature, 43);
-    lv_obj_set_y(ui_BarTemperature, 55);
-    lv_obj_set_align(ui_BarTemperature, LV_ALIGN_TOP_MID);
-    lv_obj_remove_flag(ui_BarTemperature,
-                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+    ui_BarHumidity = lv_bar_create(ui_Screen1);
+    lv_bar_set_value(ui_BarHumidity, 50, LV_ANIM_OFF);
+    lv_bar_set_start_value(ui_BarHumidity, 0, LV_ANIM_OFF);
+    lv_obj_set_width(ui_BarHumidity, 30);
+    lv_obj_set_height(ui_BarHumidity, 80);
+    lv_obj_set_x(ui_BarHumidity, 120);
+    lv_obj_set_y(ui_BarHumidity, -5);
+    lv_obj_set_align(ui_BarHumidity, LV_ALIGN_CENTER);
+    lv_obj_remove_flag(ui_BarHumidity, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
                        LV_OBJ_FLAG_SNAPPABLE);     /// Flags
+
+    lv_obj_set_style_radius(ui_BarHumidity, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+
+    //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
+    if(lv_obj_get_style_pad_top(ui_BarHumidity, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_BarHumidity,
+                                                                                                  lv_obj_get_style_pad_right(ui_BarHumidity, LV_PART_MAIN) + 1, LV_PART_MAIN);
+    ui_LabelTemperature = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelTemperature, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelTemperature, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelTemperature, 50);
+    lv_obj_set_y(ui_LabelTemperature, 49);
+    lv_obj_set_align(ui_LabelTemperature, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelTemperature, "20");
+    lv_obj_remove_flag(ui_LabelTemperature,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_text_align(ui_LabelTemperature, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_LabelTemperature, &lv_font_montserrat_26, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_LabelHumidity = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelHumidity, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelHumidity, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelHumidity, 120);
+    lv_obj_set_y(ui_LabelHumidity, 49);
+    lv_obj_set_align(ui_LabelHumidity, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelHumidity, "60");
+    lv_obj_remove_flag(ui_LabelHumidity,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_text_align(ui_LabelHumidity, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_LabelHumidity, &lv_font_montserrat_26, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_LabelPressure = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelPressure, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelPressure, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelPressure, 133);
+    lv_obj_set_y(ui_LabelPressure, -67);
+    lv_obj_set_align(ui_LabelPressure, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelPressure, "760");
+    lv_obj_remove_flag(ui_LabelPressure,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_text_align(ui_LabelPressure, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_LabelPressure, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_LabelAirQualityIndx = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelAirQualityIndx, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelAirQualityIndx, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelAirQualityIndx, 43);
+    lv_obj_set_y(ui_LabelAirQualityIndx, -67);
+    lv_obj_set_align(ui_LabelAirQualityIndx, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelAirQualityIndx, "AQI 999");
+    lv_obj_remove_flag(ui_LabelAirQualityIndx,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_text_font(ui_LabelAirQualityIndx, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_BarTemperature = lv_bar_create(ui_Screen1);
+    lv_bar_set_range(ui_BarTemperature, 1, 50);
+    lv_bar_set_value(ui_BarTemperature, 25, LV_ANIM_OFF);
+    lv_bar_set_start_value(ui_BarTemperature, 0, LV_ANIM_OFF);
+    lv_obj_set_width(ui_BarTemperature, 30);
+    lv_obj_set_height(ui_BarTemperature, 80);
+    lv_obj_set_x(ui_BarTemperature, 50);
+    lv_obj_set_y(ui_BarTemperature, -5);
+    lv_obj_set_align(ui_BarTemperature, LV_ALIGN_CENTER);
 
     lv_obj_set_style_radius(ui_BarTemperature, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
     //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
     if(lv_obj_get_style_pad_top(ui_BarTemperature, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_BarTemperature,
                                                                                                      lv_obj_get_style_pad_right(ui_BarTemperature, LV_PART_MAIN) + 1, LV_PART_MAIN);
-    ui_BarHumidity = lv_bar_create(ui_Screen1);
-    lv_bar_set_value(ui_BarHumidity, 50, LV_ANIM_OFF);
-    lv_bar_set_start_value(ui_BarHumidity, 0, LV_ANIM_OFF);
-    lv_obj_set_width(ui_BarHumidity, 15);
-    lv_obj_set_height(ui_BarHumidity, 70);
-    lv_obj_set_x(ui_BarHumidity, 84);
-    lv_obj_set_y(ui_BarHumidity, 55);
-    lv_obj_set_align(ui_BarHumidity, LV_ALIGN_TOP_MID);
-    lv_obj_remove_flag(ui_BarHumidity, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
-                       LV_OBJ_FLAG_SNAPPABLE);     /// Flags
+    ui_Image1 = lv_image_create(ui_Screen1);
+    lv_image_set_src(ui_Image1, &ui_img_thermometer_x32_png);
+    lv_obj_set_width(ui_Image1, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Image1, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Image1, 27);
+    lv_obj_set_y(ui_Image1, 50);
+    lv_obj_set_align(ui_Image1, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_Image1, LV_OBJ_FLAG_CLICKABLE);     /// Flags
+    lv_obj_remove_flag(ui_Image1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_image_set_scale(ui_Image1, 200);
 
-    lv_obj_set_style_radius(ui_BarHumidity, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui_BarHumidity, lv_color_hex(0xFFA100), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_BarHumidity, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(ui_BarHumidity, lv_color_hex(0xB1FFF8), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_main_stop(ui_BarHumidity, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_stop(ui_BarHumidity, 130, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(ui_BarHumidity, LV_GRAD_DIR_VER, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    ui_Image2 = lv_image_create(ui_Screen1);
+    lv_image_set_src(ui_Image2, &ui_img_humidity_x32_png);
+    lv_obj_set_width(ui_Image2, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Image2, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Image2, 91);
+    lv_obj_set_y(ui_Image2, 50);
+    lv_obj_set_align(ui_Image2, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_Image2, LV_OBJ_FLAG_CLICKABLE);     /// Flags
+    lv_obj_remove_flag(ui_Image2, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_image_set_scale(ui_Image2, 200);
 
-    //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
-    if(lv_obj_get_style_pad_top(ui_BarHumidity, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_BarHumidity,
-                                                                                                  lv_obj_get_style_pad_right(ui_BarHumidity, LV_PART_MAIN) + 1, LV_PART_MAIN);
-    ui_BarPressure = lv_bar_create(ui_Screen1);
-    lv_bar_set_range(ui_BarPressure, 500, 800);
-    lv_bar_set_value(ui_BarPressure, 650, LV_ANIM_OFF);
-    lv_bar_set_start_value(ui_BarPressure, 0, LV_ANIM_OFF);
-    lv_obj_set_width(ui_BarPressure, 15);
-    lv_obj_set_height(ui_BarPressure, 70);
-    lv_obj_set_x(ui_BarPressure, 126);
-    lv_obj_set_y(ui_BarPressure, 55);
-    lv_obj_set_align(ui_BarPressure, LV_ALIGN_TOP_MID);
-    lv_obj_remove_flag(ui_BarPressure, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
-                       LV_OBJ_FLAG_SNAPPABLE);     /// Flags
-
-    lv_obj_set_style_radius(ui_BarPressure, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui_BarPressure, lv_color_hex(0xFF6900), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_BarPressure, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_color(ui_BarPressure, lv_color_hex(0x85FFFE), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_main_stop(ui_BarPressure, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_stop(ui_BarPressure, 150, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(ui_BarPressure, LV_GRAD_DIR_VER, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-
-    //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
-    if(lv_obj_get_style_pad_top(ui_BarPressure, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_BarPressure,
-                                                                                                  lv_obj_get_style_pad_right(ui_BarPressure, LV_PART_MAIN) + 1, LV_PART_MAIN);
-    ui_ImageTemperature = lv_image_create(ui_Screen1);
-    lv_image_set_src(ui_ImageTemperature, &ui_img_thermometer_x16_png);
-    lv_obj_set_width(ui_ImageTemperature, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_ImageTemperature, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_ImageTemperature, 43);
-    lv_obj_set_y(ui_ImageTemperature, 132);
-    lv_obj_set_align(ui_ImageTemperature, LV_ALIGN_TOP_MID);
-    lv_obj_remove_flag(ui_ImageTemperature,
-                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
-                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
-                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-    lv_image_set_scale(ui_ImageTemperature, 255);
-
-    ui_ImageHumidity = lv_image_create(ui_Screen1);
-    lv_image_set_src(ui_ImageHumidity, &ui_img_humidity_x16_png);
-    lv_obj_set_width(ui_ImageHumidity, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_ImageHumidity, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_ImageHumidity, 85);
-    lv_obj_set_y(ui_ImageHumidity, 133);
-    lv_obj_set_align(ui_ImageHumidity, LV_ALIGN_TOP_MID);
-    lv_obj_remove_flag(ui_ImageHumidity,
-                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
-                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
-                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-    lv_image_set_scale(ui_ImageHumidity, 255);
-
-    ui_ImagePressure = lv_image_create(ui_Screen1);
-    lv_image_set_src(ui_ImagePressure, &ui_img_gauge_x16_png);
-    lv_obj_set_width(ui_ImagePressure, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_ImagePressure, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_ImagePressure, 127);
-    lv_obj_set_y(ui_ImagePressure, 133);
-    lv_obj_set_align(ui_ImagePressure, LV_ALIGN_TOP_MID);
-    lv_obj_remove_flag(ui_ImagePressure,
-                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
-                       LV_OBJ_FLAG_SCROLLABLE);     /// Flags
-    lv_image_set_scale(ui_ImagePressure, 255);
-
-    ui_LabelTemperature = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_LabelTemperature, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_LabelTemperature, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_LabelTemperature, 44);
-    lv_obj_set_y(ui_LabelTemperature, -42);
-    lv_obj_set_align(ui_LabelTemperature, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_LabelTemperature, "20");
-    lv_obj_set_style_text_align(ui_LabelTemperature, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_LabelTemperature, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_LabelHumidity = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_LabelHumidity, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_LabelHumidity, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_LabelHumidity, 83);
-    lv_obj_set_y(ui_LabelHumidity, -42);
-    lv_obj_set_align(ui_LabelHumidity, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_LabelHumidity, "60");
-    lv_obj_set_style_text_align(ui_LabelHumidity, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_LabelHumidity, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_LabelPressure = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_LabelPressure, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_LabelPressure, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_LabelPressure, 125);
-    lv_obj_set_y(ui_LabelPressure, -42);
-    lv_obj_set_align(ui_LabelPressure, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_LabelPressure, "760");
-    lv_obj_set_style_text_align(ui_LabelPressure, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_LabelPressure, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_LabelAirQualityIndx = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_LabelAirQualityIndx, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_LabelAirQualityIndx, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_LabelAirQualityIndx, 9);
-    lv_obj_set_y(ui_LabelAirQualityIndx, -69);
-    lv_obj_set_align(ui_LabelAirQualityIndx, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_LabelAirQualityIndx, "AQI 999");
-    lv_obj_set_style_text_font(ui_LabelAirQualityIndx, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_Image3 = lv_image_create(ui_Screen1);
+    lv_image_set_src(ui_Image3, &ui_img_gauge_x16_png);
+    lv_obj_set_width(ui_Image3, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_Image3, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_Image3, 104);
+    lv_obj_set_y(ui_Image3, -67);
+    lv_obj_set_align(ui_Image3, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_Image3, LV_OBJ_FLAG_CLICKABLE);     /// Flags
+    lv_obj_remove_flag(ui_Image3, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
 }

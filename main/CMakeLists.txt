@@ -5,7 +5,7 @@ file(GLOB_RECURSE SRC_UI ${CMAKE_SOURCE_DIR}
                         "ui/*.c"
                         "ui/components/*.c"
                         "ui/screens/*.c"
-                        # "ui/images/*.c"
+                        "ui/images/*.c"
 )
 
 idf_component_register(
