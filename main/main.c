@@ -93,9 +93,15 @@ static void lvgl_task(void * pvParameters) {
             lv_obj_remove_flag(ui_ImageHumidity, LV_OBJ_FLAG_HIDDEN);
             lv_obj_remove_flag(ui_ImagePressure, LV_OBJ_FLAG_HIDDEN);
 
-            lv_bar_set_value(ui_BarTemperature, bme680_readings.temperature, LV_ANIM_OFF);
-            lv_bar_set_value(ui_BarHumidity, bme680_readings.humidity, LV_ANIM_OFF);
-            lv_bar_set_value(ui_BarPressure, bme680_readings.pressure, LV_ANIM_OFF);
+            int32_t temperature;
+            int32_t humidity;
+            int32_t pressure;
+            temperature = bme680_readings.temperature;
+            humidity = bme680_readings.humidity;
+            pressure = bme680_readings.pressure;
+            lv_bar_set_value(ui_BarTemperature, temperature, LV_ANIM_ON);
+            lv_bar_set_value(ui_BarHumidity, humidity, LV_ANIM_ON);
+            lv_bar_set_value(ui_BarPressure, pressure, LV_ANIM_ON);
 
             lv_label_set_text_fmt(ui_LabelTemperature, " %4.0f", bme680_readings.temperature);
             lv_label_set_text_fmt(ui_LabelHumidity, " %4.0f", bme680_readings.humidity);

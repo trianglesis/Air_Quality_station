@@ -30,8 +30,8 @@ extern lv_obj_t * ui_LabelApUsers;
 extern lv_obj_t * ui_ImageLocalWiFI;
 extern lv_obj_t * ui_LabelipAdress;
 extern lv_obj_t * ui_ImageNoWiFi;
-extern lv_obj_t * ui_BarHumidity;
 extern lv_obj_t * ui_BarTemperature;
+extern lv_obj_t * ui_BarHumidity;
 extern lv_obj_t * ui_BarPressure;
 extern lv_obj_t * ui_ImageTemperature;
 extern lv_obj_t * ui_ImageHumidity;
@@ -51,9 +51,9 @@ LV_IMG_DECLARE(ui_img_risk_165_142_png);    // assets/risk_165_142.png
 LV_IMG_DECLARE(ui_img_signal_x16_png);    // assets/signal_x16.png
 LV_IMG_DECLARE(ui_img_wifi_x16_png);    // assets/wifi_x16.png
 LV_IMG_DECLARE(ui_img_1678184450);    // assets/no-wifi_x16.png
-LV_IMG_DECLARE(ui_img_thermometer_x32_png);    // assets/thermometer_x32.png
-LV_IMG_DECLARE(ui_img_humidity_x32_png);    // assets/humidity_x32.png
-LV_IMG_DECLARE(ui_img_gauge_x32_png);    // assets/gauge_x32.png
+LV_IMG_DECLARE(ui_img_thermometer_x16_png);    // assets/thermometer_x16.png
+LV_IMG_DECLARE(ui_img_humidity_x16_png);    // assets/humidity_x16.png
+LV_IMG_DECLARE(ui_img_gauge_x16_png);    // assets/gauge_x16.png
 
 // UI INIT
 void ui_init(void);
