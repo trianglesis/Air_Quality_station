@@ -72,25 +72,6 @@ void led_co2(void * pvParameters) {
     }
 }
 
-void create_co2_sensor(void) {
-    // TODO: declare VARs later
-    i2c_dev_t dev = { 0 };
-    ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, SCD4X_SDA_PIN, SCD4X_SCL_PIN));
-
-    ESP_LOGI(TAG, "Initializing sensor...");
-    ESP_ERROR_CHECK(scd4x_wake_up(&dev));
-    ESP_ERROR_CHECK(scd4x_stop_periodic_measurement(&dev));
-    ESP_ERROR_CHECK(scd4x_reinit(&dev));
-    ESP_LOGI(TAG, "Sensor initialized");
-
-    uint16_t serial[3];
-    ESP_ERROR_CHECK(scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2));
-    ESP_LOGI(TAG, "Sensor serial number: 0x%04x%04x%04x", serial[0], serial[1], serial[2]);
-
-    ESP_ERROR_CHECK(scd4x_start_periodic_measurement(&dev));
-    ESP_LOGI(TAG, "Periodic measurements started");
-
-}
 
 void create_mq_co2() {
     // Message Queue

@@ -67,6 +67,7 @@ IMPORTANT: Switch branch to a released last: `9.2.2`
 
 - `cd .\components\lvgl\`
 - `git checkout v9.2.2`
+- `git checkout tags/1.0.0`
 
 
 Setup static vars `main\lvgl_driver\lvgl_driver.h`:
@@ -387,7 +388,7 @@ Ooold:
 
 If branch
 
-- `cd .\components\`
+- `cd .\components\embedded-i2c-scd4x`
 - `git checkout branch`
 
 Update CMake
