@@ -355,16 +355,22 @@ Install:
 Usual 1st cmd OR better local (to be able to configure lvgl for once)
 
 - `idf.py add-dependency "lvgl/lvgl^9.2.2"`
-- `git submodule add https://github.com/Sensirion/embedded-i2c-scd4x.git components/scd4x`
+- `git submodule add https://github.com/Sensirion/embedded-i2c-scd4x.git components`
+- `git submodule add https://github.com/UncleRus/esp-idf-lib.git components`
 
 Into the ignored folder (not to add the full other repo in my repo): 
 
-- `git submodule add -f https://github.com/Sensirion/embedded-i2c-scd4x.git components/scd4x`
+- `git submodule add -f https://github.com/Sensirion/embedded-i2c-scd4x.git components`
+- `git submodule add -f https://github.com/UncleRus/esp-idf-lib.git components`
 
 If branch
 
 - `cd .\components\scd4x\`
 - `git checkout branch`
+
+## bme680
+
+https://github.com/UncleRus/esp-idf-lib
 
 
 # Assets

@@ -224,7 +224,11 @@ And check web `/` to see  `This is SD card web page`
 # Sensors
 
 
-## CO2
+## CO2 SCD41
+
+Check different drivers:
+- https://esp-idf-lib.readthedocs.io/en/latest/groups/scd4x.html
+- https://github.com/Sensirion/embedded-i2c-scd4x/tree/master#
 
 `https://github.com/Sensirion/embedded-i2c-scd4x`
 
@@ -233,7 +237,9 @@ And check web `/` to see  `This is SD card web page`
 
 - [More](how_to_basics/README.md#scd4x)
 
+## Air temp, humid, bme680
 
+https://github.com/UncleRus/esp-idf-lib
 
 # Links, help, forums and etc
 
