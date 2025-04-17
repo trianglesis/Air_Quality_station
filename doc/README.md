@@ -81,6 +81,12 @@ Check float enabled, or UI will not show you float numbers.
 
 `LV_USE_FLOAT`
 
+Gradient is not working, check:
+
+`LV_USE_DRAW_SW_COMPLEX_GRADIENTS 1`
+
+Doesn't work yet
+
 
 ### Led
 
@@ -215,11 +221,26 @@ curl -X POST  http://192.168.1.225:80/delete/index.html?replace=1
 
 And check web `/` to see  `This is SD card web page`
 
+# Sensors
+
+
+## CO2
+
+`https://github.com/Sensirion/embedded-i2c-scd4x`
+
+- `idf.py add-dependency "lvgl/lvgl^9.2.2"`
+- `git submodule add https://github.com/Sensirion/embedded-i2c-scd4x.git components/scd4x`
+
+- [More](how_to_basics/README.md#scd4x)
+
+
+
 # Links, help, forums and etc
 
 Use this list to get more info about each step here and all possible workarounds.
 
 - [Waveshare](https://www.waveshare.com/wiki/ESP32-C6-LCD-1.47)
+
 - [LVGL](https://docs.lvgl.io/9.2/overview/index.html)
   - [Widgets](https://docs.lvgl.io/9.2/API/widgets/index.html)
 - This [topic](https://forum.lvgl.io/t/gestures-are-slow-perceiving-only-detecting-one-of-5-10-tries/18515/101) helped me a lot to understand the proper LCD driver setup and display rotation and colors.
@@ -227,4 +248,5 @@ Use this list to get more info about each step here and all possible workarounds
   - The [post](https://forum.lvgl.io/t/gestures-are-slow-perceiving-only-detecting-one-of-5-10-tries/18515/60) about rotation.
   - Fix rotated display dead zones [post](https://forum.lvgl.io/t/gestures-are-slow-perceiving-only-detecting-one-of-5-10-tries/18515/86)
   - Fix display invertion [post](https://forum.lvgl.io/t/lvgl-9-2-2-esp32-c6-lcd-1-47-idf-5-4-1-st7789v3/20871)
+
 - This [repo](https://github.com/serdartoren/ESP32-S3_HMI_Squareline_Example) helped me to understand `Square Line Studio` expoting and compiling.

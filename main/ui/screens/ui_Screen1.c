@@ -10,6 +10,20 @@ void ui_Screen1_screen_init(void)
     ui_Screen1 = lv_obj_create(NULL);
     lv_obj_remove_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
+    ui_Panel2 = lv_obj_create(ui_Screen1);
+    lv_obj_set_width(ui_Panel2, 78);
+    lv_obj_set_height(ui_Panel2, 32);
+    lv_obj_set_x(ui_Panel2, -70);
+    lv_obj_set_y(ui_Panel2, -24);
+    lv_obj_set_align(ui_Panel2, LV_ALIGN_CENTER);
+    lv_obj_remove_flag(ui_Panel2, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_set_style_bg_color(ui_Panel2, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_Panel2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_color(ui_Panel2, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_main_stop(ui_Panel2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_stop(ui_Panel2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui_Panel2, LV_GRAD_DIR_HOR, LV_PART_MAIN | LV_STATE_DEFAULT);
+
     ui_ArcCO2 = lv_arc_create(ui_Screen1);
     lv_obj_set_width(ui_ArcCO2, 165);
     lv_obj_set_height(ui_ArcCO2, 165);
@@ -178,9 +192,10 @@ void ui_Screen1_screen_init(void)
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
 
     ui_BarHumidity = lv_bar_create(ui_Screen1);
-    lv_bar_set_value(ui_BarHumidity, 50, LV_ANIM_OFF);
+    lv_bar_set_range(ui_BarHumidity, 1, 100);
+    lv_bar_set_value(ui_BarHumidity, 21, LV_ANIM_OFF);
     lv_bar_set_start_value(ui_BarHumidity, 0, LV_ANIM_OFF);
-    lv_obj_set_width(ui_BarHumidity, 30);
+    lv_obj_set_width(ui_BarHumidity, 25);
     lv_obj_set_height(ui_BarHumidity, 80);
     lv_obj_set_x(ui_BarHumidity, 120);
     lv_obj_set_y(ui_BarHumidity, -5);
@@ -248,9 +263,9 @@ void ui_Screen1_screen_init(void)
 
     ui_BarTemperature = lv_bar_create(ui_Screen1);
     lv_bar_set_range(ui_BarTemperature, 1, 50);
-    lv_bar_set_value(ui_BarTemperature, 25, LV_ANIM_OFF);
+    lv_bar_set_value(ui_BarTemperature, 17, LV_ANIM_OFF);
     lv_bar_set_start_value(ui_BarTemperature, 0, LV_ANIM_OFF);
-    lv_obj_set_width(ui_BarTemperature, 30);
+    lv_obj_set_width(ui_BarTemperature, 25);
     lv_obj_set_height(ui_BarTemperature, 80);
     lv_obj_set_x(ui_BarTemperature, 50);
     lv_obj_set_y(ui_BarTemperature, -5);

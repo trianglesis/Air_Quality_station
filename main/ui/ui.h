@@ -19,6 +19,7 @@ extern "C" {
 // SCREEN: ui_Screen1
 void ui_Screen1_screen_init(void);
 extern lv_obj_t * ui_Screen1;
+extern lv_obj_t * ui_Panel2;
 extern lv_obj_t * ui_ArcCO2;
 extern lv_obj_t * ui_LabelCo2Count;
 extern lv_obj_t * ui_LabelCo2;

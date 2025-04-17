@@ -52,6 +52,23 @@ Setup LCD usage `main\display_driver\ST7789V3.c`:
 
 ## LVGL
 
+Install:
+
+Usual 1st cmd OR better local (to be able to configure lvgl for once)
+
+- `idf.py add-dependency "lvgl/lvgl^9.2.2"`
+- `git submodule add https://github.com/lvgl/lvgl.git components/lvgl`
+
+Into the ignored folder (not to add the full other repo in my repo): 
+
+- `git submodule add -f https://github.com/lvgl/lvgl.git components/lvgl`
+
+IMPORTANT: Switch branch to a released last: `9.2.2`
+
+- `cd .\components\lvgl\`
+- `git checkout v9.2.2`
+
+
 Setup static vars `main\lvgl_driver\lvgl_driver.h`:
 
 ```code
@@ -328,9 +345,26 @@ if (mq_co2 > 1) {
 ```
 
 
+# Sensors
 
 
+## scd4x
 
+Install:
+
+Usual 1st cmd OR better local (to be able to configure lvgl for once)
+
+- `idf.py add-dependency "lvgl/lvgl^9.2.2"`
+- `git submodule add https://github.com/Sensirion/embedded-i2c-scd4x.git components/scd4x`
+
+Into the ignored folder (not to add the full other repo in my repo): 
+
+- `git submodule add -f https://github.com/Sensirion/embedded-i2c-scd4x.git components/scd4x`
+
+If branch
+
+- `cd .\components\scd4x\`
+- `git checkout branch`
 
 
 # Assets
