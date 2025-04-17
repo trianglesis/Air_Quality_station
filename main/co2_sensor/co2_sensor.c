@@ -1,7 +1,6 @@
 
 #include "co2_sensor.h"
 #include "led_driver.h"
-#include "scd4x.h"
 
 static const char *TAG = "co2-sensor";
 
