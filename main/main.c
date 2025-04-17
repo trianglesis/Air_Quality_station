@@ -8,6 +8,8 @@
 #include "freertos/semphr.h"
 #include "esp_timer.h"
 
+#include "co2_sensor.h"
+
 #include "ST7789V3.h"
 #include "card_driver.h"
 #include "lvgl_driver.h"
@@ -15,7 +17,6 @@
 #include "local_flash.h"
 #include "wifi_ap.h"
 #include "webserver.h"
-#include "co2_sensor.h"
 
 #include "esp_log.h"
 #include "esp_check.h"
@@ -26,6 +27,7 @@
 #include "lvgl.h"
 // For SQ Line Studio
 #include "ui/ui.h"
+
 
 static const char *TAG = "co2station";
 
@@ -51,7 +53,7 @@ static void lvgl_task(void * pvParameters) {
     esp_err_t ret;
 
     int to_wait_ms = 10;
-    int co2_counter; // data type should be same as queue item type
+    int co2_ppm; // data type should be same as queue item type
     const TickType_t xTicksToWait = pdMS_TO_TICKS(to_wait_ms);
 
     esp_log_level_set("lcd_panel", ESP_LOG_VERBOSE);
@@ -72,11 +74,11 @@ static void lvgl_task(void * pvParameters) {
         if (esp_timer_get_time()/1000 - curtime > 1000) {
             curtime = esp_timer_get_time()/1000;
             // mq_co2 is a pointer now, do not check its len, always peek
-            xQueuePeek(mq_co2, (void *)&co2_counter, xTicksToWait);
+            xQueuePeek(mq_co2, (void *)&co2_ppm, xTicksToWait);
 
             // Init SQ Line Studio elements
-            lv_arc_set_value(ui_Arc1, co2_counter);
-            lv_label_set_text_fmt(ui_Label1, "%d", co2_counter);
+            lv_arc_set_value(ui_Arc1, co2_ppm);
+            lv_label_set_text_fmt(ui_Label1, "%d", co2_ppm);
             lv_label_set_text(ui_Label2, "CO2");
             lv_label_set_text(ui_Label3, "ppm");
             // lv_label_set_text_fmt(ui_Label4, "SD: %ld GB", SDCard_Size);
@@ -128,8 +130,6 @@ void app_main() {
     ESP_ERROR_CHECK(display_init());
     
     // Create a set of tasks to read sensors and update LCD, LED and other elements
-    xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
-    xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(lvgl_task, "LVGL task", 8192, NULL, 9, NULL, tskNO_AFFINITY);
 
     /*

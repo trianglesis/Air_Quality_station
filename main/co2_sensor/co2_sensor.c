@@ -4,6 +4,8 @@
 
 static const char *TAG = "co2-sensor";
 
+QueueHandle_t mq_co2;
+
 static int co2_counter = 0;     // Faking CO2 levels by simple counter
 
 /*
@@ -60,41 +62,24 @@ Led HUE based on CO2 levels as task
 */
 void led_co2(void * pvParameters) {
     // Read from the queue
-    int co2_counter; // data type should be same as queue item type
+    int co2_ppm; // data type should be same as queue item type
     const TickType_t xTicksToWait = pdMS_TO_TICKS(wait_co2_to_led);
     while (1) {
         vTaskDelay(pdMS_TO_TICKS(wait_co2_to_led));  // idle between cycles
-        xQueuePeek(mq_co2, (void *)&co2_counter, xTicksToWait);
+        xQueuePeek(mq_co2, (void *)&co2_ppm, xTicksToWait);
         // Update LED colour
-        led_co2_severity(co2_counter);
+        led_co2_severity(co2_ppm);
     }
 }
 
-
-void create_mq_co2(void) {
+void create_mq_co2() {
     // Message Queue
-    mq_co2 = xQueueGenericCreate(mq_co2_len, sizeof(int), queueQUEUE_TYPE_SET);
-    if (mq_co2 == NULL) {
+    // static const uint8_t mq_co2_len = 1;
+    mq_co2 = xQueueGenericCreate(1, sizeof(int), queueQUEUE_TYPE_SET);
+    if (!mq_co2) {
         ESP_LOGE(TAG, "queue creation failed");
     }
+    xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+    xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
+    // return mq_co2;
 }
-
-/*
-if (mq_co2 > 1) {
-    // Destructive read
-    if (xQueueReceive(mq_co2, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
-        // ESP_LOGI(TAG, "received data = %d", co2_counter);
-    } else {
-        // Skip drawing if there is no mesages left
-        // ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
-    }
-} else {
-    // Queue recieve, non destructive! Always with xQueueOverwrite
-    if (xQueuePeek(mq_co2, (void *)&co2_counter, xTicksToWait) == pdTRUE) {
-        // ESP_LOGI(TAG, "received data = %d", co2_counter);
-    } else {
-        // Skip drawing if there is no mesages left
-        // ESP_LOGI(TAG, "Did not received data in the past %d ms", to_wait_ms);
-    }
-}
-*/
