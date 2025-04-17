@@ -1,8 +1,9 @@
-
 #include "co2_sensor.h"
 #include "led_driver.h"
 
 static const char *TAG = "co2-sensor";
+static const char* TAG = "sensirion_i2c";
+
 
 QueueHandle_t mq_co2;
 

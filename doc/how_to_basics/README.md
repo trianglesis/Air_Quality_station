@@ -104,7 +104,8 @@ PRO: Later check how to add events to LVGL objects, so it will show WiFi AP icon
 
 ## CMAKE
 
-https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html
+- https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html
+- https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html#example-component-cmakelists
 
 Updating `main\CMakeLists.txt` as soon as new modules added:
 
