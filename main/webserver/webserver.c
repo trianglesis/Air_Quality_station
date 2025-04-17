@@ -423,7 +423,7 @@ esp_err_t delete_post_handler(httpd_req_t *req)
     /* Skip leading "/delete" from URI to get filename */
     /* Note sizeof() counts NULL termination hence the -1 */
     const char *filename = get_path_from_uri(filepath, ((struct file_server_data *)req->user_ctx)->base_path,
-                                             req->uri  + sizeof("/delete") - 1, sizeof(filepath));
+                                             req->uri  + sizeof("/download/delete") - 1, sizeof(filepath));
     if (!filename) {
         /* Respond with 500 Internal Server Error */
         httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Filename too long");
@@ -448,12 +448,9 @@ esp_err_t delete_post_handler(httpd_req_t *req)
     /* Delete file */
     unlink(filepath);
 
-    /* Redirect onto root to see the updated file list */
+    /* Redirect onto /download/ to see the updated file list */
     httpd_resp_set_status(req, "303 See Other");
-    httpd_resp_set_hdr(req, "Location", "/");
-#ifdef CONFIG_EXAMPLE_HTTPD_CONN_CLOSE_HEADER
-    httpd_resp_set_hdr(req, "Connection", "close");
-#endif
+    httpd_resp_set_hdr(req, "Location", "/download/");
     httpd_resp_sendstr(req, "File deleted successfully");
     return ESP_OK;
 }
