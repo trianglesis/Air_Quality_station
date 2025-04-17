@@ -88,10 +88,7 @@ static void lvgl_task(void * pvParameters) {
             lv_label_set_text(ui_LabelCo2Ppm, "ppm");
 
             // Temerature, humidity etc: BME680
-            ESP_LOGI(TAG, "BME680 Received: t: %4.0f, hum: %4.0f, press: %4.0f, res: %4.0f", bme680_readings.temperature, bme680_readings.humidity, bme680_readings.pressure, bme680_readings.resistance);
-            // lv_obj_remove_flag(ui_ImageTemperature, LV_OBJ_FLAG_HIDDEN);
-            // lv_obj_remove_flag(ui_ImageHumidity, LV_OBJ_FLAG_HIDDEN);
-            // lv_obj_remove_flag(ui_ImagePressure, LV_OBJ_FLAG_HIDDEN);
+            // ESP_LOGI(TAG, "BME680 Received: t: %4.0f, hum: %4.0f, press: %4.0f, res: %4.0f", bme680_readings.temperature, bme680_readings.humidity, bme680_readings.pressure, bme680_readings.resistance);
 
             int32_t temperature;
             int32_t humidity;

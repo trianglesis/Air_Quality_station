@@ -2593,21 +2593,7 @@
               },
               {
                 "part": "lv.PART.INDICATOR",
-                "childs": [
-                  {
-                    "nid": 10000,
-                    "strtype": "_style/StyleState",
-                    "strval": "DEFAULT",
-                    "childs": [
-                      {
-                        "nid": 10510,
-                        "strtype": "_style/Bg_Radius",
-                        "InheritedType": 6
-                      }
-                    ],
-                    "InheritedType": 1
-                  }
-                ],
+                "childs": [],
                 "nid": 1070,
                 "strtype": "BAR/Style_indicator",
                 "strval": "lv.PART.INDICATOR, Rectangle",
@@ -3575,21 +3561,7 @@
               },
               {
                 "part": "lv.PART.INDICATOR",
-                "childs": [
-                  {
-                    "nid": 10000,
-                    "strtype": "_style/StyleState",
-                    "strval": "DEFAULT",
-                    "childs": [
-                      {
-                        "nid": 10510,
-                        "strtype": "_style/Bg_Radius",
-                        "InheritedType": 6
-                      }
-                    ],
-                    "InheritedType": 1
-                  }
-                ],
+                "childs": [],
                 "nid": 1070,
                 "strtype": "BAR/Style_indicator",
                 "strval": "lv.PART.INDICATOR, Rectangle",
@@ -3735,7 +3707,7 @@
               {
                 "nid": 1050,
                 "strtype": "IMAGE/Scale",
-                "integer": 200,
+                "integer": 256,
                 "InheritedType": 6
               },
               {
@@ -3892,7 +3864,7 @@
               {
                 "nid": 1050,
                 "strtype": "IMAGE/Scale",
-                "integer": 200,
+                "integer": 256,
                 "InheritedType": 6
               },
               {
@@ -4226,7 +4198,7 @@
     "uiExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main\\ui",
     "projectExportFolderPath": "D:\\Projects\\ESP\\projects\\ESP32-C6-OLED\\Air_Quality_station\\main",
     "custom_variable_prefix": "uic",
-    "backup_cnt": 908,
+    "backup_cnt": 920,
     "autosave_cnt": 0,
     "group_color_cnt": 0,
     "lvgl_version": "9.2.2",

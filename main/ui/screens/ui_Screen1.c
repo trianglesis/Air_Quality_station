@@ -188,8 +188,6 @@ void ui_Screen1_screen_init(void)
     lv_obj_remove_flag(ui_BarHumidity, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
                        LV_OBJ_FLAG_SNAPPABLE);     /// Flags
 
-    lv_obj_set_style_radius(ui_BarHumidity, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-
     //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
     if(lv_obj_get_style_pad_top(ui_BarHumidity, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_BarHumidity,
                                                                                                   lv_obj_get_style_pad_right(ui_BarHumidity, LV_PART_MAIN) + 1, LV_PART_MAIN);
@@ -258,8 +256,6 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_y(ui_BarTemperature, -5);
     lv_obj_set_align(ui_BarTemperature, LV_ALIGN_CENTER);
 
-    lv_obj_set_style_radius(ui_BarTemperature, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-
     //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
     if(lv_obj_get_style_pad_top(ui_BarTemperature, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_BarTemperature,
                                                                                                      lv_obj_get_style_pad_right(ui_BarTemperature, LV_PART_MAIN) + 1, LV_PART_MAIN);
@@ -272,7 +268,6 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_align(ui_Image1, LV_ALIGN_CENTER);
     lv_obj_add_flag(ui_Image1, LV_OBJ_FLAG_CLICKABLE);     /// Flags
     lv_obj_remove_flag(ui_Image1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_image_set_scale(ui_Image1, 200);
 
     ui_Image2 = lv_image_create(ui_Screen1);
     lv_image_set_src(ui_Image2, &ui_img_humidity_x32_png);
@@ -283,7 +278,6 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_align(ui_Image2, LV_ALIGN_CENTER);
     lv_obj_add_flag(ui_Image2, LV_OBJ_FLAG_CLICKABLE);     /// Flags
     lv_obj_remove_flag(ui_Image2, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_image_set_scale(ui_Image2, 200);
 
     ui_Image3 = lv_image_create(ui_Screen1);
     lv_image_set_src(ui_Image3, &ui_img_gauge_x16_png);
