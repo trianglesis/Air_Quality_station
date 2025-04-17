@@ -103,6 +103,8 @@ PRO: Later check how to add events to LVGL objects, so it will show WiFi AP icon
 
 ## CMAKE
 
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html
+
 Updating `main\CMakeLists.txt` as soon as new modules added:
 
 ```text
@@ -358,6 +360,11 @@ Usual 1st cmd OR better local (to be able to configure lvgl for once)
 - `git submodule add https://github.com/Sensirion/embedded-i2c-scd4x.git components`
 - `git submodule add https://github.com/UncleRus/esp-idf-lib.git components`
 
+OR
+- `cd components`
+- `git clone https://github.com/UncleRus/esp-idf-lib.git`
+
+
 Into the ignored folder (not to add the full other repo in my repo): 
 
 - `git submodule add -f https://github.com/Sensirion/embedded-i2c-scd4x.git components`
@@ -367,6 +374,30 @@ If branch
 
 - `cd .\components\scd4x\`
 - `git checkout branch`
+
+Update CMake
+
+```text
+# Drivers for different devices
+set(EXTRA_COMPONENT_DIRS ${CMAKE_SOURCE_DIR}/components/esp-idf-lib/components)
+```
+
+Or add a single element
+
+```text
+idf_component_register(SRCS "foo.c" "bar.c"
+                       INCLUDE_DIRS "include"
+                       REQUIRES mbedtls)
+```
+
+Or I don't understand the build fully, so I will now just copy files:
+
+```text
+main/co2_sensor/scd4x.c
+main/co2_sensor/scd4x.h
+```
+
+TODO: Check [CMakeLists.txt](https://github.com/UncleRus/esp-idf-lib/blob/a02cd6bb5190cab379125140780adcb8d88f9650/examples/scd4x/default/CMakeLists.txt)
 
 ## bme680
 

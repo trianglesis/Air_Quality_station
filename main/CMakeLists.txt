@@ -19,6 +19,7 @@ idf_component_register(
         "wifi/wifi_ap.c"
         "webserver/webserver.c"
         "co2_sensor/co2_sensor.c"
+        "co2_sensor/scd4x.c"  # Driver from repo
         "BME680/BME680.c"
         ${SRC_UI}
     INCLUDE_DIRS 
@@ -33,7 +34,7 @@ idf_component_register(
         "./co2_sensor"
         "./BME680"
         "ui"
-        )
+)
 
 idf_component_get_property(lvgl_lib lvgl__lvgl COMPONENT_LIB)
 target_compile_options(${lvgl_lib} PRIVATE -Wno-format)

@@ -18,6 +18,11 @@
 extern QueueHandle_t mq_co2;
 
 
+// TODO: Change to real!
+#define SCD4X_SCL_PIN 10
+#define SCD4X_SDA_PIN 11
+
+
 void co2_reading(void * pvParameters);
 void led_co2(void * pvParameters);
 void create_mq_co2(void);
