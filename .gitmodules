@@ -1,0 +1,3 @@
+[submodule "components/embedded-i2c-scd4x"]
+	path = components/embedded-i2c-scd4x
+	url = https://github.com/Sensirion/embedded-i2c-scd4x.git

@@ -114,6 +114,17 @@ Updating `main\CMakeLists.txt` as soon as new modules added:
 Using [example](https://github.com/trianglesis/ESP32-C6-LCD-1.47-Test-LVGL/blob/c95cb298858690e018c0155daccdb1463647a111/main/CMakeLists.txt) as ref.
 
 
+Adding new lib: `esp-idf-lib` in repo root reveals a lot of outdated in led:
+
+```log
+[1017/1611] Building C object esp-idf/led_strip/CMakeFiles/__idf_led_strip.dir/led_strip.c.obj
+In file included from D:/Projects/ESP/projects/ESP32-C6-OLED/Air_Quality_station/esp-idf-lib/components/led_strip/led_strip.h:40,
+                 from D:/Projects/ESP/projects/ESP32-C6-OLED/Air_Quality_station/esp-idf-lib/components/led_strip/led_strip.c:33:
+D:/Projects/ESP/Espressif/v5.4.1/esp-idf/components/driver/deprecated/driver/rmt.h:18:2: warning: #warning "The legacy RMT driver is deprecated, please use driver/rmt_tx.h and/or driver/rmt_rx.h" [-Wcpp]
+   18 | #warning "The legacy RMT driver is deprecated, please use driver/rmt_tx.h and/or driver/rmt_rx.h"
+```
+
+
 ## Tasks and Queues
 
 Use one of two approaches:
@@ -357,8 +368,10 @@ Install:
 Usual 1st cmd OR better local (to be able to configure lvgl for once)
 
 - `idf.py add-dependency "lvgl/lvgl^9.2.2"`
-- `git submodule add https://github.com/Sensirion/embedded-i2c-scd4x.git components`
-- `git submodule add https://github.com/UncleRus/esp-idf-lib.git components`
+- `git submodule add https://github.com/Sensirion/embedded-i2c-scd4x.git`
+
+Ooold:
+- `git submodule add https://github.com/UncleRus/esp-idf-lib.git`
 
 OR
 - `cd components`
@@ -367,12 +380,14 @@ OR
 
 Into the ignored folder (not to add the full other repo in my repo): 
 
-- `git submodule add -f https://github.com/Sensirion/embedded-i2c-scd4x.git components`
-- `git submodule add -f https://github.com/UncleRus/esp-idf-lib.git components`
+- `git submodule add -f https://github.com/Sensirion/embedded-i2c-scd4x.git`
+
+Ooold:
+- `git submodule add -f https://github.com/UncleRus/esp-idf-lib.git`
 
 If branch
 
-- `cd .\components\scd4x\`
+- `cd .\components\`
 - `git checkout branch`
 
 Update CMake

@@ -19,7 +19,6 @@ idf_component_register(
         "wifi/wifi_ap.c"
         "webserver/webserver.c"
         "co2_sensor/co2_sensor.c"
-        "co2_sensor/scd4x.c"  # Driver from repo
         "BME680/BME680.c"
         ${SRC_UI}
     INCLUDE_DIRS 

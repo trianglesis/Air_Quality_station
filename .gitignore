@@ -1,8 +1,8 @@
 build/
 sdkconfig
 sdkconfig.old
-managed_components/
 components/
+managed_components/
 doc/SquareLine_proj_files/autosave
 doc/SquareLine_proj_files/backup
 doc/SquareLine_proj_files/cache
