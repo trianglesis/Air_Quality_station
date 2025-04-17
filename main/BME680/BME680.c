@@ -30,25 +30,25 @@ void bme680_reading(void * pvParameters) {
         xQueueOverwrite(mq_bme680, (void *)&bme680_readings);
 
         // Make up and down
-        if (BME_temperature == 35) {
+        if (BME_temperature >= 45) {
             BME_temperature = 15;
         } else {
             BME_temperature++;
         }
         // Make up and down
-        if (BME_humidity == 100) {
+        if (BME_humidity >= 100) {
             BME_humidity = 15;
         } else {
             BME_humidity++;
         }
         // Make up and down
-        if (BME_pressure == 800) {
+        if (BME_pressure == 850) {
             BME_pressure = 700;
         } else {
             BME_pressure++;
         }
         // Make up and down
-        if (BME_resistance == 1500) {
+        if (BME_resistance >= 1500) {
             BME_resistance = 900;
         } else {
             BME_resistance++;

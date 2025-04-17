@@ -78,46 +78,64 @@ static void lvgl_task(void * pvParameters) {
             // mq_co2 is a pointer now, do not check its len, always peek
             xQueuePeek(mq_co2, (void *)&co2_ppm, xTicksToWait);
             xQueuePeek(mq_bme680, (void *)&bme680_readings, xTicksToWait);
-            
-            ESP_LOGI(TAG, "BME680 Received: t: %4.0f, hum: %4.0f, press: %4.0f, res: %4.0f", bme680_readings.temperature, bme680_readings.humidity, bme680_readings.pressure, bme680_readings.resistance);
-
+        
             // Init SQ Line Studio elements
-            lv_arc_set_value(ui_Arc1, co2_ppm);
-            lv_label_set_text_fmt(ui_Label1, "%d", co2_ppm);
-            lv_label_set_text(ui_Label2, "CO2");
-            lv_label_set_text(ui_Label3, "ppm");
+
+            // CO2 Arc SDC41
+            lv_arc_set_value(ui_ArcCO2, co2_ppm);
+            lv_label_set_text_fmt(ui_LabelCo2Count, "%d", co2_ppm);
+            lv_label_set_text(ui_LabelCo2, "CO2");
+            lv_label_set_text(ui_LabelCo2Ppm, "ppm");
+
+            // Temerature, humidity etc: BME680
+            ESP_LOGI(TAG, "BME680 Received: t: %4.0f, hum: %4.0f, press: %4.0f, res: %4.0f", bme680_readings.temperature, bme680_readings.humidity, bme680_readings.pressure, bme680_readings.resistance);
+            lv_obj_remove_flag(ui_ImageTemperature, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(ui_ImageHumidity, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_remove_flag(ui_ImagePressure, LV_OBJ_FLAG_HIDDEN);
+
+            lv_bar_set_value(ui_BarTemperature, bme680_readings.temperature, LV_ANIM_OFF);
+            lv_bar_set_value(ui_BarHumidity, bme680_readings.humidity, LV_ANIM_OFF);
+            lv_bar_set_value(ui_BarPressure, bme680_readings.pressure, LV_ANIM_OFF);
+
+            lv_label_set_text_fmt(ui_LabelTemperature, " %4.0f", bme680_readings.temperature);
+            lv_label_set_text_fmt(ui_LabelHumidity, " %4.0f", bme680_readings.humidity);
+            lv_label_set_text_fmt(ui_LabelPressure, " %4.0f", bme680_readings.pressure);
+            lv_label_set_text_fmt(ui_LabelAirQualityIndx, " AQI %4.0f", bme680_readings.resistance);
+
+            // Storage info
             // lv_label_set_text_fmt(ui_Label4, "SD: %ld GB", SDCard_Size);
-            lv_label_set_text_fmt(ui_Label4, "SD: %.0fGB/%.0fGB free", sd_free, sd_total);
+            lv_label_set_text_fmt(ui_LabelSdFree, "SD: %.0fGB/%.0fGB free", sd_free, sd_total);
             // Hardcode total as string 2Mb and save LCD space
-            lv_label_set_text_fmt(ui_Label5, "LFS: %.0fKB/%.0fKB used", littlefs_used, littlefs_total);
+            // lv_label_set_text_fmt(ui_Label5, "LFS: %.0fKB/%.0fKB used", littlefs_used, littlefs_total);
+            lv_label_set_text_fmt(ui_LabelLfsUsed, "LFS: %.0fKB/2MB used", littlefs_used);
+            
+            // Network info
             if (wifi_ap_mode == true && found_wifi == false) {
                 // Show Wifi AP icon if it's active and users connected count
-                lv_label_set_text_fmt(ui_Label6, "%d", connected_users);
-                lv_obj_remove_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_remove_flag(ui_Label6, LV_OBJ_FLAG_HIDDEN);
+                lv_label_set_text_fmt(ui_LabelApUsers, "%d", connected_users);
+                lv_obj_remove_flag(ui_ImageAPMode, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_remove_flag(ui_LabelApUsers, LV_OBJ_FLAG_HIDDEN);
             } else if (found_wifi == true) {
                 // Show WiFi local Icon and IP
-                lv_label_set_text_fmt(ui_Label7, "%s", ip_string);
-                lv_obj_remove_flag(ui_Image2, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_remove_flag(ui_Label7, LV_OBJ_FLAG_HIDDEN);
+                lv_label_set_text_fmt(ui_LabelipAdress, "%s", ip_string);
+                lv_obj_remove_flag(ui_ImageLocalWiFI, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_remove_flag(ui_LabelipAdress, LV_OBJ_FLAG_HIDDEN);
                 // Hide AP mode icons
-                lv_obj_add_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_add_flag(ui_Label6, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(ui_LabelApUsers, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(ui_ImageAPMode, LV_OBJ_FLAG_HIDDEN);
             } else {
                 // Lables and icons are hidden by default!
                 // Hide all other connection icons
-                lv_obj_add_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_add_flag(ui_Label6, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_add_flag(ui_Image2, LV_OBJ_FLAG_HIDDEN);
-                lv_obj_add_flag(ui_Label7, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(ui_LabelApUsers, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(ui_ImageAPMode, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(ui_LabelipAdress, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(ui_ImageLocalWiFI, LV_OBJ_FLAG_HIDDEN);
                 // Show no WiFi Icon
-                lv_obj_remove_flag(ui_Image3, LV_OBJ_FLAG_HIDDEN);
+                lv_obj_remove_flag(ui_ImageNoWiFi, LV_OBJ_FLAG_HIDDEN);
             }
         }
     }
     // Debug
-    
-    
 }
 
 

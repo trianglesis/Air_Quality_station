@@ -11,17 +11,27 @@
 // SCREEN: ui_Screen1
 void ui_Screen1_screen_init(void);
 lv_obj_t * ui_Screen1;
-lv_obj_t * ui_Arc1;
-lv_obj_t * ui_Label1;
-lv_obj_t * ui_Label2;
-lv_obj_t * ui_Label3;
-lv_obj_t * ui_Label4;
-lv_obj_t * ui_Label5;
-lv_obj_t * ui_Image1;
-lv_obj_t * ui_Label6;
-lv_obj_t * ui_Image2;
-lv_obj_t * ui_Label7;
-lv_obj_t * ui_Image3;
+lv_obj_t * ui_ArcCO2;
+lv_obj_t * ui_LabelCo2Count;
+lv_obj_t * ui_LabelCo2;
+lv_obj_t * ui_LabelCo2Ppm;
+lv_obj_t * ui_LabelSdFree;
+lv_obj_t * ui_LabelLfsUsed;
+lv_obj_t * ui_ImageAPMode;
+lv_obj_t * ui_LabelApUsers;
+lv_obj_t * ui_ImageLocalWiFI;
+lv_obj_t * ui_LabelipAdress;
+lv_obj_t * ui_ImageNoWiFi;
+lv_obj_t * ui_BarHumidity;
+lv_obj_t * ui_BarTemperature;
+lv_obj_t * ui_BarPressure;
+lv_obj_t * ui_ImageTemperature;
+lv_obj_t * ui_ImageHumidity;
+lv_obj_t * ui_ImagePressure;
+lv_obj_t * ui_LabelTemperature;
+lv_obj_t * ui_LabelHumidity;
+lv_obj_t * ui_LabelPressure;
+lv_obj_t * ui_LabelAirQualityIndx;
 // CUSTOM VARIABLES
 
 // EVENTS

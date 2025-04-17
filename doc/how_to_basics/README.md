@@ -166,6 +166,7 @@ OR: We need to plug-unplug SD Card to upload html files, OR create a write metho
 
 ## Web Server
 
+
 Can use any example:
 
 - [IDF Example file serving](https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/protocols/http_server/file_serving/README.md)
@@ -187,6 +188,7 @@ File server methods and URI at `file_server` module:
 Allow upload files ONLY when connected to a trusted Wifi, but not at AP mode?
 
 UPD: Get web and file server in ONE module.
+
 TODO: Make dynamical load\unload fileserver handles as soon as local WiFi lost
 
 ### File serving
@@ -324,3 +326,19 @@ if (mq_co2 > 1) {
     }
 }
 ```
+
+
+
+
+
+
+
+# Assets
+
+- https://www.flaticon.com/free-icons/
+
+# END
+
+## END
+
+### END

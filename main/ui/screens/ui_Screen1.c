@@ -10,168 +10,311 @@ void ui_Screen1_screen_init(void)
     ui_Screen1 = lv_obj_create(NULL);
     lv_obj_remove_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
-    ui_Arc1 = lv_arc_create(ui_Screen1);
-    lv_obj_set_width(ui_Arc1, 165);
-    lv_obj_set_height(ui_Arc1, 165);
-    lv_obj_set_x(ui_Arc1, -70);
-    lv_obj_set_y(ui_Arc1, 9);
-    lv_obj_set_align(ui_Arc1, LV_ALIGN_CENTER);
-    lv_obj_remove_flag(ui_Arc1, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE |
+    ui_ArcCO2 = lv_arc_create(ui_Screen1);
+    lv_obj_set_width(ui_ArcCO2, 165);
+    lv_obj_set_height(ui_ArcCO2, 165);
+    lv_obj_set_x(ui_ArcCO2, -70);
+    lv_obj_set_y(ui_ArcCO2, 9);
+    lv_obj_set_align(ui_ArcCO2, LV_ALIGN_CENTER);
+    lv_obj_remove_flag(ui_ArcCO2, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE |
                        LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC |
                        LV_OBJ_FLAG_SCROLL_MOMENTUM | LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-    lv_arc_set_range(ui_Arc1, 0, 3000);
-    lv_arc_set_value(ui_Arc1, 500);
-    lv_obj_set_style_arc_color(ui_Arc1, lv_color_hex(0xB9B9B9), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_opa(ui_Arc1, 80, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_width(ui_Arc1, 18, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_rounded(ui_Arc1, false, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_arc_set_range(ui_ArcCO2, 0, 3000);
+    lv_arc_set_value(ui_ArcCO2, 500);
+    lv_obj_set_style_arc_color(ui_ArcCO2, lv_color_hex(0xB9B9B9), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_opa(ui_ArcCO2, 80, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_width(ui_ArcCO2, 18, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_rounded(ui_ArcCO2, false, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    lv_obj_set_style_arc_width(ui_Arc1, 18, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_rounded(ui_Arc1, false, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_arc_image_src(ui_Arc1, &ui_img_risk_165_142_png, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_width(ui_ArcCO2, 18, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_rounded(ui_ArcCO2, false, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_image_src(ui_ArcCO2, &ui_img_risk_165_142_png, LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
-    lv_obj_set_style_border_color(ui_Arc1, lv_color_hex(0xFFFFFF), LV_PART_KNOB | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_opa(ui_Arc1, 255, LV_PART_KNOB | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(ui_Arc1, 3, LV_PART_KNOB | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(ui_ArcCO2, lv_color_hex(0xFFFFFF), LV_PART_KNOB | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_opa(ui_ArcCO2, 255, LV_PART_KNOB | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui_ArcCO2, 3, LV_PART_KNOB | LV_STATE_DEFAULT);
 
-    ui_Label1 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label1, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label1, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label1, -70);
-    lv_obj_set_y(ui_Label1, 10);
-    lv_obj_set_align(ui_Label1, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label1, "8888");
-    lv_obj_remove_flag(ui_Label1, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+    ui_LabelCo2Count = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelCo2Count, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelCo2Count, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelCo2Count, -70);
+    lv_obj_set_y(ui_LabelCo2Count, 10);
+    lv_obj_set_align(ui_LabelCo2Count, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelCo2Count, "8888");
+    lv_obj_remove_flag(ui_LabelCo2Count,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_text_letter_space(ui_LabelCo2Count, -2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui_LabelCo2Count, -1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui_LabelCo2Count, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_LabelCo2Count, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_LabelCo2 = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelCo2, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelCo2, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelCo2, -71);
+    lv_obj_set_y(ui_LabelCo2, -25);
+    lv_obj_set_align(ui_LabelCo2, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelCo2, "CO2");
+    lv_obj_remove_flag(ui_LabelCo2, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
                        LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-    lv_obj_set_style_text_letter_space(ui_Label1, -2, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_line_space(ui_Label1, -1, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui_Label1, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_Label1, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui_LabelCo2, lv_color_hex(0xFF5E00), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_LabelCo2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui_LabelCo2, -1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui_LabelCo2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_LabelCo2, &lv_font_montserrat_32, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    ui_Label2 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label2, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label2, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label2, -71);
-    lv_obj_set_y(ui_Label2, -25);
-    lv_obj_set_align(ui_Label2, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label2, "CO2");
-    lv_obj_remove_flag(ui_Label2, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+    ui_LabelCo2Ppm = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelCo2Ppm, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelCo2Ppm, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelCo2Ppm, -71);
+    lv_obj_set_y(ui_LabelCo2Ppm, 41);
+    lv_obj_set_align(ui_LabelCo2Ppm, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelCo2Ppm, "ppm");
+    lv_obj_remove_flag(ui_LabelCo2Ppm, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_text_letter_space(ui_LabelCo2Ppm, -1, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui_LabelCo2Ppm, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui_LabelCo2Ppm, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_LabelCo2Ppm, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_LabelSdFree = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelSdFree, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelSdFree, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelSdFree, 233);
+    lv_obj_set_y(ui_LabelSdFree, -5);
+    lv_obj_set_align(ui_LabelSdFree, LV_ALIGN_BOTTOM_LEFT);
+    lv_label_set_text(ui_LabelSdFree, "SD: %.0f GB free");
+    lv_obj_remove_flag(ui_LabelSdFree, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
                        LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-    lv_obj_set_style_text_color(ui_Label2, lv_color_hex(0xFF5E00), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui_Label2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_letter_space(ui_Label2, -1, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_line_space(ui_Label2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_Label2, &lv_font_montserrat_32, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui_LabelSdFree, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_LabelSdFree, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui_LabelSdFree, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_LabelSdFree, &lv_font_montserrat_10, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    ui_Label3 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label3, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label3, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label3, -71);
-    lv_obj_set_y(ui_Label3, 41);
-    lv_obj_set_align(ui_Label3, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label3, "ppm");
-    lv_obj_remove_flag(ui_Label3, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
-                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-    lv_obj_set_style_text_letter_space(ui_Label3, -1, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_line_space(ui_Label3, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui_Label3, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_Label3, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_Label4 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label4, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label4, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label4, -3);
-    lv_obj_set_y(ui_Label4, -17);
-    lv_obj_set_align(ui_Label4, LV_ALIGN_BOTTOM_RIGHT);
-    lv_label_set_text(ui_Label4, "SD: %.0fGB/%.0fGB free");
-    lv_obj_remove_flag(ui_Label4, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+    ui_LabelLfsUsed = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelLfsUsed, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelLfsUsed, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelLfsUsed, -92);
+    lv_obj_set_y(ui_LabelLfsUsed, -5);
+    lv_obj_set_align(ui_LabelLfsUsed, LV_ALIGN_BOTTOM_RIGHT);
+    lv_label_set_text(ui_LabelLfsUsed, "LFS: %.0fKB used");
+    lv_obj_remove_flag(ui_LabelLfsUsed, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
                        LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-    lv_obj_set_style_text_color(ui_Label4, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui_Label4, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui_Label4, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_Label4, &lv_font_montserrat_10, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui_LabelLfsUsed, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_LabelLfsUsed, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui_LabelLfsUsed, LV_TEXT_ALIGN_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_LabelLfsUsed, &lv_font_montserrat_10, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    ui_Label5 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label5, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label5, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label5, -3);
-    lv_obj_set_y(ui_Label5, -4);
-    lv_obj_set_align(ui_Label5, LV_ALIGN_BOTTOM_RIGHT);
-    lv_label_set_text(ui_Label5, "LFS: %.0fKB/%.0fKB used");
-    lv_obj_remove_flag(ui_Label5, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
-                       LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
-                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-    lv_obj_set_style_text_color(ui_Label5, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui_Label5, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui_Label5, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_Label5, &lv_font_montserrat_10, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_Image1 = lv_image_create(ui_Screen1);
-    lv_image_set_src(ui_Image1, &ui_img_signal_x16_png);
-    lv_obj_set_width(ui_Image1, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Image1, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Image1, -148);
-    lv_obj_set_y(ui_Image1, -73);
-    lv_obj_set_align(ui_Image1, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);     /// Flags
-    lv_obj_remove_flag(ui_Image1, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
-                       LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
-                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-
-    ui_Label6 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label6, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label6, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label6, 9);
-    lv_obj_set_y(ui_Label6, -60);
-    lv_obj_set_align(ui_Label6, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_Label6, "0");
-    lv_obj_add_flag(ui_Label6, LV_OBJ_FLAG_HIDDEN);     /// Flags
-    lv_obj_remove_flag(ui_Label6, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
-                       LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
-                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
-    lv_obj_set_style_text_color(ui_Label6, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui_Label6, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_Label6, &lv_font_montserrat_10, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_Image2 = lv_image_create(ui_Screen1);
-    lv_image_set_src(ui_Image2, &ui_img_wifi_x16_png);
-    lv_obj_set_width(ui_Image2, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Image2, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Image2, -145);
-    lv_obj_set_y(ui_Image2, 73);
-    lv_obj_set_align(ui_Image2, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_Image2, LV_OBJ_FLAG_HIDDEN);     /// Flags
-    lv_obj_remove_flag(ui_Image2, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+    ui_ImageAPMode = lv_image_create(ui_Screen1);
+    lv_image_set_src(ui_ImageAPMode, &ui_img_signal_x16_png);
+    lv_obj_set_width(ui_ImageAPMode, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_ImageAPMode, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_ImageAPMode, -148);
+    lv_obj_set_y(ui_ImageAPMode, -73);
+    lv_obj_set_align(ui_ImageAPMode, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_ImageAPMode, LV_OBJ_FLAG_HIDDEN);     /// Flags
+    lv_obj_remove_flag(ui_ImageAPMode, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
                        LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
 
-    ui_Label7 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label7, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label7, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label7, 26);
-    lv_obj_set_y(ui_Label7, 76);
-    lv_obj_set_align(ui_Label7, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_Label7, "192.168.255.255");
-    lv_obj_add_flag(ui_Label7, LV_OBJ_FLAG_HIDDEN);     /// Flags
-    lv_obj_remove_flag(ui_Label7, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+    ui_LabelApUsers = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelApUsers, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelApUsers, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelApUsers, 9);
+    lv_obj_set_y(ui_LabelApUsers, -60);
+    lv_obj_set_align(ui_LabelApUsers, LV_ALIGN_LEFT_MID);
+    lv_label_set_text(ui_LabelApUsers, "0");
+    lv_obj_add_flag(ui_LabelApUsers, LV_OBJ_FLAG_HIDDEN);     /// Flags
+    lv_obj_remove_flag(ui_LabelApUsers, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+                       LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_obj_set_style_text_color(ui_LabelApUsers, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_LabelApUsers, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_LabelApUsers, &lv_font_montserrat_10, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_ImageLocalWiFI = lv_image_create(ui_Screen1);
+    lv_image_set_src(ui_ImageLocalWiFI, &ui_img_wifi_x16_png);
+    lv_obj_set_width(ui_ImageLocalWiFI, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_ImageLocalWiFI, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_ImageLocalWiFI, -145);
+    lv_obj_set_y(ui_ImageLocalWiFI, 73);
+    lv_obj_set_align(ui_ImageLocalWiFI, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_ImageLocalWiFI, LV_OBJ_FLAG_HIDDEN);     /// Flags
+    lv_obj_remove_flag(ui_ImageLocalWiFI,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+
+    ui_LabelipAdress = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelipAdress, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelipAdress, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelipAdress, 26);
+    lv_obj_set_y(ui_LabelipAdress, 76);
+    lv_obj_set_align(ui_LabelipAdress, LV_ALIGN_LEFT_MID);
+    lv_label_set_text(ui_LabelipAdress, "192.168.255.255");
+    lv_obj_add_flag(ui_LabelipAdress, LV_OBJ_FLAG_HIDDEN);     /// Flags
+    lv_obj_remove_flag(ui_LabelipAdress,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
                        LV_OBJ_FLAG_SNAPPABLE);     /// Flags
-    lv_obj_set_style_text_color(ui_Label7, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui_Label7, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_Label7, &lv_font_montserrat_10, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui_LabelipAdress, lv_color_hex(0x808080), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui_LabelipAdress, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_LabelipAdress, &lv_font_montserrat_10, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    ui_Image3 = lv_image_create(ui_Screen1);
-    lv_image_set_src(ui_Image3, &ui_img_1678184450);
-    lv_obj_set_width(ui_Image3, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Image3, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Image3, -148);
-    lv_obj_set_y(ui_Image3, -74);
-    lv_obj_set_align(ui_Image3, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_Image3, LV_OBJ_FLAG_HIDDEN);     /// Flags
-    lv_obj_remove_flag(ui_Image3, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+    ui_ImageNoWiFi = lv_image_create(ui_Screen1);
+    lv_image_set_src(ui_ImageNoWiFi, &ui_img_1678184450);
+    lv_obj_set_width(ui_ImageNoWiFi, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_ImageNoWiFi, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_ImageNoWiFi, -148);
+    lv_obj_set_y(ui_ImageNoWiFi, -74);
+    lv_obj_set_align(ui_ImageNoWiFi, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_ImageNoWiFi, LV_OBJ_FLAG_HIDDEN);     /// Flags
+    lv_obj_remove_flag(ui_ImageNoWiFi, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
                        LV_OBJ_FLAG_SNAPPABLE | LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
                        LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+
+    ui_BarHumidity = lv_bar_create(ui_Screen1);
+    lv_bar_set_value(ui_BarHumidity, 100, LV_ANIM_OFF);
+    lv_bar_set_start_value(ui_BarHumidity, 0, LV_ANIM_OFF);
+    lv_obj_set_width(ui_BarHumidity, 15);
+    lv_obj_set_height(ui_BarHumidity, 70);
+    lv_obj_set_x(ui_BarHumidity, 84);
+    lv_obj_set_y(ui_BarHumidity, 55);
+    lv_obj_set_align(ui_BarHumidity, LV_ALIGN_TOP_MID);
+    lv_obj_remove_flag(ui_BarHumidity, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+                       LV_OBJ_FLAG_SNAPPABLE);     /// Flags
+
+    lv_obj_set_style_bg_color(ui_BarHumidity, lv_color_hex(0xFFA100), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_BarHumidity, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_color(ui_BarHumidity, lv_color_hex(0xB1FFF8), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_main_stop(ui_BarHumidity, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_stop(ui_BarHumidity, 130, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui_BarHumidity, LV_GRAD_DIR_VER, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+
+    //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
+    if(lv_obj_get_style_pad_top(ui_BarHumidity, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_BarHumidity,
+                                                                                                  lv_obj_get_style_pad_right(ui_BarHumidity, LV_PART_MAIN) + 1, LV_PART_MAIN);
+    ui_BarTemperature = lv_bar_create(ui_Screen1);
+    lv_bar_set_range(ui_BarTemperature, -20, 40);
+    lv_bar_set_value(ui_BarTemperature, 40, LV_ANIM_OFF);
+    lv_bar_set_start_value(ui_BarTemperature, 0, LV_ANIM_OFF);
+    lv_obj_set_width(ui_BarTemperature, 15);
+    lv_obj_set_height(ui_BarTemperature, 70);
+    lv_obj_set_x(ui_BarTemperature, 43);
+    lv_obj_set_y(ui_BarTemperature, 55);
+    lv_obj_set_align(ui_BarTemperature, LV_ALIGN_TOP_MID);
+    lv_obj_remove_flag(ui_BarTemperature,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+                       LV_OBJ_FLAG_SNAPPABLE);     /// Flags
+
+    lv_obj_set_style_bg_color(ui_BarTemperature, lv_color_hex(0xD20000), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_BarTemperature, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_color(ui_BarTemperature, lv_color_hex(0x65B9FF), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_main_stop(ui_BarTemperature, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_stop(ui_BarTemperature, 130, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui_BarTemperature, LV_GRAD_DIR_VER, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+
+    //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
+    if(lv_obj_get_style_pad_top(ui_BarTemperature, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_BarTemperature,
+                                                                                                     lv_obj_get_style_pad_right(ui_BarTemperature, LV_PART_MAIN) + 1, LV_PART_MAIN);
+    ui_BarPressure = lv_bar_create(ui_Screen1);
+    lv_bar_set_range(ui_BarPressure, 0, 800);
+    lv_bar_set_value(ui_BarPressure, 750, LV_ANIM_OFF);
+    lv_bar_set_start_value(ui_BarPressure, 0, LV_ANIM_OFF);
+    lv_obj_set_width(ui_BarPressure, 15);
+    lv_obj_set_height(ui_BarPressure, 70);
+    lv_obj_set_x(ui_BarPressure, 126);
+    lv_obj_set_y(ui_BarPressure, 55);
+    lv_obj_set_align(ui_BarPressure, LV_ALIGN_TOP_MID);
+    lv_obj_remove_flag(ui_BarPressure, LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE |
+                       LV_OBJ_FLAG_SNAPPABLE);     /// Flags
+
+    lv_obj_set_style_bg_color(ui_BarPressure, lv_color_hex(0xFF6900), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui_BarPressure, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_color(ui_BarPressure, lv_color_hex(0x85FFFE), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_main_stop(ui_BarPressure, 0, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_stop(ui_BarPressure, 150, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui_BarPressure, LV_GRAD_DIR_VER, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+
+    //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
+    if(lv_obj_get_style_pad_top(ui_BarPressure, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_BarPressure,
+                                                                                                  lv_obj_get_style_pad_right(ui_BarPressure, LV_PART_MAIN) + 1, LV_PART_MAIN);
+    ui_ImageTemperature = lv_image_create(ui_Screen1);
+    lv_image_set_src(ui_ImageTemperature, &ui_img_thermometer_x32_png);
+    lv_obj_set_width(ui_ImageTemperature, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_ImageTemperature, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_ImageTemperature, 45);
+    lv_obj_set_y(ui_ImageTemperature, 124);
+    lv_obj_set_align(ui_ImageTemperature, LV_ALIGN_TOP_MID);
+    lv_obj_remove_flag(ui_ImageTemperature,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_image_set_scale(ui_ImageTemperature, 255);
+
+    ui_ImageHumidity = lv_image_create(ui_Screen1);
+    lv_image_set_src(ui_ImageHumidity, &ui_img_humidity_x32_png);
+    lv_obj_set_width(ui_ImageHumidity, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_ImageHumidity, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_ImageHumidity, 84);
+    lv_obj_set_y(ui_ImageHumidity, 124);
+    lv_obj_set_align(ui_ImageHumidity, LV_ALIGN_TOP_MID);
+    lv_obj_remove_flag(ui_ImageHumidity,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM |
+                       LV_OBJ_FLAG_SCROLL_CHAIN);     /// Flags
+    lv_image_set_scale(ui_ImageHumidity, 200);
+
+    ui_ImagePressure = lv_image_create(ui_Screen1);
+    lv_image_set_src(ui_ImagePressure, &ui_img_gauge_x32_png);
+    lv_obj_set_width(ui_ImagePressure, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_ImagePressure, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_ImagePressure, 126);
+    lv_obj_set_y(ui_ImagePressure, 124);
+    lv_obj_set_align(ui_ImagePressure, LV_ALIGN_TOP_MID);
+    lv_obj_remove_flag(ui_ImagePressure,
+                       LV_OBJ_FLAG_PRESS_LOCK | LV_OBJ_FLAG_CLICK_FOCUSABLE | LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE |
+                       LV_OBJ_FLAG_SCROLLABLE);     /// Flags
+    lv_image_set_scale(ui_ImagePressure, 200);
+
+    ui_LabelTemperature = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelTemperature, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelTemperature, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelTemperature, 43);
+    lv_obj_set_y(ui_LabelTemperature, -44);
+    lv_obj_set_align(ui_LabelTemperature, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelTemperature, "20");
+    lv_obj_set_style_text_font(ui_LabelTemperature, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_LabelHumidity = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelHumidity, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelHumidity, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelHumidity, 83);
+    lv_obj_set_y(ui_LabelHumidity, -44);
+    lv_obj_set_align(ui_LabelHumidity, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelHumidity, "60");
+    lv_obj_set_style_text_font(ui_LabelHumidity, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_LabelPressure = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelPressure, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelPressure, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelPressure, 125);
+    lv_obj_set_y(ui_LabelPressure, -44);
+    lv_obj_set_align(ui_LabelPressure, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelPressure, "760");
+    lv_obj_set_style_text_font(ui_LabelPressure, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    ui_LabelAirQualityIndx = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabelAirQualityIndx, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabelAirQualityIndx, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabelAirQualityIndx, 9);
+    lv_obj_set_y(ui_LabelAirQualityIndx, -69);
+    lv_obj_set_align(ui_LabelAirQualityIndx, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabelAirQualityIndx, "AQI 999");
+    lv_obj_set_style_text_font(ui_LabelAirQualityIndx, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
 
 }

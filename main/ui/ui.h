@@ -19,17 +19,27 @@ extern "C" {
 // SCREEN: ui_Screen1
 void ui_Screen1_screen_init(void);
 extern lv_obj_t * ui_Screen1;
-extern lv_obj_t * ui_Arc1;
-extern lv_obj_t * ui_Label1;
-extern lv_obj_t * ui_Label2;
-extern lv_obj_t * ui_Label3;
-extern lv_obj_t * ui_Label4;
-extern lv_obj_t * ui_Label5;
-extern lv_obj_t * ui_Image1;
-extern lv_obj_t * ui_Label6;
-extern lv_obj_t * ui_Image2;
-extern lv_obj_t * ui_Label7;
-extern lv_obj_t * ui_Image3;
+extern lv_obj_t * ui_ArcCO2;
+extern lv_obj_t * ui_LabelCo2Count;
+extern lv_obj_t * ui_LabelCo2;
+extern lv_obj_t * ui_LabelCo2Ppm;
+extern lv_obj_t * ui_LabelSdFree;
+extern lv_obj_t * ui_LabelLfsUsed;
+extern lv_obj_t * ui_ImageAPMode;
+extern lv_obj_t * ui_LabelApUsers;
+extern lv_obj_t * ui_ImageLocalWiFI;
+extern lv_obj_t * ui_LabelipAdress;
+extern lv_obj_t * ui_ImageNoWiFi;
+extern lv_obj_t * ui_BarHumidity;
+extern lv_obj_t * ui_BarTemperature;
+extern lv_obj_t * ui_BarPressure;
+extern lv_obj_t * ui_ImageTemperature;
+extern lv_obj_t * ui_ImageHumidity;
+extern lv_obj_t * ui_ImagePressure;
+extern lv_obj_t * ui_LabelTemperature;
+extern lv_obj_t * ui_LabelHumidity;
+extern lv_obj_t * ui_LabelPressure;
+extern lv_obj_t * ui_LabelAirQualityIndx;
 // CUSTOM VARIABLES
 
 // EVENTS
@@ -41,6 +51,9 @@ LV_IMG_DECLARE(ui_img_risk_165_142_png);    // assets/risk_165_142.png
 LV_IMG_DECLARE(ui_img_signal_x16_png);    // assets/signal_x16.png
 LV_IMG_DECLARE(ui_img_wifi_x16_png);    // assets/wifi_x16.png
 LV_IMG_DECLARE(ui_img_1678184450);    // assets/no-wifi_x16.png
+LV_IMG_DECLARE(ui_img_thermometer_x32_png);    // assets/thermometer_x32.png
+LV_IMG_DECLARE(ui_img_humidity_x32_png);    // assets/humidity_x32.png
+LV_IMG_DECLARE(ui_img_gauge_x32_png);    // assets/gauge_x32.png
 
 // UI INIT
 void ui_init(void);
