@@ -14,6 +14,7 @@ idf_component_register(
         "wifi/wifi_ap.c"
         "webserver/webserver.c"
         "co2_sensor/co2_sensor.c"
+        "BME680/BME680.c"
         ${SRC_UI}
     INCLUDE_DIRS 
         "." 
@@ -25,6 +26,7 @@ idf_component_register(
         "./wifi"
         "./webserver"
         "./co2_sensor"
+        "./BME680"
         "ui"
         )
 

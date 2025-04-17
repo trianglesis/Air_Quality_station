@@ -9,6 +9,7 @@
 #include "esp_timer.h"
 
 #include "co2_sensor.h"
+#include "BME680.h"
 
 #include "ST7789V3.h"
 #include "card_driver.h"
@@ -54,6 +55,7 @@ static void lvgl_task(void * pvParameters) {
 
     int to_wait_ms = 10;
     int co2_ppm; // data type should be same as queue item type
+    struct BMESensor bme680_readings; // data type should be same as queue item type
     const TickType_t xTicksToWait = pdMS_TO_TICKS(to_wait_ms);
 
     esp_log_level_set("lcd_panel", ESP_LOG_VERBOSE);
@@ -75,6 +77,9 @@ static void lvgl_task(void * pvParameters) {
             curtime = esp_timer_get_time()/1000;
             // mq_co2 is a pointer now, do not check its len, always peek
             xQueuePeek(mq_co2, (void *)&co2_ppm, xTicksToWait);
+            xQueuePeek(mq_bme680, (void *)&bme680_readings, xTicksToWait);
+            
+            ESP_LOGI(TAG, "BME680 Received: t: %4.0f, hum: %4.0f, press: %4.0f, res: %4.0f", bme680_readings.temperature, bme680_readings.humidity, bme680_readings.pressure, bme680_readings.resistance);
 
             // Init SQ Line Studio elements
             lv_arc_set_value(ui_Arc1, co2_ppm);
@@ -110,6 +115,9 @@ static void lvgl_task(void * pvParameters) {
             }
         }
     }
+    // Debug
+    
+    
 }
 
 
@@ -119,6 +127,7 @@ void app_main() {
     
     // Create internal objects for sensors and queues before everything else
     create_mq_co2();
+    create_mq_bme680();
     
     // Early init
     led_init();
