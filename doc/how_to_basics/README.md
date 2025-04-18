@@ -413,6 +413,11 @@ Try to debug I2C bus with examples from IDF and also check options at `menuconfi
 
 - [I2C tools](https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/peripherals/i2c/i2c_tools/README.md)
 
+Check VARS for your case, `JTAG` variant allows me to use CMD right in the `VSCode`!
+
+`#define CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG 1`
+
+
 ## bme680
 
 - https://esp-idf-lib.readthedocs.io/en/latest/groups/bme680.html
