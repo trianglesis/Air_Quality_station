@@ -420,6 +420,9 @@ Check VARS for your case, `JTAG` variant allows me to use CMD right in the `VSCo
 Using tools from above:
 Pins connected `0` and `1`
 
+Setup (optional)
+
+`i2cconfig  --port=0 --freq=100000 --sda=1 --scl=0`
 
 ```text
 i2c-tools> i2cdetect
@@ -433,6 +436,39 @@ i2c-tools> i2cdetect
 60: -- -- 62 -- -- -- -- -- -- -- -- -- -- -- -- --
 70: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ```
+
+```text
+i2c-tools> i2cdump -c 77
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
+00: E (416302) i2c.master: I2C transaction unexpected nack detected
+E (416302) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
+E (416302) i2c.master: i2c_master_transmit_receive(1220): I2C transaction failed
+
+i2c-tools> i2cget -c 62
+E (541932) i2c.master: I2C transaction unexpected nack detected
+E (541932) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
+E (541932) i2c.master: i2c_master_transmit_receive(1220): I2C transaction failed
+W (541932) cmd_i2ctools: Read failed
+```
+
+Test manual bits:
+
+`i2cset -c 0x62 -r 0x36F6 -l 1`
+
+Use one:
+```code
+#define CMD_POWER_DOWN                             (0x36E0)
+#define CMD_WAKE_UP                                (0x36F6)
+#define CMD_GET_DATA_READY_STATUS                  (0xE4B8)
+#define CMD_GET_SERIAL_NUMBER                      (0x3682)
+#define CMD_PERFORM_SELF_TEST                      (0x3639)
+#define CMD_REINIT                                 (0x3646)
+#define CMD_MEASURE_SINGLE_SHOT                    (0x219D)
+#define CMD_MEASURE_SINGLE_SHOT_RHT_ONLY           (0x2196)
+```
+
+`i2cget -c 0x62 -r 0x3682 -l 1`
+
 
 This is CO2 Sensor!
 
@@ -454,6 +490,16 @@ i2c-tools> i2cdetect
 70: -- -- -- -- -- -- -- 77 -- -- -- -- -- -- -- -- 
 ```
 This is BME680!
+
+Tests
+
+```text
+i2c-tools> i2cdump -c 77
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
+00: E (416302) i2c.master: I2C transaction unexpected nack detected
+E (416302) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
+E (416302) i2c.master: i2c_master_transmit_receive(1220): I2C transaction failed
+```
 
 ## bme680
 
