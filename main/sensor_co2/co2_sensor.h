@@ -14,15 +14,15 @@
 
 #include "esp_log.h"
 
-#define wait_co2_next_measure 1000 // How often to measure CO2 level in ms
-#define wait_co2_to_led 1000 // How often change LED colour for CO2 measurements in ms
+#define wait_co2_next_measure 1000  // How often to measure CO2 level in ms
+#define wait_co2_to_led 5000        // How often change LED colour for CO2 measurements in ms
 
 extern QueueHandle_t mq_co2;
 
 #define SCD4X_I2C_ADDR 0x62
 // TODO: Change to real!
-#define SCD4X_SCL_PIN 10
-#define SCD4X_SDA_PIN 11
+#define GENERAL_SCL_PIN 19
+#define GENERAL_SDA_PIN 18
 
 struct SCD4XSensor {
     float temperature;

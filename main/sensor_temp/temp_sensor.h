@@ -10,13 +10,21 @@
 #include "freertos/semphr.h"
 #include "esp_timer.h"
 
+#include "bme680.h"
+
 #include "esp_log.h"
 
 
-#define wait_co2_next_measure 1000 // How often to measure CO2 level in ms
-#define wait_co2_to_led 1000 // How often change LED colour for CO2 measurements in ms
+#define wait_next_measure 1000 // How often to measure CO2 level in ms
 
 extern QueueHandle_t mq_bme680;
+
+#define PORT 0
+#define BME680_I2C_ADDR_0 0x76
+#define BME680_I2C_ADDR_1 0x77
+// TODO: Change to real!
+#define GENERAL_SCL_PIN 20
+#define GENERAL_SDA_PIN 23
 
 struct BMESensor {
     float temperature;
@@ -26,5 +34,6 @@ struct BMESensor {
 };
 
 
+void bme680_reading_fake(void * pvParameters);
 void bme680_reading(void * pvParameters);
 void create_mq_bme680(void);

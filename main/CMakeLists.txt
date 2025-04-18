@@ -18,10 +18,11 @@ idf_component_register(
         "littlefs_driver/local_flash.c"
         "wifi/wifi_ap.c"
         "webserver/webserver.c"
-        "co2_sensor/i2cdev/i2cdev.c"
-        "co2_sensor/scd4x/scd4x.c"
-        "co2_sensor/co2_sensor.c"
-        "BME680/BME680.c"
+        "i2cdev/i2cdev.c"
+        "sensor_co2/co2_sensor.c"
+        "sensor_co2/scd4x/scd4x.c"
+        "sensor_temp/temp_sensor.c"
+        "sensor_temp/bme680/bme680.c"
         ${SRC_UI}
     INCLUDE_DIRS 
         "." 
@@ -32,10 +33,11 @@ idf_component_register(
         "./littlefs_driver"
         "./wifi"
         "./webserver"
-        "./co2_sensor/i2cdev"
-        "./co2_sensor/scd4x"
-        "./co2_sensor"
-        "./BME680"
+        "./i2cdev"
+        "./sensor_co2"
+        "./sensor_co2/scd4x"
+        "./sensor_temp"
+        "./sensor_temp/bme680"
         "ui"
 )
 

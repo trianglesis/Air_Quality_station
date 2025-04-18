@@ -70,7 +70,7 @@ TODO: Add calibration, pressure update, altitude, set ambient temp for this sens
 */
 void co2_scd4x_reading(void * pvParameters) {
     i2c_dev_t dev = { 0 };
-    ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, SCD4X_SDA_PIN, SCD4X_SCL_PIN));
+    ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, GENERAL_SDA_PIN, GENERAL_SCL_PIN));
     ESP_LOGI(TAG, "Initializing sensor...");
     ESP_ERROR_CHECK(scd4x_wake_up(&dev));
     ESP_ERROR_CHECK(scd4x_stop_periodic_measurement(&dev));
@@ -131,13 +131,13 @@ Led HUE based on CO2 levels as task
 */
 void led_co2(void * pvParameters) {
     // Read from the queue
-    int co2_ppm; // data type should be same as queue item type
+    struct SCD4XSensor scd4x_readings; // data type should be same as queue item type
     const TickType_t xTicksToWait = pdMS_TO_TICKS(wait_co2_to_led);
     while (1) {
         vTaskDelay(pdMS_TO_TICKS(wait_co2_to_led));  // idle between cycles
-        xQueuePeek(mq_co2, (void *)&co2_ppm, xTicksToWait);
+        xQueuePeek(mq_co2, (void *)&scd4x_readings, xTicksToWait);
         // Update LED colour
-        led_co2_severity(co2_ppm);
+        led_co2_severity(scd4x_readings.co2_ppm);
     }
 }
 
@@ -152,6 +152,4 @@ void create_mq_co2() {
     // xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(co2_scd4x_reading, "co2_scd4x_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
-    // return mq_co2;
-    ESP_ERROR_CHECK(i2cdev_init());
 }
