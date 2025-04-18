@@ -408,6 +408,10 @@ abort() was called at PC 0x4080b6d1 on core 0
 --- 0x4080b6d1: _esp_error_check_failed at D:/Projects/ESP/Espressif/v5.4.1/esp-idf/components/esp_system/esp_err.c:49
 ```
 
+Nothing works!
+Try to debug I2C bus with examples from IDF and also check options at `menuconfig`
+
+- [I2C tools](https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/peripherals/i2c/i2c_tools/README.md)
 
 ## bme680
 
