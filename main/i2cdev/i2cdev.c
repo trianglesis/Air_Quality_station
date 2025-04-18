@@ -177,13 +177,7 @@ inline static bool cfg_equal(const i2c_config_t *a, const i2c_config_t *b)
 {
     return a->scl_io_num == b->scl_io_num
         && a->sda_io_num == b->sda_io_num
-#if HELPER_TARGET_IS_ESP32
         && a->master.clk_speed == b->master.clk_speed
-#elif HELPER_TARGET_IS_ESP8266
-        && ((a->clk_stretch_tick && a->clk_stretch_tick == b->clk_stretch_tick) 
-            || (!a->clk_stretch_tick && b->clk_stretch_tick == I2CDEV_MAX_STRETCH_TIME)
-        ) // see line 232
-#endif
         && a->scl_pullup_en == b->scl_pullup_en
         && a->sda_pullup_en == b->sda_pullup_en;
 }
@@ -206,34 +200,17 @@ static esp_err_t i2c_setup_port(const i2c_dev_t *dev)
             i2c_driver_delete(dev->port);
             states[dev->port].installed = false;
         }
-#if HELPER_TARGET_IS_ESP32
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 1, 0)
         // See https://github.com/espressif/esp-idf/issues/10163
         if ((res = i2c_driver_install(dev->port, temp.mode, 0, 0, 0)) != ESP_OK)
             return res;
         if ((res = i2c_param_config(dev->port, &temp)) != ESP_OK)
             return res;
-#else
-        if ((res = i2c_param_config(dev->port, &temp)) != ESP_OK)
-            return res;
-        if ((res = i2c_driver_install(dev->port, temp.mode, 0, 0, 0)) != ESP_OK)
-            return res;
-#endif
-#endif
-#if HELPER_TARGET_IS_ESP8266
-        // Clock Stretch time, depending on CPU frequency
-        temp.clk_stretch_tick = dev->timeout_ticks ? dev->timeout_ticks : I2CDEV_MAX_STRETCH_TIME;
-        if ((res = i2c_driver_install(dev->port, temp.mode)) != ESP_OK)
-            return res;
-        if ((res = i2c_param_config(dev->port, &temp)) != ESP_OK)
-            return res;
-#endif
+
         states[dev->port].installed = true;
 
         memcpy(&states[dev->port].config, &temp, sizeof(i2c_config_t));
         ESP_LOGD(TAG, "I2C driver successfully reconfigured on port %d", dev->port);
     }
-#if HELPER_TARGET_IS_ESP32
     int t;
     if ((res = i2c_get_timeout(dev->port, &t)) != ESP_OK)
         return res;
@@ -242,7 +219,7 @@ static esp_err_t i2c_setup_port(const i2c_dev_t *dev)
     if ((ticks != t) && (res = i2c_set_timeout(dev->port, ticks)) != ESP_OK)
         return res;
     ESP_LOGD(TAG, "Timeout: ticks = %" PRIu32 " (%" PRIu32 " usec) on port %d", dev->timeout_ticks, dev->timeout_ticks / 80, dev->port);
-#endif
+
 
     return ESP_OK;
 }

@@ -62,6 +62,7 @@ void co2_reading(void * pvParameters) {
 /*
 New driver and proper readings
 https://esp-idf-lib.readthedocs.io/en/latest/groups/scd4x.html
+https://github.com/UncleRus/esp-idf-lib/blob/a02cd6bb5190cab379125140780adcb8d88f9650/FAQ.md
 
 TODO: Add calibration, pressure update, altitude, set ambient temp for this sensor from BME680
 - scd4x_set_automatic_self_calibration
@@ -70,7 +71,11 @@ TODO: Add calibration, pressure update, altitude, set ambient temp for this sens
 */
 void co2_scd4x_reading(void * pvParameters) {
     i2c_dev_t dev = { 0 };
-    ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, GENERAL_SDA_PIN, GENERAL_SCL_PIN));
+    
+    dev.cfg.scl_pullup_en = true;
+    dev.cfg.sda_pullup_en = true;
+
+    ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, SDA_PIN_SCDX, SCL_PIN_SCDX));
     ESP_LOGI(TAG, "Initializing sensor...");
     ESP_ERROR_CHECK(scd4x_wake_up(&dev));
     ESP_ERROR_CHECK(scd4x_stop_periodic_measurement(&dev));
@@ -143,6 +148,7 @@ void led_co2(void * pvParameters) {
 
 
 void create_mq_co2() {
+    ESP_ERROR_CHECK(i2cdev_init());
     // Message Queue
     // static const uint8_t mq_co2_len = 1;
     mq_co2 = xQueueGenericCreate(1, sizeof(int), queueQUEUE_TYPE_SET);

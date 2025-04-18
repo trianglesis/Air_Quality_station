@@ -39,14 +39,22 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
 #include <esp_err.h>
+#include <soc/i2c_reg.h>
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
+// #define CONFIG_I2CDEV_NOLOCK
+
 #define CONFIG_I2CDEV_TIMEOUT 1000
 #define I2CDEV_NOLOCK n
+#define HELPER_TARGET_IS_ESP32 y
+#define I2CDEV_MAX_STRETCH_TIME I2C_TIME_OUT_VALUE_V
+
+
 
 /**
  * I2C device descriptor

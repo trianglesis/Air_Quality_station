@@ -144,7 +144,6 @@ void app_main() {
     vTaskDelay(pdMS_TO_TICKS(10));
     
     // Init I2C
-    ESP_ERROR_CHECK(i2cdev_init());
     // Create internal objects for sensors and queues before everything else
     create_mq_co2();
     create_mq_bme680();

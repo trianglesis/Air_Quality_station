@@ -23,8 +23,8 @@ extern QueueHandle_t mq_bme680;
 #define BME680_I2C_ADDR_0 0x76
 #define BME680_I2C_ADDR_1 0x77
 // TODO: Change to real!
-#define GENERAL_SCL_PIN 20
-#define GENERAL_SDA_PIN 23
+#define SCL_PIN_BME680 20
+#define SDA_PIN_BME680 23
 
 struct BMESensor {
     float temperature;

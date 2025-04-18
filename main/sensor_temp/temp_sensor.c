@@ -2,7 +2,6 @@
 #include "temp_sensor.h"
 #include <string.h>
 
-
 static const char *TAG = "BME680";
 static const char *TAG_FAKE = "fake-temp";
 
@@ -12,7 +11,6 @@ static float BME_temperature = 15.1; // Faking
 static float BME_humidity = 15.1;    // Faking
 static float BME_pressure = 500.1;    // Faking
 static float BME_resistance = 1000.1;  // Faking
-
 
 /*
 Generating fake temp, humidity, pressure etc
@@ -67,12 +65,16 @@ void bme680_reading_fake(void * pvParameters) {
 New driver and proper readings
 https://esp-idf-lib.readthedocs.io/en/latest/groups/bme680.html
 
+https://github.com/UncleRus/esp-idf-lib/blob/a02cd6bb5190cab379125140780adcb8d88f9650/FAQ.md
 */
 void bme680_reading(void * pvParameters) {
-    bme680_t sensor;
-    memset(&sensor, 0, sizeof(bme680_t));
+    bme680_t sensor = { 0 };
+    
+    sensor.i2c_dev.cfg.scl_pullup_en = true;
+    sensor.i2c_dev.cfg.sda_pullup_en = true;
 
-    ESP_ERROR_CHECK(bme680_init_desc(&sensor, BME680_I2C_ADDR_0, PORT, GENERAL_SDA_PIN, GENERAL_SCL_PIN));
+    memset(&sensor, 0, sizeof(bme680_t));
+    ESP_ERROR_CHECK(bme680_init_desc(&sensor, BME680_I2C_ADDR_0, PORT, SDA_PIN_BME680, SCL_PIN_BME680));
 
     // Changes the oversampling rates to 4x oversampling for temperature
     // and 2x oversampling for humidity. Pressure measurement is skipped.
@@ -118,6 +120,7 @@ void bme680_reading(void * pvParameters) {
 
 
 void create_mq_bme680() {
+    ESP_ERROR_CHECK(i2cdev_init());
     // Message Queue
     // static const uint8_t mq_co2_len = 1;
     mq_bme680 = xQueueGenericCreate(1, sizeof(struct BMESensor), queueQUEUE_TYPE_SET);

@@ -21,8 +21,8 @@ extern QueueHandle_t mq_co2;
 
 #define SCD4X_I2C_ADDR 0x62
 // TODO: Change to real!
-#define GENERAL_SCL_PIN 19
-#define GENERAL_SDA_PIN 18
+#define SCL_PIN_SCDX 19
+#define SDA_PIN_SCDX 18
 
 struct SCD4XSensor {
     float temperature;
