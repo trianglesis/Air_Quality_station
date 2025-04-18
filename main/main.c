@@ -54,8 +54,8 @@ static void lvgl_task(void * pvParameters) {
     esp_err_t ret;
 
     int to_wait_ms = 10;
-    int co2_ppm; // data type should be same as queue item type
     struct BMESensor bme680_readings; // data type should be same as queue item type
+    struct SCD4XSensor scd4x_readings; // data type should be same as queue item type
     const TickType_t xTicksToWait = pdMS_TO_TICKS(to_wait_ms);
 
     esp_log_level_set("lcd_panel", ESP_LOG_VERBOSE);
@@ -76,14 +76,14 @@ static void lvgl_task(void * pvParameters) {
         if (esp_timer_get_time()/1000 - curtime > 1000) {
             curtime = esp_timer_get_time()/1000;
             // mq_co2 is a pointer now, do not check its len, always peek
-            xQueuePeek(mq_co2, (void *)&co2_ppm, xTicksToWait);
+            xQueuePeek(mq_co2, (void *)&scd4x_readings, xTicksToWait);
             xQueuePeek(mq_bme680, (void *)&bme680_readings, xTicksToWait);
         
             // Init SQ Line Studio elements
 
             // CO2 Arc SDC41
-            lv_arc_set_value(ui_ArcCO2, co2_ppm);
-            lv_label_set_text_fmt(ui_LabelCo2Count, "%d", co2_ppm);
+            lv_arc_set_value(ui_ArcCO2, scd4x_readings.co2_ppm);
+            lv_label_set_text_fmt(ui_LabelCo2Count, "%d", scd4x_readings.co2_ppm);
             lv_label_set_text(ui_LabelCo2, "CO2");
             lv_label_set_text(ui_LabelCo2Ppm, "ppm");
 

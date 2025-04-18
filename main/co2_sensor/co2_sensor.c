@@ -1,11 +1,12 @@
 #include "co2_sensor.h"
 #include "led_driver.h"
 
-static const char *TAG = "co2-sensor";
-static const char* TAG = "sensirion_i2c";
-
+static const char *TAG_FAKE = "co2-sensor";
+static const char *TAG = "scd4x";
 
 QueueHandle_t mq_co2;
+
+#define I2C_FREQ_HZ 100000 // 100kHz
 
 static int co2_counter = 0;     // Faking CO2 levels by simple counter
 
@@ -40,9 +41,11 @@ Now work with queue, add the value at the beginning of the queue (first),
 void co2_reading(void * pvParameters) {
     // 
     while (1) {
+        struct SCD4XSensor scd4x_readings = {};
+        scd4x_readings.co2_ppm = co2_counter;
         // Try to add item to queue, fail immediately if queue is full
-        ESP_LOGI(TAG, "sent data = %d", co2_counter);
-        xQueueOverwrite(mq_co2, (void *)&co2_counter);
+        ESP_LOGI(TAG_FAKE, "sent data = %d", co2_counter);
+        xQueueOverwrite(mq_co2, (void *)&scd4x_readings);
         // Make up and down
         if (co2_counter == 2500) {
             co2_counter = 0;
@@ -55,6 +58,71 @@ void co2_reading(void * pvParameters) {
     // Always should end, when taking measurements if not in loop: https://stackoverflow.com/a/63635154
     // vTaskDelete(NULL);
 }
+
+/*
+New driver and proper readings
+https://esp-idf-lib.readthedocs.io/en/latest/groups/scd4x.html
+
+TODO: Add calibration, pressure update, altitude, set ambient temp for this sensor from BME680
+- scd4x_set_automatic_self_calibration
+- scd4x_set_temperature_offset
+- scd4x_set_ambient_pressure
+*/
+void co2_scd4x_reading(void * pvParameters) {
+    i2c_dev_t dev = { 0 };
+    ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, SCD4X_SDA_PIN, SCD4X_SCL_PIN));
+    ESP_LOGI(TAG, "Initializing sensor...");
+    ESP_ERROR_CHECK(scd4x_wake_up(&dev));
+    ESP_ERROR_CHECK(scd4x_stop_periodic_measurement(&dev));
+    ESP_ERROR_CHECK(scd4x_reinit(&dev));
+    ESP_LOGI(TAG, "Sensor initialized");
+
+    uint16_t serial[3];
+    ESP_ERROR_CHECK(scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2));
+    ESP_LOGI(TAG, "Sensor serial number: 0x%04x%04x%04x", serial[0], serial[1], serial[2]);
+
+    // Calibration and set up
+    // Set temperature offset in °C. t_offset – Temperature offset in degrees Celsius (°C) 
+    // scd4x_set_temperature_offset(&dev, float t_offset);
+
+    // Set ambient pressure.  uint16_t  Convert value to Pa by: value * 100 
+    // scd4x_set_ambient_pressure(&dev, uint16_t pressure);
+
+    // Set sensor altitude in meters above sea level. 
+    // scd4x_set_sensor_altitude(&dev, uint16_t altitude);
+
+    ESP_ERROR_CHECK(scd4x_start_periodic_measurement(&dev));
+    ESP_LOGI(TAG, "Periodic measurements started");
+
+    uint16_t co2_ppm;
+    float temperature, humidity;
+    while (1)
+    {
+        // Now send CO2 level further, send an item for every 1000ms
+        vTaskDelay(pdMS_TO_TICKS(wait_co2_next_measure));
+        struct SCD4XSensor scd4x_readings = {};
+
+        esp_err_t res = scd4x_read_measurement(&dev, &co2_ppm, &temperature, &humidity);
+        if (res != ESP_OK) {
+            ESP_LOGE(TAG, "Error reading results %d (%s)", res, esp_err_to_name(res));
+            continue;
+        }
+
+        if (co2_ppm == 0) {
+            ESP_LOGW(TAG, "Invalid sample detected, skipping");
+            continue;
+        }
+        scd4x_readings.temperature = temperature;
+        scd4x_readings.humidity = humidity;
+        scd4x_readings.co2_ppm = co2_ppm;
+
+        xQueueOverwrite(mq_co2, (void *)&scd4x_readings);
+        ESP_LOGI(TAG_FAKE, "CO2: %u ppm, Temperature: %.2f °C, Humidity: %.2f %%", co2_ppm, temperature, humidity);
+
+    }
+
+}
+
 
 /*
 Led HUE based on CO2 levels as task
@@ -81,7 +149,9 @@ void create_mq_co2() {
     if (!mq_co2) {
         ESP_LOGE(TAG, "queue creation failed");
     }
-    xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+    // xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+    xTaskCreatePinnedToCore(co2_scd4x_reading, "co2_scd4x_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
     // return mq_co2;
+    ESP_ERROR_CHECK(i2cdev_init());
 }
