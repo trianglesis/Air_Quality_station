@@ -120,13 +120,13 @@ void bme680_reading(void * pvParameters) {
 
 
 void create_mq_bme680() {
-    ESP_ERROR_CHECK(i2cdev_init());
     // Message Queue
     // static const uint8_t mq_co2_len = 1;
     mq_bme680 = xQueueGenericCreate(1, sizeof(struct BMESensor), queueQUEUE_TYPE_SET);
     if (!mq_bme680) {
         ESP_LOGE(TAG, "queue creation failed");
     }
-    // xTaskCreatePinnedToCore(bme680_reading_fake, "bme680_reading_fake", 4096, NULL, 4, NULL, tskNO_AFFINITY);
-    xTaskCreatePinnedToCore(bme680_reading, "bme680_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+    xTaskCreatePinnedToCore(bme680_reading_fake, "bme680_reading_fake", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+    // ESP_ERROR_CHECK(i2cdev_init());
+    // xTaskCreatePinnedToCore(bme680_reading, "bme680_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
 }

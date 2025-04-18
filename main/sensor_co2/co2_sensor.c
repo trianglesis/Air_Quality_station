@@ -6,7 +6,6 @@ static const char *TAG = "scd4x";
 
 QueueHandle_t mq_co2;
 
-#define I2C_FREQ_HZ 100000 // 100kHz
 
 static int co2_counter = 0;     // Faking CO2 levels by simple counter
 
@@ -74,9 +73,19 @@ void co2_scd4x_reading(void * pvParameters) {
     
     dev.cfg.scl_pullup_en = true;
     dev.cfg.sda_pullup_en = true;
+    dev.cfg.mode = I2C_MODE_MASTER;
+    dev.cfg.sda_io_num = SDA_PIN_SCDX;         // select SDA GPIO specific to your project
+    dev.cfg.sda_pullup_en = GPIO_PULLUP_ENABLE;
+    dev.cfg.scl_io_num = SCL_PIN_SCDX;         // select SCL GPIO specific to your project
+    dev.cfg.scl_pullup_en = GPIO_PULLUP_ENABLE;
+    dev.cfg.master.clk_speed = I2C_FREQ_HZ;  // select frequency specific to your project
+    dev.cfg.clk_flags = 0;
 
     ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, SDA_PIN_SCDX, SCL_PIN_SCDX));
     ESP_LOGI(TAG, "Initializing sensor...");
+    
+    vTaskDelay(pdMS_TO_TICKS(100));  // Add delay before measurement
+    ESP_LOGI(TAG, "Wake up sensor...");
     ESP_ERROR_CHECK(scd4x_wake_up(&dev));
     ESP_ERROR_CHECK(scd4x_stop_periodic_measurement(&dev));
     ESP_ERROR_CHECK(scd4x_reinit(&dev));

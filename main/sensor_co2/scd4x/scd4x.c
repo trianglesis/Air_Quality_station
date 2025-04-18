@@ -43,7 +43,7 @@
 #include <esp_log.h>
 
 // #include <esp_idf_lib_helpers.h>
-#include <esp32c6/rom/ets_sys.h>
+
 
 #include "scd4x.h"
 
@@ -161,7 +161,7 @@ static esp_err_t execute_cmd(i2c_dev_t *dev, uint16_t cmd, uint32_t timeout_ms,
         if (timeout_ms > 10)
             vTaskDelay(pdMS_TO_TICKS(timeout_ms));
         else
-            ets_delay_us(timeout_ms * 1000);
+            esp_rom_delay_us(timeout_ms * 1000);
     }
     if (in_data && in_words)
         I2C_DEV_CHECK(dev, read_resp(dev, in_data, in_words));
@@ -175,15 +175,11 @@ static esp_err_t execute_cmd(i2c_dev_t *dev, uint16_t cmd, uint32_t timeout_ms,
 esp_err_t scd4x_init_desc(i2c_dev_t *dev, i2c_port_t port, gpio_num_t sda_gpio, gpio_num_t scl_gpio)
 {
     CHECK_ARG(dev);
-
     dev->port = port;
     dev->addr = SCD4X_I2C_ADDR;
     dev->cfg.sda_io_num = sda_gpio;
     dev->cfg.scl_io_num = scl_gpio;
-#if HELPER_TARGET_IS_ESP32
     dev->cfg.master.clk_speed = I2C_FREQ_HZ;
-#endif
-
     return i2c_dev_create_mutex(dev);
 }
 

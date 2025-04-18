@@ -392,6 +392,23 @@ If branch
 
 Use files as you wish, do not waste time for adding a full lib as a component!
 
+### Not working
+
+
+```log
+E (949) i2cdev: Could not write to device [0x62 at 0]: -1 (ESP_FAIL)
+ESP_ERROR_CHECK failed: esp_err_t 0xffffffff (ESP_FAIL) at 0x420110d0
+--- 0x420110d0: co2_scd4x_reading at D:/Projects/ESP/projects/ESP32-C6-OLED/Air_Quality_station/main/sensor_co2/co2_sensor.c:82 (discriminator 1)
+
+file: "./main/sensor_co2/co2_sensor.c" line 82
+func: co2_scd4x_reading
+expression: scd4x_wake_up(&dev)
+
+abort() was called at PC 0x4080b6d1 on core 0
+--- 0x4080b6d1: _esp_error_check_failed at D:/Projects/ESP/Espressif/v5.4.1/esp-idf/components/esp_system/esp_err.c:49
+```
+
+
 ## bme680
 
 - https://esp-idf-lib.readthedocs.io/en/latest/groups/bme680.html

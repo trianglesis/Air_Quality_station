@@ -145,7 +145,8 @@ void app_main() {
     
     // Init I2C
     // Create internal objects for sensors and queues before everything else
-    create_mq_co2();
+    // create_mq_co2();
+    // Still fake
     create_mq_bme680();
     
     // Early init

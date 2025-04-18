@@ -22,7 +22,6 @@ extern QueueHandle_t mq_bme680;
 #define PORT 0
 #define BME680_I2C_ADDR_0 0x76
 #define BME680_I2C_ADDR_1 0x77
-// TODO: Change to real!
 #define SCL_PIN_BME680 20
 #define SDA_PIN_BME680 23
 
