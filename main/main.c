@@ -141,14 +141,12 @@ static void lvgl_task(void * pvParameters) {
 
 void app_main() {
     //Allow other core to finish initialization
-    vTaskDelay(pdMS_TO_TICKS(10));
-
-    // Init I2C
+    vTaskDelay(pdMS_TO_TICKS(10));   
     // Create internal objects for sensors and queues before everything else
-    // create_mq_co2();
+    create_mq_co2();
     // Still fake
     create_mq_bme680();
-    
+
     // Early init
     led_init();
     // SPI (local) flash partition mount and check:
@@ -184,5 +182,7 @@ void app_main() {
 
     // delay to let tasks finish the last loop
     vTaskDelay(pdMS_TO_TICKS(500));
+    task_co2();
+    task_bme680();
 }
 // 

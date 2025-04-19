@@ -365,8 +365,12 @@ if (mq_co2 > 1) {
 
 ## scd4x
 
-https://esp-idf-lib.readthedocs.io/en/latest/groups/scd4x.html
+Datasheet:
+- https://download.mikroe.com/documents/datasheets/SCD41%20Datasheet.pdf
 
+https://esp-idf-lib.readthedocs.io/en/latest/groups/scd4x.html
+Other
+https://github.com/khoek/esp-scd41/blob/master/src/esp-scd41/io.c
 
 Install:
 
@@ -422,13 +426,9 @@ Pins connected `0` and `1`
 
 Setup (optional)
 
-`i2cconfig  --port=0 --freq=100000 --sda=1 --scl=0`
-`i2cconfig  --port=0 --freq=100000 --sda=19 --scl=18`
-
-i2cconfig  --port=0 --freq=100000 --sda=6 --scl=7
-i2cconfig  --port=0 --freq=10000 --sda=6 --scl=7
-i2cconfig  --port=0 --freq=1000 --sda=6 --scl=7
-i2cconfig  --port=0 --freq=100 --sda=6 --scl=7
+- i2cconfig  --port=0 --freq=100000 --sda=1 --scl=0
+- i2cconfig  --port=0 --freq=100000 --sda=19 --scl=18
+- i2cconfig  --port=0 --freq=100000 --sda=6 --scl=7
 
 
 ```text
@@ -512,6 +512,56 @@ i2c-tools> i2cdump -c 77
 00: E (416302) i2c.master: I2C transaction unexpected nack detected
 E (416302) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
 E (416302) i2c.master: i2c_master_transmit_receive(1220): I2C transaction failed
+```
+
+#### Other issues
+
+Getting only commands from the datasheet
+
+```log
+I (1849) CO2 SCD41 INIT: Run scd4x_reinit
+E (1849) i2cdev: Could not write to device [0x62 at 0]: -1 (ESP_FAIL)
+ESP_ERROR_CHECK failed: esp_err_t 0xffffffff (ESP_FAIL) at 0x42011230
+--- 0x42011230: sensor_init at D:/Projects/ESP/projects/ESP32-C6-OLED/Air_Quality_station/main/sensor_co2/co2_sensor.c:161 (discriminator 1)
+
+file: "./main/sensor_co2/co2_sensor.c" line 161
+func: sensor_init
+expression: scd4x_reinit(&dev)
+
+```
+
+Can't get serial number:
+
+```log
+E (1849) i2cdev: Could not write to device [0x62 at 0]: -1 (ESP_FAIL)
+ESP_ERROR_CHECK failed: esp_err_t 0xffffffff (ESP_FAIL) at 0x42011260
+--- 0x42011260: sensor_init at D:/Projects/ESP/projects/ESP32-C6-OLED/Air_Quality_station/main/sensor_co2/co2_sensor.c:164 (discriminator 1)
+
+file: "./main/sensor_co2/co2_sensor.c" line 164
+func: sensor_init
+expression: scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2)
+
+```
+
+DEBUG log
+
+```log
+I (10157) CO2 SCD41 INIT: run scd4x_get_serial_number
+D (10167) i2cdev: Reconfiguring I2C driver on port 0
+D (10167) intr_alloc: Connected src 50 to int 15 (cpu 0)
+D (10177) i2cdev: I2C driver successfully reconfigured on port 0
+D (10187) i2cdev: Timeout: ticks = 0 (0 usec) on port 0
+D (10177) wifi:mms: 0->0
+E (10187) i2cdev: Could not write to device [0x62 at 0]: -1 (ESP_FAIL)
+ESP_ERROR_CHECK failed: esp_err_t 0xffffffff (ESP_FAIL) at 0x42011308
+--- 0x42011308: sensor_init at D:/Projects/ESP/projects/ESP32-C6-OLED/Air_Quality_station/main/sensor_co2/co2_sensor.c:164 (discriminator 1)
+
+file: "./main/sensor_co2/co2_sensor.c" line 164
+func: sensor_init
+expression: scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2)
+
+abort() was called at PC 0x4080b6d1 on core 0
+--- 0x4080b6d1: _esp_error_check_failed at D:/Projects/ESP/Espressif/v5.4.1/esp-idf/components/esp_system/esp_err.c:49
 ```
 
 ## bme680

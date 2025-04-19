@@ -36,3 +36,4 @@ struct BMESensor {
 void bme680_reading_fake(void * pvParameters);
 void bme680_reading(void * pvParameters);
 void create_mq_bme680(void);
+void task_bme680(void);

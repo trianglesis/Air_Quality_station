@@ -51,9 +51,10 @@
 
 static const char *TAG = "scd4x";
 
-#define CMD_START_PERIODIC_MEASUREMENT             (0x21B1)
-#define CMD_READ_MEASUREMENT                       (0xEC05)
-#define CMD_STOP_PERIODIC_MEASUREMENT              (0x3F86)
+#define CMD_START_PERIODIC_MEASUREMENT             (0x21b1)
+#define CMD_READ_MEASUREMENT                       (0xec05)
+#define CMD_STOP_PERIODIC_MEASUREMENT              (0x3f86)
+
 #define CMD_SET_TEMPERATURE_OFFSET                 (0x241D)
 #define CMD_GET_TEMPERATURE_OFFSET                 (0x2318)
 #define CMD_SET_SENSOR_ALTITUDE                    (0x2427)
@@ -62,15 +63,21 @@ static const char *TAG = "scd4x";
 #define CMD_PERFORM_FORCED_RECALIBRATION           (0x362F)
 #define CMD_SET_AUTOMATIC_SELF_CALIBRATION_ENABLED (0x2416)
 #define CMD_GET_AUTOMATIC_SELF_CALIBRATION_ENABLED (0x2313)
+
 // SCD4X_SET_AUTOMATIC_SELF_CALIBRATION_TARGET_CMD_ID = 0x243a,
 // SCD4X_GET_AUTOMATIC_SELF_CALIBRATION_TARGET_CMD_ID = 0x233f,
+
 #define CMD_START_LOW_POWER_PERIODIC_MEASUREMENT   (0x21AC)
 #define CMD_GET_DATA_READY_STATUS                  (0xE4B8)
 #define CMD_PERSIST_SETTINGS                       (0x3615)
+
 #define CMD_GET_SERIAL_NUMBER                      (0x3682)
+
 #define CMD_PERFORM_SELF_TEST                      (0x3639)
 #define CMD_PERFORM_FACTORY_RESET                  (0x3632)
+
 #define CMD_REINIT                                 (0x3646)
+
 // SCD4X_GET_SENSOR_VARIANT_RAW_CMD_ID = 0x202f,
 #define CMD_MEASURE_SINGLE_SHOT                    (0x219D)
 #define CMD_MEASURE_SINGLE_SHOT_RHT_ONLY           (0x2196)

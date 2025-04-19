@@ -42,7 +42,7 @@ void bme680_reading_fake(void * pvParameters) {
             BME_humidity++;
         }
         // Make up and down
-        if (BME_pressure == 850) {
+        if (BME_pressure >= 850) {
             BME_pressure = 700;
         } else {
             BME_pressure++;
@@ -70,11 +70,11 @@ https://github.com/UncleRus/esp-idf-lib/blob/a02cd6bb5190cab379125140780adcb8d88
 void bme680_reading(void * pvParameters) {
     bme680_t sensor = { 0 };
     
-    sensor.i2c_dev.cfg.scl_pullup_en = true;
-    sensor.i2c_dev.cfg.sda_pullup_en = true;
+    // sensor.i2c_dev.cfg.scl_pullup_en = true;
+    // sensor.i2c_dev.cfg.sda_pullup_en = true;
 
     memset(&sensor, 0, sizeof(bme680_t));
-    ESP_ERROR_CHECK(bme680_init_desc(&sensor, BME680_I2C_ADDR_0, PORT, SDA_PIN_BME680, SCL_PIN_BME680));
+    ESP_ERROR_CHECK(bme680_init_desc(&sensor, BME680_I2C_ADDR_1, PORT, SDA_PIN_BME680, SCL_PIN_BME680));
 
     // Changes the oversampling rates to 4x oversampling for temperature
     // and 2x oversampling for humidity. Pressure measurement is skipped.
@@ -121,15 +121,16 @@ void bme680_reading(void * pvParameters) {
 
 void create_mq_bme680() {
     // Message Queue
-    // static const uint8_t mq_co2_len = 1;
     mq_bme680 = xQueueGenericCreate(1, sizeof(struct BMESensor), queueQUEUE_TYPE_SET);
     if (!mq_bme680) {
         ESP_LOGE(TAG, "queue creation failed");
     }
-    
-    xTaskCreatePinnedToCore(bme680_reading_fake, "bme680_reading_fake", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+}
 
+void task_bme680() {
+    
     // ESP_ERROR_CHECK(i2cdev_init());
     // xTaskCreatePinnedToCore(bme680_reading, "bme680_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
 
+    xTaskCreatePinnedToCore(bme680_reading_fake, "bme680_reading_fake", 4096, NULL, 4, NULL, tskNO_AFFINITY);
 }
