@@ -14,7 +14,7 @@
 
 #include "esp_log.h"
 
-#define wait_co2_next_measure 1000  // How often to measure CO2 level in ms
+#define wait_co2_next_measure 5000  // How often to measure CO2 level in ms
 #define wait_co2_to_led 5000        // How often change LED colour for CO2 measurements in ms
 
 extern QueueHandle_t mq_co2;
@@ -35,4 +35,6 @@ void co2_reading(void * pvParameters);  // Fake
 void co2_scd4x_reading(void * pvParameters);
 void led_co2(void * pvParameters);
 void create_mq_co2(void);
+
+esp_err_t sensor_init(void);
 

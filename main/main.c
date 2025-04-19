@@ -142,7 +142,7 @@ static void lvgl_task(void * pvParameters) {
 void app_main() {
     //Allow other core to finish initialization
     vTaskDelay(pdMS_TO_TICKS(10));
-    
+
     // Init I2C
     // Create internal objects for sensors and queues before everything else
     // create_mq_co2();

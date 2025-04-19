@@ -423,6 +423,13 @@ Pins connected `0` and `1`
 Setup (optional)
 
 `i2cconfig  --port=0 --freq=100000 --sda=1 --scl=0`
+`i2cconfig  --port=0 --freq=100000 --sda=19 --scl=18`
+
+i2cconfig  --port=0 --freq=100000 --sda=6 --scl=7
+i2cconfig  --port=0 --freq=10000 --sda=6 --scl=7
+i2cconfig  --port=0 --freq=1000 --sda=6 --scl=7
+i2cconfig  --port=0 --freq=100 --sda=6 --scl=7
+
 
 ```text
 i2c-tools> i2cdetect
@@ -438,17 +445,17 @@ i2c-tools> i2cdetect
 ```
 
 ```text
-i2c-tools> i2cdump -c 77
+i2c-tools> i2cdump -c 0x62
      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
 00: E (416302) i2c.master: I2C transaction unexpected nack detected
 E (416302) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
 E (416302) i2c.master: i2c_master_transmit_receive(1220): I2C transaction failed
 
-i2c-tools> i2cget -c 62
-E (541932) i2c.master: I2C transaction unexpected nack detected
-E (541932) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (541932) i2c.master: i2c_master_transmit_receive(1220): I2C transaction failed
-W (541932) cmd_i2ctools: Read failed
+i2c-tools> i2cget -c 0x62 -r 0x3682 -l 8
+E (117253) i2c.master: I2C transaction unexpected nack detected
+E (117253) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
+E (117253) i2c.master: i2c_master_transmit_receive(1220): I2C transaction failed
+W (117253) cmd_i2ctools: Read failed
 ```
 
 Test manual bits:
@@ -467,8 +474,14 @@ Use one:
 #define CMD_MEASURE_SINGLE_SHOT_RHT_ONLY           (0x2196)
 ```
 
-`i2cget -c 0x62 -r 0x3682 -l 1`
+i2cset -c 0x62 -r 0x36F6 -l 1
 
+cmd_i2ctools: Write Failed
+
+i2cget -c 0x62 -r 0x3682 -l 8
+i2cget -c 0x62 -r 0xE4B8 -l 8
+i2cget -c 0x62 -r 0x00 -l 1
+i2cget -c 0x62 -r 0x02 -l 8
 
 This is CO2 Sensor!
 

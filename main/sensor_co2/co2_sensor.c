@@ -2,6 +2,7 @@
 #include "led_driver.h"
 
 static const char *TAG_FAKE = "co2-sensor";
+static const char *TAG_TEST = "CO2 SCD41 INIT";
 static const char *TAG = "scd4x";
 
 QueueHandle_t mq_co2;
@@ -71,20 +72,21 @@ TODO: Add calibration, pressure update, altitude, set ambient temp for this sens
 void co2_scd4x_reading(void * pvParameters) {
     i2c_dev_t dev = { 0 };
     
-    dev.cfg.scl_pullup_en = true;
-    dev.cfg.sda_pullup_en = true;
-    dev.cfg.mode = I2C_MODE_MASTER;
-    dev.cfg.sda_io_num = SDA_PIN_SCDX;         // select SDA GPIO specific to your project
-    dev.cfg.sda_pullup_en = GPIO_PULLUP_ENABLE;
-    dev.cfg.scl_io_num = SCL_PIN_SCDX;         // select SCL GPIO specific to your project
-    dev.cfg.scl_pullup_en = GPIO_PULLUP_ENABLE;
-    dev.cfg.master.clk_speed = I2C_FREQ_HZ;  // select frequency specific to your project
-    dev.cfg.clk_flags = 0;
+    // dev.cfg.scl_pullup_en = true;
+    // dev.cfg.sda_pullup_en = true;
+    // dev.cfg.mode = I2C_MODE_MASTER;
+    // dev.cfg.sda_io_num = SDA_PIN_SCDX;         // select SDA GPIO specific to your project
+    // dev.cfg.sda_pullup_en = GPIO_PULLUP_ENABLE;
+    // dev.cfg.scl_io_num = SCL_PIN_SCDX;         // select SCL GPIO specific to your project
+    // dev.cfg.scl_pullup_en = GPIO_PULLUP_ENABLE;
+    // dev.cfg.master.clk_speed = I2C_FREQ_HZ;  // select frequency specific to your project
+    // dev.cfg.clk_flags = 0;
 
     ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, SDA_PIN_SCDX, SCL_PIN_SCDX));
     ESP_LOGI(TAG, "Initializing sensor...");
     
-    vTaskDelay(pdMS_TO_TICKS(100));  // Add delay before measurement
+    vTaskDelay(pdMS_TO_TICKS(1000));  // Add delay before measurement
+
     ESP_LOGI(TAG, "Wake up sensor...");
     ESP_ERROR_CHECK(scd4x_wake_up(&dev));
     ESP_ERROR_CHECK(scd4x_stop_periodic_measurement(&dev));
@@ -137,6 +139,31 @@ void co2_scd4x_reading(void * pvParameters) {
 
 }
 
+esp_err_t sensor_init(void) {
+    i2c_dev_t dev = { 0 };
+
+    ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, SDA_PIN_SCDX, SCL_PIN_SCDX));
+    ESP_LOGI(TAG_TEST, "Initializing sensor...");
+    
+    vTaskDelay(pdMS_TO_TICKS(1000));  // Add delay before measurement
+    
+    ESP_LOGI(TAG_TEST, "Wake up sensor...");
+    ESP_ERROR_CHECK(scd4x_wake_up(&dev));
+    
+    
+    ESP_LOGI(TAG_TEST, "Run scd4x_stop_periodic_measurement");
+    ESP_ERROR_CHECK(scd4x_stop_periodic_measurement(&dev));
+    
+    ESP_LOGI(TAG_TEST, "Run scd4x_reinit");
+    ESP_ERROR_CHECK(scd4x_reinit(&dev));
+    
+    ESP_LOGI(TAG_TEST, "run scd4x_get_serial_number");
+
+    uint16_t serial[3];
+    ESP_ERROR_CHECK(scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2));
+    ESP_LOGI(TAG_TEST, "Sensor serial number: 0x%04x%04x%04x", serial[0], serial[1], serial[2]);
+    return ESP_OK;
+}
 
 /*
 Led HUE based on CO2 levels as task
@@ -157,14 +184,15 @@ void led_co2(void * pvParameters) {
 
 
 void create_mq_co2() {
-    ESP_ERROR_CHECK(i2cdev_init());
+    // ESP_ERROR_CHECK(i2cdev_init());
+    // ESP_ERROR_CHECK(sensor_init());
     // Message Queue
     // static const uint8_t mq_co2_len = 1;
     mq_co2 = xQueueGenericCreate(1, sizeof(int), queueQUEUE_TYPE_SET);
     if (!mq_co2) {
         ESP_LOGE(TAG, "queue creation failed");
     }
-    // xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
-    xTaskCreatePinnedToCore(co2_scd4x_reading, "co2_scd4x_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+    xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+    // xTaskCreatePinnedToCore(co2_scd4x_reading, "co2_scd4x_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
 }
