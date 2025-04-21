@@ -8,6 +8,7 @@ static const char *TAG = "scd40";
 QueueHandle_t mq_co2;
 
 i2c_master_bus_handle_t i2c_master_bus_handle;
+
 i2c_master_dev_handle_t scd41_handle;
 
 static uint16_t co2_counter = 0;     // Faking CO2 levels by simple counter

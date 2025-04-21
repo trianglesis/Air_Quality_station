@@ -35,7 +35,7 @@
 #include "i2c_driver.h"
 
 // Remove it later
-#include "sensirion_i2c.h"
+#include "sensirion_i2c_hal.h"
 
 
 uint8_t sensirion_i2c_generate_crc(const uint8_t* data, uint16_t count) {
@@ -64,7 +64,7 @@ int8_t sensirion_i2c_check_crc(const uint8_t* data, uint16_t count,
 }
 
 int16_t sensirion_i2c_general_call_reset(void) {
-    const uint8_t data = 0x06;
+    // const uint8_t data = 0x06;
     // return sensirion_i2c_hal_write(0, &data, (uint16_t)sizeof(data));
     return 10;
 }

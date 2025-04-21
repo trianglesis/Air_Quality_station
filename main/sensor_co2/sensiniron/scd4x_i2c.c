@@ -51,7 +51,7 @@ static const char *TAG = "scd4x-i2c";
 static uint8_t communication_buffer[9] = {0};
 
 // Handle to added device at I2C Bus
-i2c_master_dev_handle_t scd41_handle;
+static i2c_master_dev_handle_t scd41_handle;
 
 
 /*
@@ -315,7 +315,7 @@ int16_t scd4x_perform_forced_recalibration(uint16_t target_co2_concentration,
     if (local_error != NO_ERROR) {
         return local_error;
     }
-    vTaskDelay(pdMS_TO_TICKS(400 * 1000);
+    vTaskDelay(pdMS_TO_TICKS(400 * 1000));
     // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
     if (local_error != NO_ERROR) {
         return local_error;
@@ -433,7 +433,7 @@ int16_t scd4x_persist_settings() {
     if (local_error != NO_ERROR) {
         return local_error;
     }
-    vTaskDelay(pdMS_TO_TICKS(800 * 1000);
+    vTaskDelay(pdMS_TO_TICKS(800 * 1000));
     return local_error;
 }
 
@@ -466,7 +466,7 @@ int16_t scd4x_perform_self_test(uint16_t* sensor_status) {
     if (local_error != NO_ERROR) {
         return local_error;
     }
-    vTaskDelay(pdMS_TO_TICKS(10000 * 1000);
+    vTaskDelay(pdMS_TO_TICKS(10000 * 1000));
     // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
     if (local_error != NO_ERROR) {
         return local_error;
@@ -485,7 +485,7 @@ int16_t scd4x_perform_factory_reset() {
     if (local_error != NO_ERROR) {
         return local_error;
     }
-    vTaskDelay(pdMS_TO_TICKS(1200 * 1000);
+    vTaskDelay(pdMS_TO_TICKS(1200 * 1000));
     return local_error;
 }
 
@@ -532,7 +532,7 @@ int16_t scd4x_measure_single_shot() {
     if (local_error != NO_ERROR) {
         return local_error;
     }
-    vTaskDelay(pdMS_TO_TICKS(5000 * 1000);
+    vTaskDelay(pdMS_TO_TICKS(5000 * 1000));
     return local_error;
 }
 
@@ -546,7 +546,7 @@ int16_t scd4x_measure_single_shot_rht_only() {
     if (local_error != NO_ERROR) {
         return local_error;
     }
-    vTaskDelay(pdMS_TO_TICKS(50 * 1000);
+    vTaskDelay(pdMS_TO_TICKS(50 * 1000));
     return local_error;
 }
 
