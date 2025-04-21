@@ -148,29 +148,29 @@ esp_err_t sensor_init(void) {
     dev.cfg.master.clk_speed = I2C_FREQ_HZ;  // select frequency specific to your project
     dev.cfg.clk_flags = 0;
 
-    ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, SDA_PIN_SCDX, SCL_PIN_SCDX));
+    scd4x_init_desc(&dev, 0, SDA_PIN_SCDX, SCL_PIN_SCDX);
     ESP_LOGI(TAG_TEST, "Initializing sensor...");
     
     vTaskDelay(pdMS_TO_TICKS(1000));  // the sensor needs 1000 ms to enter the idle state
     
     // No wake UP CMD in Datasheet for SCD41 !
-    // ESP_LOGI(TAG_TEST, "Wake up sensor...");
-    // ESP_ERROR_CHECK(scd4x_wake_up(&dev));
-    // ESP_LOGI(TAG_TEST, "Run scd4x_reinit");
-    // ESP_ERROR_CHECK(scd4x_reinit(&dev));
+    ESP_LOGI(TAG_TEST, "Wake up sensor...");
+    scd4x_wake_up(&dev);
+    ESP_LOGI(TAG_TEST, "Run scd4x_reinit");
+    scd4x_reinit(&dev);
     
     ESP_LOGI(TAG_TEST, "run scd4x_get_serial_number");
     uint16_t serial[3];
-    ESP_ERROR_CHECK(scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2));
+    scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2);
     ESP_LOGI(TAG_TEST, "Sensor serial number: 0x%04x%04x%04x", serial[0], serial[1], serial[2]);
 
     bool data_ready = false;
     ESP_LOGI(TAG_TEST, "Run scd4x_get_data_ready_status");
-    ESP_ERROR_CHECK(scd4x_get_data_ready_status(&dev, &data_ready));
+    scd4x_get_data_ready_status(&dev, &data_ready);
     ESP_LOGI(TAG_TEST, "scd4x_get_data_ready_status = %d", data_ready);
 
     ESP_LOGI(TAG_TEST, "Run scd4x_stop_periodic_measurement");
-    ESP_ERROR_CHECK(scd4x_stop_periodic_measurement(&dev));
+    scd4x_stop_periodic_measurement(&dev);
 
     return ESP_OK;
 }
@@ -204,7 +204,7 @@ void create_mq_co2() {
 void task_co2() {
     ESP_ERROR_CHECK(i2cdev_init());
     ESP_ERROR_CHECK(sensor_init());
-    
+
     xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
 

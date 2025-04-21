@@ -429,6 +429,7 @@ Setup (optional)
 - i2cconfig  --port=0 --freq=100000 --sda=1 --scl=0
 - i2cconfig  --port=0 --freq=100000 --sda=19 --scl=18
 - i2cconfig  --port=0 --freq=100000 --sda=6 --scl=7
+- i2cconfig  --port=0 --freq=100000 --sda=22 --scl=23
 
 
 ```text
@@ -563,6 +564,12 @@ expression: scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2)
 abort() was called at PC 0x4080b6d1 on core 0
 --- 0x4080b6d1: _esp_error_check_failed at D:/Projects/ESP/Espressif/v5.4.1/esp-idf/components/esp_system/esp_err.c:49
 ```
+
+The reason is simple, once sensor initialized and started `measurements` mode, it no loger respond on any command which are not: `read_measurement, get_data_ready_status, stop_periodic_measurement, set_ambient_pressure and get_ambient_pressure` according to datasheet.
+
+You must stop measuring mode at the init and start again, or skip this step and check `get_data_ready_status` before running other commands (than get measure) at the init.
+
+Full path and details are in the separate repo: [README.md](https://github.com/trianglesis/I2C-tests/blob/b61df96cac6f98fd48853237cd4339111d41e84b/README.md)
 
 ## bme680
 
