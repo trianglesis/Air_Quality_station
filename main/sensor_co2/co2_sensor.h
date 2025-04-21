@@ -18,6 +18,7 @@
 #define wait_co2_to_led 5000 * 3    // No need to update led too often
 
 extern QueueHandle_t mq_co2;
+extern i2c_master_dev_handle_t scd41_handle;
 
 #define SCD4X_I2C_ADDR 0x62
 

@@ -143,12 +143,14 @@ static void lvgl_task(void * pvParameters) {
 void app_main() {
     //Allow other core to finish initialization
     vTaskDelay(pdMS_TO_TICKS(10));   
+    // Create Master Bus for I2C
+    ESP_ERROR_CHECK(master_bus_init());
+    
     // Create internal objects for sensors and queues before everything else
     create_mq_co2();
     // Still fake
     create_mq_bme680();
-    // Create Master Bus for I2C
-    master_bus_init();
+    
 
     // Early init
     led_init();

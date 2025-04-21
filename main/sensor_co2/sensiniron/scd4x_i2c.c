@@ -45,21 +45,10 @@
 
 static const char *TAG = "scd4x-i2c";
 
-
 #define ROUND(x) ((int32_t)((x) + 0.5))
 
 static uint8_t communication_buffer[9] = {0};
 
-// Handle to added device at I2C Bus
-static i2c_master_dev_handle_t scd41_handle;
-
-
-/*
-Assign device handle after adding this sensor to I2C master bus
-*/
-void scd4x_init(i2c_master_dev_handle_t scd41_handle) {
-    scd41_handle = scd41_handle;
-}
 
 uint16_t scd4x_signal_co2_concentration(uint16_t raw_co2_concentration) {
     uint16_t co2_concentration = 0;
@@ -179,23 +168,45 @@ int16_t scd4x_read_measurement(uint16_t* co2, int32_t* temperature_m_deg_c, int3
     return NO_ERROR;
 }
 
-int16_t scd4x_stop_periodic_measurement() {
+
+/*
+Dumb option, keep it here only, to enforce sensor shutdown with 5 retries if needed.
+Not sure this is a good way to retry it any further in the code.
+However may be used in measurements call?
+*/
+int16_t scd4x_stop_periodic_measurement(i2c_master_dev_handle_t scd41_handle) {
     esp_err_t ret;
-    uint16_t TriesCount = 5;
-    uint8_t* buffer_ptr = communication_buffer;
+    uint8_t* buff_wr = communication_buffer;
     uint16_t local_offset = 0;
-    local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x3f86);
-    while (1) {
-        ret = i2c_transmit(scd41_handle, buffer_ptr, local_offset, 30);
-        if (ret != ESP_OK) {
-            ESP_LOGE(TAG, "Cannot stop sensor measurements now. Retry: %d", TriesCount);
-            vTaskDelay(pdMS_TO_TICKS(5000));
-            TriesCount--;
-            if (TriesCount == 0) {
-                break;
-            }
-        }
+    
+    // SCD4X_CMD_ID CMD = SCD4X_STOP_PERIODIC_MEASUREMENT_CMD_ID;
+    local_offset = sensirion_i2c_add_command16_to_buffer(buff_wr, local_offset, 0x3f86);
+    ret = i2c_master_transmit(scd41_handle, buff_wr, sizeof(buff_wr), 30);
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "Transmitted to device!");
+        return ESP_OK;
+    } else if (ret == ESP_ERR_INVALID_ARG) {
+        ESP_LOGE(TAG, "I2C master transmit parameter invalid!");
+        return ESP_FAIL;
+    } else if (ret == ESP_ERR_TIMEOUT) {
+        ESP_LOGE(TAG, "Operation timeout(larger than xfer_timeout_ms) because the bus is busy or hardware crash!");
+        return ESP_FAIL;
+    } else {
+        ESP_LOGE(TAG, "Cannot transmit to device, unknown error!");
+        return ESP_FAIL;
     }
+
+    // while (1) {
+    //     ret = i2c_transmit(scd41_handle, buffer_ptr, local_offset, 30);
+    //     if (ret != ESP_OK) {
+    //         ESP_LOGE(TAG, "Cannot stop sensor measurements now. Retry: %d", TriesCount);
+    //         vTaskDelay(pdMS_TO_TICKS(5000));
+    //         TriesCount--;
+    //         if (TriesCount == 0) {
+    //             return ESP_FAIL;
+    //         }
+    //     }
+    // }
     ESP_LOGI(TAG, "CMD Stop Measurements sent at start! Wait 5 sec!");
     vTaskDelay(pdMS_TO_TICKS(5000));
     return ESP_OK;
@@ -437,23 +448,32 @@ int16_t scd4x_persist_settings() {
     return local_error;
 }
 
-int16_t scd4x_get_serial_number(uint16_t* serial_number,
-                                uint16_t serial_number_size) {
-    int16_t local_error = NO_ERROR;
+int16_t scd4x_get_serial_number(i2c_master_dev_handle_t scd41_handle, uint16_t* serial_number, uint16_t serial_number_size) {
+    esp_err_t ret;
     uint8_t* buffer_ptr = communication_buffer;
+    uint8_t buff_r_serial[3] = {0};  // Output: serial number
     uint16_t local_offset = 0;
+    int sleep_ms = 1 * 1000;
+    
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x3682);
-    // local_error = sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
+    ret = i2c_master_transmit_receive(scd41_handle, buffer_ptr, sizeof(buffer_ptr), buff_r_serial, sizeof(buff_r_serial), sleep_ms);
+
+    sensirion_common_copy_bytes(&buff_r_serial[0], (uint8_t*)serial_number, (serial_number_size * 2));
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "Transmitted to device and received!");
+        return ESP_OK;
+    } else if (ret == ESP_ERR_INVALID_ARG) {
+        ESP_LOGE(TAG, "I2C master transmit parameter invalid!");
+        return ESP_FAIL;
+    } else if (ret == ESP_ERR_TIMEOUT) {
+        ESP_LOGE(TAG, "Operation timeout(larger than xfer_timeout_ms) because the bus is busy or hardware crash!");
+        return ESP_FAIL;
+    } else {
+        ESP_LOGE(TAG, "Cannot transmit to device, unknown error!");
+        return ESP_FAIL;
     }
-    vTaskDelay(pdMS_TO_TICKS(1 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 6);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
-    sensirion_common_copy_bytes(&buffer_ptr[0], (uint8_t*)serial_number, (serial_number_size * 2));
-    return local_error;
+    return ESP_OK;
+
 }
 
 int16_t scd4x_perform_self_test(uint16_t* sensor_status) {

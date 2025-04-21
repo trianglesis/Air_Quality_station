@@ -222,7 +222,7 @@ int16_t scd4x_read_measurement(uint16_t* co2, int32_t* temperature_m_deg_c,
  *
  * @return error_code 0 on success, an error code otherwise.
  */
-int16_t scd4x_stop_periodic_measurement();
+int16_t scd4x_stop_periodic_measurement(i2c_master_dev_handle_t scd41_handle);
 
 /**
  * @brief Set the temperature compensation offset (raw value).
@@ -555,7 +555,8 @@ int16_t scd4x_persist_settings();
  *
  * @return error_code 0 on success, an error code otherwise.
  */
-int16_t scd4x_get_serial_number(uint16_t* serial_number,
+int16_t scd4x_get_serial_number(i2c_master_dev_handle_t scd41_handle,
+                                uint16_t* serial_number,
                                 uint16_t serial_number_size);
 
 /**

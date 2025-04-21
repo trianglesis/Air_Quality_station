@@ -1,15 +1,17 @@
 #include "co2_sensor.h"
 #include "led_driver.h"
 #include "scd4x_i2c.h"
+#include "sensirion_common.h"
+#include "sensirion_i2c.h"
+
 
 static const char *TAG_FAKE = "co2-sensor";
 static const char *TAG = "scd40";
 
 QueueHandle_t mq_co2;
 
-i2c_master_bus_handle_t i2c_master_bus_handle;
-
 i2c_master_dev_handle_t scd41_handle;
+
 
 static uint16_t co2_counter = 0;     // Faking CO2 levels by simple counter
 
@@ -82,26 +84,62 @@ void co2_scd4x_reading(void * pvParameters) {
 Get I2C bus 
 Add SCD40 sensor at it, and use device handle
 
+TODO: Add SD card read\write option to save states:
+- last operation mode
+- last power mode
+- calibration values
+- last measurement or even log
+
 */
 esp_err_t sensor_init(void) {
-    int status;
-
-    // Get main I2C bus
-    master_bus_get(i2c_master_bus_handle);
+    esp_err_t ret;
+    i2c_device_config_t scd41_device = {
+        .dev_addr_length = I2C_ADDR_BIT_LEN_7,
+        .device_address = SCD4X_I2C_ADDR,
+        .scl_speed_hz = I2C_FREQ_HZ,
+    };
     // Add device to the bus
-    master_bus_device_add(i2c_master_bus_handle, scd41_handle, SCD4X_I2C_ADDR);
-    ESP_LOGI(TAG, "Device added! Can start communication!");
-    // Init SCD4x - add handler for module
-    scd4x_init(scd41_handle);
-
-    // Probably a good idea is to shut the sensor before use it again.
-    // Stop any ongoing measurement.
-    status = scd4x_stop_periodic_measurement();
-    if (status) {
-        printf("Unable to stop measurement. Error: %d\n", status);
-        return status;
+    scd41_handle = master_bus_device_add(scd41_device);
+    if (scd41_handle == NULL) {
+        ESP_LOGI(TAG, "Device handle is NULL! Exit!");
+        return ESP_FAIL;
+    } else {
+        ESP_LOGI(TAG, "Device added! Probe address!");
     }
+    ESP_ERROR_CHECK(master_bus_probe_address(SCD4X_I2C_ADDR, 50)); // Wait 50 ms
+    
+    // Probably a good idea is to shut the sensor before use it again.
+    ret = scd4x_stop_periodic_measurement(scd41_handle);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Cannot send command to device to stop measurements mode!");
+        return ESP_FAIL;
+    } else {
+        ESP_LOGI(TAG, "Stopped measirements now! Can start again after cooldown.");
+    }
+    
+    // Get serial N
+    uint16_t serial_number[3] = {0};
+    ret = scd4x_get_serial_number(scd41_handle, serial_number, sizeof(serial_number));
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Cannot get serial number!");
+        return ESP_FAIL;
+    } else {
+        ESP_LOGI(TAG, "Sensor serial number is: 0x%x 0x%x 0x%x", 
+            (int)serial_number[0], 
+            (int)serial_number[1], 
+            (int)serial_number[2]);
+    }
+    // TODO: Save states to SD Card.
+    // TODO: Read previous states from SD Card
+    // TODO: If no SD Card - write to SPI flash partition
+
+    // Move to task when finished contructing measure function!
+    get_measures();
     return ESP_OK;
+}
+
+void get_measures () {
+
 }
 
 /*

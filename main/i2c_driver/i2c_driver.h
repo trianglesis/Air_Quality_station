@@ -50,17 +50,19 @@ esp_err_t master_bus_get(i2c_master_bus_handle_t handle);
 Add a device to master bus.
 
 1. Init master_bus_init
-2. Get handle master_bus_get
+2. Get handle master_bus_get - it shoud be saved at init
 3. Now add device
 
 Note: obtaining bus may be added into this function, 
     but now I'd rather leave those steps pretty visible 
     for me to understand the full process.
+
+Return device handle!
 */
-esp_err_t master_bus_device_add(i2c_master_bus_handle_t bus_handle, i2c_master_dev_handle_t device_handle, uint16_t device_address);
+i2c_master_dev_handle_t master_bus_device_add(i2c_device_config_t device_config);
 
+esp_err_t master_bus_probe_address(uint16_t address, int xfer_timeout_ms);
 
-esp_err_t master_bus_probe_address(i2c_master_bus_handle_t bus_handle, uint16_t address, int xfer_timeout_ms);
 esp_err_t i2c_receive(i2c_master_dev_handle_t i2c_dev, uint8_t* read_buffer, size_t read_size, int xfer_timeout_ms);
 esp_err_t i2c_transmit_and_receive(i2c_master_dev_handle_t i2c_dev, const uint8_t* write_buffer, size_t write_size, uint8_t* read_buffer, size_t read_size, int xfer_timeout_ms);
 esp_err_t i2c_transmit(i2c_master_dev_handle_t i2c_dev, const uint8_t* write_buffer, size_t write_size, int xfer_timeout_ms);
