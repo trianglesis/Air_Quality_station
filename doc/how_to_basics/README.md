@@ -362,11 +362,43 @@ if (mq_co2 > 1) {
 
 # Sensors
 
+Connect both sensors at one pin group:
+
+- `SCL` pin `1`
+- `SDA` pin `0`
+
+Use `i2c_tools` to discover both and ensure a good connection:
+
+- [I2C tools](https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/peripherals/i2c/i2c_tools/README.md)
+
+Change pins on the go:
+
+`i2cconfig  --port=0 --freq=100000 --sda=0 --scl=1`
+
+We should see both addresses
+
+```log
+i2c-tools> i2cdetect
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00: 00 -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+60: -- -- 62 -- -- -- -- -- -- -- -- -- -- -- -- --
+70: -- -- -- -- -- -- -- 77 -- -- -- -- -- -- -- --
+```
+
+Both sensors should be present!
 
 ## scd4x
 
+I have a `40` model.
+
 Datasheet:
 - https://download.mikroe.com/documents/datasheets/SCD41%20Datasheet.pdf
+- https://sensirion.com/media/documents/48C4B7FB/67FE0194/CD_DS_SCD4x_Datasheet_D1.pdf
 
 https://esp-idf-lib.readthedocs.io/en/latest/groups/scd4x.html
 Other
@@ -396,8 +428,31 @@ If branch
 
 Use files as you wish, do not waste time for adding a full lib as a component!
 
+### Implementation
+
+After trying to troubleshoot the issue (###Not Working) I found that all SCD4x drivers are pretty old and\or using deprecated(soon) i2c driver. So that means I need to implement it myself.
+
+Luckily, there is a nice doc, and everything works fine with it:
+
+- [IDF](https://docs.espressif.com/projects/esp-idf/en/v5.4.1/esp32c6/api-reference/peripherals/i2c.html)
+
+
+I have tested it in troubleshooting repo: 
+
+- [README.md](https://github.com/trianglesis/I2C-tests/blob/b61df96cac6f98fd48853237cd4339111d41e84b/README.md)
+
+I will probably skip a few specific methods and commands, as I only need CO2 measurement. 
+
+Later I will upate or add more, for calibrtion, and probaby some locks for parallel use with other sensors, if this bus thing will hit me hard.
+
+
 ### Not working
 
+This is an outdated but can be useful for troubleshooting.
+
+Read the doc, check pins, soldering and conductivity. 
+
+But usually alot of NACKs means this sensor is already in measure mode, it it won't respond on other commands!
 
 ```log
 E (949) i2cdev: Could not write to device [0x62 at 0]: -1 (ESP_FAIL)
@@ -412,7 +467,6 @@ abort() was called at PC 0x4080b6d1 on core 0
 --- 0x4080b6d1: _esp_error_check_failed at D:/Projects/ESP/Espressif/v5.4.1/esp-idf/components/esp_system/esp_err.c:49
 ```
 
-Nothing works!
 Try to debug I2C bus with examples from IDF and also check options at `menuconfig`
 
 - [I2C tools](https://github.com/espressif/esp-idf/blob/4c2820d377d1375e787bcef612f0c32c1427d183/examples/peripherals/i2c/i2c_tools/README.md)
@@ -426,13 +480,10 @@ Pins connected `0` and `1`
 
 Setup (optional)
 
-- i2cconfig  --port=0 --freq=100000 --sda=1 --scl=0
-- i2cconfig  --port=0 --freq=100000 --sda=19 --scl=18
-- i2cconfig  --port=0 --freq=100000 --sda=6 --scl=7
-- i2cconfig  --port=0 --freq=100000 --sda=22 --scl=23
+- `i2cconfig  --port=0 --freq=100000 --sda=1 --scl=0`
 
 
-```text
+```log
 i2c-tools> i2cdetect
      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
 00: 00 -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -445,125 +496,8 @@ i2c-tools> i2cdetect
 70: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ```
 
-```text
-i2c-tools> i2cdump -c 0x62
-     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
-00: E (416302) i2c.master: I2C transaction unexpected nack detected
-E (416302) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (416302) i2c.master: i2c_master_transmit_receive(1220): I2C transaction failed
-
-i2c-tools> i2cget -c 0x62 -r 0x3682 -l 8
-E (117253) i2c.master: I2C transaction unexpected nack detected
-E (117253) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (117253) i2c.master: i2c_master_transmit_receive(1220): I2C transaction failed
-W (117253) cmd_i2ctools: Read failed
-```
-
-Test manual bits:
-
-`i2cset -c 0x62 -r 0x36F6 -l 1`
-
-Use one:
-```code
-#define CMD_POWER_DOWN                             (0x36E0)
-#define CMD_WAKE_UP                                (0x36F6)
-#define CMD_GET_DATA_READY_STATUS                  (0xE4B8)
-#define CMD_GET_SERIAL_NUMBER                      (0x3682)
-#define CMD_PERFORM_SELF_TEST                      (0x3639)
-#define CMD_REINIT                                 (0x3646)
-#define CMD_MEASURE_SINGLE_SHOT                    (0x219D)
-#define CMD_MEASURE_SINGLE_SHOT_RHT_ONLY           (0x2196)
-```
-
-i2cset -c 0x62 -r 0x36F6 -l 1
-
-cmd_i2ctools: Write Failed
-
-i2cget -c 0x62 -r 0x3682 -l 8
-i2cget -c 0x62 -r 0xE4B8 -l 8
-i2cget -c 0x62 -r 0x00 -l 1
-i2cget -c 0x62 -r 0x02 -l 8
-
 This is CO2 Sensor!
 
-Setup the BME680 next:
-
-`i2cconfig  --port=0 --freq=100000 --sda=3 --scl=2`
-
-```text
-i2c-tools> i2cconfig  --port=0 --freq=100000 --sda=3 --scl=2
-i2c-tools> i2cdetect
-     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-00: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-70: -- -- -- -- -- -- -- 77 -- -- -- -- -- -- -- -- 
-```
-This is BME680!
-
-Tests
-
-```text
-i2c-tools> i2cdump -c 77
-     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
-00: E (416302) i2c.master: I2C transaction unexpected nack detected
-E (416302) i2c.master: s_i2c_synchronous_transaction(924): I2C transaction failed
-E (416302) i2c.master: i2c_master_transmit_receive(1220): I2C transaction failed
-```
-
-#### Other issues
-
-Getting only commands from the datasheet
-
-```log
-I (1849) CO2 SCD41 INIT: Run scd4x_reinit
-E (1849) i2cdev: Could not write to device [0x62 at 0]: -1 (ESP_FAIL)
-ESP_ERROR_CHECK failed: esp_err_t 0xffffffff (ESP_FAIL) at 0x42011230
---- 0x42011230: sensor_init at D:/Projects/ESP/projects/ESP32-C6-OLED/Air_Quality_station/main/sensor_co2/co2_sensor.c:161 (discriminator 1)
-
-file: "./main/sensor_co2/co2_sensor.c" line 161
-func: sensor_init
-expression: scd4x_reinit(&dev)
-
-```
-
-Can't get serial number:
-
-```log
-E (1849) i2cdev: Could not write to device [0x62 at 0]: -1 (ESP_FAIL)
-ESP_ERROR_CHECK failed: esp_err_t 0xffffffff (ESP_FAIL) at 0x42011260
---- 0x42011260: sensor_init at D:/Projects/ESP/projects/ESP32-C6-OLED/Air_Quality_station/main/sensor_co2/co2_sensor.c:164 (discriminator 1)
-
-file: "./main/sensor_co2/co2_sensor.c" line 164
-func: sensor_init
-expression: scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2)
-
-```
-
-DEBUG log
-
-```log
-I (10157) CO2 SCD41 INIT: run scd4x_get_serial_number
-D (10167) i2cdev: Reconfiguring I2C driver on port 0
-D (10167) intr_alloc: Connected src 50 to int 15 (cpu 0)
-D (10177) i2cdev: I2C driver successfully reconfigured on port 0
-D (10187) i2cdev: Timeout: ticks = 0 (0 usec) on port 0
-D (10177) wifi:mms: 0->0
-E (10187) i2cdev: Could not write to device [0x62 at 0]: -1 (ESP_FAIL)
-ESP_ERROR_CHECK failed: esp_err_t 0xffffffff (ESP_FAIL) at 0x42011308
---- 0x42011308: sensor_init at D:/Projects/ESP/projects/ESP32-C6-OLED/Air_Quality_station/main/sensor_co2/co2_sensor.c:164 (discriminator 1)
-
-file: "./main/sensor_co2/co2_sensor.c" line 164
-func: sensor_init
-expression: scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2)
-
-abort() was called at PC 0x4080b6d1 on core 0
---- 0x4080b6d1: _esp_error_check_failed at D:/Projects/ESP/Espressif/v5.4.1/esp-idf/components/esp_system/esp_err.c:49
-```
 
 The reason is simple, once sensor initialized and started `measurements` mode, it no loger respond on any command which are not: `read_measurement, get_data_ready_status, stop_periodic_measurement, set_ambient_pressure and get_ambient_pressure` according to datasheet.
 

@@ -15,6 +15,7 @@
 #include "card_driver.h"
 #include "lvgl_driver.h"
 #include "led_driver.h"
+#include "i2c_driver.h"
 #include "local_flash.h"
 #include "wifi_ap.h"
 #include "webserver.h"
@@ -146,6 +147,8 @@ void app_main() {
     create_mq_co2();
     // Still fake
     create_mq_bme680();
+    // Create Master Bus for I2C
+    master_bus_init();
 
     // Early init
     led_init();
@@ -183,6 +186,7 @@ void app_main() {
     // delay to let tasks finish the last loop
     vTaskDelay(pdMS_TO_TICKS(500));
     task_co2();
-    task_bme680();
+
+    // task_bme680();
 }
 // 

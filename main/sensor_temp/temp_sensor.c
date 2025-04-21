@@ -61,63 +61,6 @@ void bme680_reading_fake(void * pvParameters) {
     // vTaskDelete(NULL);
 }
 
-/*
-New driver and proper readings
-https://esp-idf-lib.readthedocs.io/en/latest/groups/bme680.html
-
-https://github.com/UncleRus/esp-idf-lib/blob/a02cd6bb5190cab379125140780adcb8d88f9650/FAQ.md
-*/
-void bme680_reading(void * pvParameters) {
-    bme680_t sensor = { 0 };
-    
-    // sensor.i2c_dev.cfg.scl_pullup_en = true;
-    // sensor.i2c_dev.cfg.sda_pullup_en = true;
-
-    memset(&sensor, 0, sizeof(bme680_t));
-    ESP_ERROR_CHECK(bme680_init_desc(&sensor, BME680_I2C_ADDR_1, PORT, SDA_PIN_BME680, SCL_PIN_BME680));
-
-    // Changes the oversampling rates to 4x oversampling for temperature
-    // and 2x oversampling for humidity. Pressure measurement is skipped.
-    bme680_set_oversampling_rates(&sensor, BME680_OSR_4X, BME680_OSR_NONE, BME680_OSR_2X);
-
-    // Change the IIR filter size for temperature and pressure to 7.
-    bme680_set_filter_size(&sensor, BME680_IIR_SIZE_7);
-
-    // Change the heater profile 0 to 200 degree Celsius for 100 ms.
-    bme680_set_heater_profile(&sensor, 0, 200, 100);
-    bme680_use_heater_profile(&sensor, 0);
-
-    // Set ambient temperature to 10 degree Celsius
-    bme680_set_ambient_temperature(&sensor, 10);
-
-    // as long as sensor configuration isn't changed, duration is constant
-    uint32_t duration;
-    bme680_get_measurement_duration(&sensor, &duration);
-
-    bme680_values_float_t values;
-    while (1)
-    {
-        struct BMESensor bme680_readings = {};
-        // trigger the sensor to start one TPHG measurement cycle
-        if (bme680_force_measurement(&sensor) == ESP_OK) {
-            // passive waiting until measurement results are available
-            vTaskDelay(duration);
-            // get the results and do something with them
-            if (bme680_get_results_float(&sensor, &values) == ESP_OK) {
-                ESP_LOGI(TAG, "Got t: %4.0f, hum: %4.0f %%, hPa: %4.2f, res: %4.2f Ohm", values.temperature, values.humidity, values.pressure, values.gas_resistance);
-                bme680_readings.temperature = values.temperature;
-                bme680_readings.humidity = values.humidity;
-                bme680_readings.pressure = values.pressure;
-                bme680_readings.resistance = values.gas_resistance;
-            }
-        }
-        ESP_LOGI(TAG_FAKE, "Sending sensor values");
-        xQueueOverwrite(mq_bme680, (void *)&bme680_readings);
-        // Wait next
-        vTaskDelay(pdMS_TO_TICKS(wait_next_measure));
-    }
-}
-
 
 void create_mq_bme680() {
     // Message Queue

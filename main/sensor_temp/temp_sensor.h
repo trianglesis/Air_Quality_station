@@ -10,8 +10,6 @@
 #include "freertos/semphr.h"
 #include "esp_timer.h"
 
-#include "bme680.h"
-
 #include "esp_log.h"
 
 

@@ -1,12 +1,14 @@
 #include "co2_sensor.h"
 #include "led_driver.h"
+#include "scd4x_i2c.h"
 
 static const char *TAG_FAKE = "co2-sensor";
-static const char *TAG_TEST = "CO2 SCD41 INIT";
-static const char *TAG = "scd4x";
+static const char *TAG = "scd40";
 
 QueueHandle_t mq_co2;
 
+i2c_master_bus_handle_t i2c_master_bus_handle;
+i2c_master_dev_handle_t scd41_handle;
 
 static uint16_t co2_counter = 0;     // Faking CO2 levels by simple counter
 
@@ -65,113 +67,39 @@ void co2_reading(void * pvParameters) {
 
 /*
 
-The sensor starts powering-up after reaching the power-up threshold voltage VDD,Min = 2.25 V. After reaching this threshold 
-voltage, the sensor needs 1000 ms to enter the idle state. Once the idle state is entered it is ready to receive commands from 
-the master. 
-
-New driver and proper readings
-https://esp-idf-lib.readthedocs.io/en/latest/groups/scd4x.html
-https://github.com/UncleRus/esp-idf-lib/blob/a02cd6bb5190cab379125140780adcb8d88f9650/FAQ.md
-
-TODO: Add calibration, pressure update, altitude, set ambient temp for this sensor from BME680
-- scd4x_set_automatic_self_calibration
-- scd4x_set_temperature_offset
-- scd4x_set_ambient_pressure
 */
 void co2_scd4x_reading(void * pvParameters) {
-    i2c_dev_t dev = { 0 };
-    
-    ESP_ERROR_CHECK(scd4x_init_desc(&dev, 0, SDA_PIN_SCDX, SCL_PIN_SCDX));
-    
-    ESP_LOGI(TAG, "Initializing sensor...");
-    vTaskDelay(pdMS_TO_TICKS(1000));  //  the sensor needs 1000 ms to enter the idle state
 
-    ESP_LOGI(TAG, "Wake up sensor...");
-    // ESP_ERROR_CHECK(scd4x_wake_up(&dev));
-    // ESP_ERROR_CHECK(scd4x_stop_periodic_measurement(&dev));
-    // ESP_ERROR_CHECK(scd4x_reinit(&dev));
-    ESP_LOGI(TAG, "Sensor initialized");
-
-    uint16_t serial[3];
-    ESP_ERROR_CHECK(scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2));
-    ESP_LOGI(TAG, "Sensor serial number: 0x%04x%04x%04x", serial[0], serial[1], serial[2]);
-
-    // Calibration and set up
-    // Set temperature offset in °C. t_offset – Temperature offset in degrees Celsius (°C) 
-    // scd4x_set_temperature_offset(&dev, float t_offset);
-
-    // Set ambient pressure.  uint16_t  Convert value to Pa by: value * 100 
-    // scd4x_set_ambient_pressure(&dev, uint16_t pressure);
-
-    // Set sensor altitude in meters above sea level. 
-    // scd4x_set_sensor_altitude(&dev, uint16_t altitude);
-
-    ESP_ERROR_CHECK(scd4x_start_periodic_measurement(&dev));
-    ESP_LOGI(TAG, "Periodic measurements started");
-
-    uint16_t co2_ppm;
-    float temperature, humidity;
     while (1)
     {
-        struct SCD4XSensor scd4x_readings = {};
-        esp_err_t res = scd4x_read_measurement(&dev, &co2_ppm, &temperature, &humidity);
-        if (res != ESP_OK) {
-            ESP_LOGE(TAG, "Error reading results %d (%s)", res, esp_err_to_name(res));
-            continue;
-        }
-        if (co2_ppm == 0) {
-            ESP_LOGW(TAG, "Invalid sample detected, skipping");
-            continue;
-        }
-        scd4x_readings.temperature = temperature;
-        scd4x_readings.humidity = humidity;
-        scd4x_readings.co2_ppm = co2_ppm;
-
-        xQueueOverwrite(mq_co2, (void *)&scd4x_readings);
-        ESP_LOGI(TAG_FAKE, "CO2: %u ppm, Temperature: %.2f °C, Humidity: %.2f %%", co2_ppm, temperature, humidity);
-        // Now send CO2 level further, send an item for every 1000ms
         vTaskDelay(pdMS_TO_TICKS(wait_co2_next_measure));
     }
 
 }
 
+/*
+Get I2C bus 
+Add SCD40 sensor at it, and use device handle
+
+*/
 esp_err_t sensor_init(void) {
-    i2c_dev_t dev = { 0 };
+    int status;
 
-    dev.cfg.scl_pullup_en = true;
-    dev.cfg.sda_pullup_en = true;
-    dev.cfg.mode = I2C_MODE_MASTER;
-    dev.cfg.sda_io_num = SDA_PIN_SCDX;         // select SDA GPIO specific to your project
-    dev.cfg.sda_pullup_en = GPIO_PULLUP_ENABLE;
-    dev.cfg.scl_io_num = SCL_PIN_SCDX;         // select SCL GPIO specific to your project
-    dev.cfg.scl_pullup_en = GPIO_PULLUP_ENABLE;
-    dev.cfg.master.clk_speed = I2C_FREQ_HZ;  // select frequency specific to your project
-    dev.cfg.clk_flags = 0;
+    // Get main I2C bus
+    master_bus_get(i2c_master_bus_handle);
+    // Add device to the bus
+    master_bus_device_add(i2c_master_bus_handle, scd41_handle, SCD4X_I2C_ADDR);
+    ESP_LOGI(TAG, "Device added! Can start communication!");
+    // Init SCD4x - add handler for module
+    scd4x_init(scd41_handle);
 
-    scd4x_init_desc(&dev, 0, SDA_PIN_SCDX, SCL_PIN_SCDX);
-    ESP_LOGI(TAG_TEST, "Initializing sensor...");
-    
-    vTaskDelay(pdMS_TO_TICKS(1000));  // the sensor needs 1000 ms to enter the idle state
-    
-    // No wake UP CMD in Datasheet for SCD41 !
-    ESP_LOGI(TAG_TEST, "Wake up sensor...");
-    scd4x_wake_up(&dev);
-    ESP_LOGI(TAG_TEST, "Run scd4x_reinit");
-    scd4x_reinit(&dev);
-    
-    ESP_LOGI(TAG_TEST, "run scd4x_get_serial_number");
-    uint16_t serial[3];
-    scd4x_get_serial_number(&dev, serial, serial + 1, serial + 2);
-    ESP_LOGI(TAG_TEST, "Sensor serial number: 0x%04x%04x%04x", serial[0], serial[1], serial[2]);
-
-    bool data_ready = false;
-    ESP_LOGI(TAG_TEST, "Run scd4x_get_data_ready_status");
-    scd4x_get_data_ready_status(&dev, &data_ready);
-    ESP_LOGI(TAG_TEST, "scd4x_get_data_ready_status = %d", data_ready);
-
-    ESP_LOGI(TAG_TEST, "Run scd4x_stop_periodic_measurement");
-    scd4x_stop_periodic_measurement(&dev);
-
+    // Probably a good idea is to shut the sensor before use it again.
+    // Stop any ongoing measurement.
+    status = scd4x_stop_periodic_measurement();
+    if (status) {
+        printf("Unable to stop measurement. Error: %d\n", status);
+        return status;
+    }
     return ESP_OK;
 }
 
@@ -193,17 +121,21 @@ void led_co2(void * pvParameters) {
 }
 
 
+/*
+Always create queue first, at the very beginning.
+*/
 void create_mq_co2() {
     // Message Queue
     mq_co2 = xQueueGenericCreate(1, sizeof(struct SCD4XSensor), queueQUEUE_TYPE_SET);
     if (!mq_co2) {
         ESP_LOGE(TAG, "queue creation failed");
     }
+    // Add device to I2C bus and stop it to prepare for measurements
+    ESP_ERROR_CHECK(sensor_init());
+
 }
 
 void task_co2() {
-    ESP_ERROR_CHECK(i2cdev_init());
-    ESP_ERROR_CHECK(sensor_init());
 
     xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
     xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
