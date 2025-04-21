@@ -129,17 +129,54 @@ esp_err_t sensor_init(void) {
             (int)serial_number[1], 
             (int)serial_number[2]);
     }
+
     // TODO: Save states to SD Card.
     // TODO: Read previous states from SD Card
     // TODO: If no SD Card - write to SPI flash partition
+
+    // Switch SCD40 to measurement mode
+    // It will not respond to most of other commands in this mode, check the datasheet!
+    ret = scd4x_start_periodic_measurement(scd41_handle);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Cannot start periodic measurement mode!");
+        return ESP_FAIL;
+    } else {
+        ESP_LOGI(TAG, "Starting the periodic mesurement mode, you can check the next data in 5 seconds since now.");
+        vTaskDelay(pdMS_TO_TICKS(5000));
+    }
 
     // Move to task when finished contructing measure function!
     get_measures();
     return ESP_OK;
 }
 
-void get_measures () {
+esp_err_t get_measures () {
+    bool dataReady;
+    esp_err_t ret;
 
+    dataReady = scd4x_get_data_ready_status(scd41_handle);
+
+    // When data is ready we can get measurements.
+    // Later add this in the loop, in task it can be cycled as in the example
+    if (dataReady) {
+        // Read the measurement data and convert it to common units.
+        uint16_t co2Raw;         // ppm
+        int32_t temperatureRaw;  // millicelsius
+        int32_t humidityRaw;     // millipercent
+        scd4x_read_measurement(scd41_handle, &co2Raw, &temperatureRaw, &humidityRaw);
+        ESP_LOGI(TAG, "RAW Measurements ready co2: %d, t: %ld C Humidity: %ld (raw value)", co2Raw, temperatureRaw, humidityRaw);
+
+        const int co2Ppm = co2Raw;
+        const float temperatureCelsius = temperatureRaw / 1000.0f;
+        const float humidityPercent = humidityRaw / 1000.0f;
+
+        ESP_LOGI(TAG, "CO2: %d ppm, Temperature: %.1f C Humidity: %.1f%%\n", 
+            co2Ppm, 
+            temperatureCelsius, 
+            humidityPercent);
+    }
+
+    return ESP_OK;
 }
 
 /*

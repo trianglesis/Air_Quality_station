@@ -44,5 +44,7 @@ void led_co2(void * pvParameters);
 void create_mq_co2(void);
 void task_co2(void);
 
+esp_err_t get_measures(void);
+
 esp_err_t sensor_init(void);
 

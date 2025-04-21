@@ -150,7 +150,7 @@ int16_t scd4x_get_ambient_pressure(uint32_t* a_ambient_pressure);
  *
  * @return error_code 0 on success, an error code otherwise.
  */
-int16_t scd4x_get_data_ready_status(bool* arg_0);
+bool scd4x_get_data_ready_status(i2c_master_dev_handle_t scd41_handle);
 
 /**
  * @brief Reads out the SCD4x sensor variant.
@@ -173,7 +173,7 @@ int16_t scd4x_get_sensor_variant(scd4x_sensor_variant* a_sensor_variant);
  *
  * @return error_code 0 on success, an error code otherwise.
  */
-int16_t scd4x_start_periodic_measurement();
+int16_t scd4x_start_periodic_measurement(i2c_master_dev_handle_t scd41_handle);
 
 /**
  * @brief Read CO₂, temperature, and humidity measurements raw values.
@@ -193,7 +193,8 @@ int16_t scd4x_start_periodic_measurement();
  *
  * @return error_code 0 on success, an error code otherwise.
  */
-int16_t scd4x_read_measurement_raw(uint16_t* co2_concentration,
+int16_t scd4x_read_measurement_raw(i2c_master_dev_handle_t scd41_handle, 
+                                   uint16_t* co2_concentration,
                                    uint16_t* temperature,
                                    uint16_t* relative_humidity);
 
@@ -209,7 +210,9 @@ int16_t scd4x_read_measurement_raw(uint16_t* co2_concentration,
  * (%RH * 1000)
  * @return 0 on success, an error code otherwise
  */
-int16_t scd4x_read_measurement(uint16_t* co2, int32_t* temperature_m_deg_c,
+int16_t scd4x_read_measurement(i2c_master_dev_handle_t scd41_handle, 
+                               uint16_t* co2, 
+                               int32_t* temperature_m_deg_c,
                                int32_t* humidity_m_percent_rh);
 
 /**
@@ -516,7 +519,7 @@ int16_t scd4x_start_low_power_periodic_measurement();
  *
  * @return error_code 0 on success, an error code otherwise.
  */
-int16_t scd4x_get_data_ready_status_raw(uint16_t* data_ready_status);
+bool scd4x_get_data_ready_status_raw(i2c_master_dev_handle_t scd41_handle);
 
 /**
  * @brief Store volatile sensor settings in the EEPROM.
