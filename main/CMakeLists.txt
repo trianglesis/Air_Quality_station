@@ -21,7 +21,6 @@ idf_component_register(
         "i2c_driver/i2c_driver.c"
         "sensor_co2/sensiniron/sensirion_common.c"
         "sensor_co2/sensiniron/sensirion_i2c.c"
-        "sensor_co2/sensiniron/sensirion_i2c_hal.c" # Remove later
         "sensor_co2/sensiniron/scd4x_i2c.c"
         "sensor_co2/co2_sensor.c"
         "sensor_temp/temp_sensor.c"

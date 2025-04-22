@@ -42,15 +42,14 @@ Now work with queue, add the value at the beginning of the queue (first),
 */
 void co2_reading(void * pvParameters) {
     // 
+    static int co2_counter = 0;
     while (1) {
         struct SCD4XSensor scd4x_readings = {};
         ESP_LOGI(TAG_FAKE, "sent data = %d", co2_counter);
-
         scd4x_readings.co2_ppm = co2_counter;
         scd4x_readings.temperature = 0;
         scd4x_readings.humidity = 0;
         // Try to add item to queue, fail immediately if queue is full
-
         xQueueOverwrite(mq_co2, (void *)&scd4x_readings);
         // Make up and down
         if (co2_counter == 2500) {
@@ -132,7 +131,7 @@ esp_err_t sensor_init(void) {
         ESP_LOGI(TAG, "Device handle is NULL! Exit!");
         return ESP_FAIL;
     } else {
-        ESP_LOGI(TAG, "Device added! Probe address!");
+        ESP_LOGD(TAG, "Device added! Probe address!");
     }
     ESP_ERROR_CHECK(master_bus_probe_address(SCD4X_I2C_ADDR, 50)); // Wait 50 ms
     
@@ -142,7 +141,7 @@ esp_err_t sensor_init(void) {
         ESP_LOGE(TAG, "Cannot send command to device to stop measurements mode!");
         return ESP_FAIL;
     } else {
-        ESP_LOGI(TAG, "Stopped measirements now! Can start again after cooldown.");
+        ESP_LOGD(TAG, "Stopped measirements now! Can start again after cooldown.");
     }
     
     // Get serial N
@@ -152,12 +151,11 @@ esp_err_t sensor_init(void) {
         ESP_LOGE(TAG, "Cannot get serial number!");
         return ESP_FAIL;
     } else {
-        ESP_LOGI(TAG, "Sensor serial number is: 0x%x 0x%x 0x%x", 
+        ESP_LOGD(TAG, "Sensor serial number is: 0x%x 0x%x 0x%x", 
             (int)serial_number[0], 
             (int)serial_number[1], 
             (int)serial_number[2]);
     }
-
     // TODO: Save states to SD Card.
     // TODO: Read previous states from SD Card
     // TODO: If no SD Card - write to SPI flash partition

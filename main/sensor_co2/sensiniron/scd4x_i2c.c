@@ -97,7 +97,7 @@ bool scd4x_get_data_ready_status(i2c_master_dev_handle_t scd41_handle) {
 
     ret = i2c_master_transmit_receive(scd41_handle, buffer_ptr, sizeof(buffer_ptr), buff_r, sizeof(buff_r), wait_timeout);
     if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "Get Data ready status and wait 1 sec!");
+        ESP_LOGD(TAG, "Get Data ready status and wait 1 sec!");
         vTaskDelay(pdMS_TO_TICKS(1000));
     } else if (ret == ESP_ERR_INVALID_ARG) {
         ESP_LOGE(TAG, "I2C master transmit parameter invalid!");
@@ -112,7 +112,7 @@ bool scd4x_get_data_ready_status(i2c_master_dev_handle_t scd41_handle) {
 
     data_ready_status = sensirion_common_bytes_to_uint16_t(&buff_r[0]);
     dataReady = (data_ready_status & 2047) != 0;
-    ESP_LOGI(TAG, "Data ready %d status: %d", data_ready_status, dataReady);
+    ESP_LOGD(TAG, "Data ready %d status: %d", data_ready_status, dataReady);
 
     return dataReady;
 }
@@ -146,7 +146,7 @@ int16_t scd4x_start_periodic_measurement(i2c_master_dev_handle_t scd41_handle) {
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x21b1);
     ret = i2c_master_transmit(scd41_handle, buffer_ptr, sizeof(buffer_ptr), 30);
     if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "Transmitted to device!");
+        ESP_LOGD(TAG, "Transmitted to device!");
         return ESP_OK;
     } else if (ret == ESP_ERR_INVALID_ARG) {
         ESP_LOGE(TAG, "I2C master transmit parameter invalid!");
@@ -197,7 +197,7 @@ int16_t scd4x_stop_periodic_measurement(i2c_master_dev_handle_t scd41_handle) {
     local_offset = sensirion_i2c_add_command16_to_buffer(buff_wr, local_offset, 0x3f86);
     ret = i2c_master_transmit(scd41_handle, buff_wr, sizeof(buff_wr), 30);
     if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "CMD Stop Measurements sent at start! Wait 5 sec!");
+        ESP_LOGD(TAG, "CMD Stop Measurements sent at start! Wait 5 sec!");
         vTaskDelay(pdMS_TO_TICKS(5000));
         return ESP_OK;
     } else if (ret == ESP_ERR_INVALID_ARG) {
@@ -443,7 +443,7 @@ int16_t scd4x_get_serial_number(i2c_master_dev_handle_t scd41_handle, uint16_t* 
 
     sensirion_common_copy_bytes(&buff_r_serial[0], (uint8_t*)serial_number, (serial_number_size * 2));
     if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "Transmitted to device and received!");
+        ESP_LOGD(TAG, "Transmitted to device and received!");
         return ESP_OK;
     } else if (ret == ESP_ERR_INVALID_ARG) {
         ESP_LOGE(TAG, "I2C master transmit parameter invalid!");
