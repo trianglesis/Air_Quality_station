@@ -218,8 +218,9 @@ int16_t scd4x_set_temperature_offset_raw(uint16_t offset_temperature) {
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x241d);
     local_offset = sensirion_i2c_add_uint16_t_to_buffer(buffer_ptr, local_offset, offset_temperature);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -232,16 +233,10 @@ int16_t scd4x_get_temperature_offset_raw(uint16_t* offset_temperature) {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x2318);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
+    // Place a i2c_master_transmit_receive()
     vTaskDelay(pdMS_TO_TICKS(1 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
     *offset_temperature = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
     return local_error;
 }
@@ -252,8 +247,9 @@ int16_t scd4x_set_sensor_altitude(uint16_t sensor_altitude) {
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x2427);
     local_offset = sensirion_i2c_add_uint16_t_to_buffer(buffer_ptr, local_offset, sensor_altitude);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -266,16 +262,10 @@ int16_t scd4x_get_sensor_altitude(uint16_t* sensor_altitude) {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x2322);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
+    // Place a i2c_master_transmit_receive()
     vTaskDelay(pdMS_TO_TICKS(1 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
     *sensor_altitude = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
     return local_error;
 }
@@ -286,8 +276,9 @@ int16_t scd4x_set_ambient_pressure_raw(uint16_t ambient_pressure) {
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0xe000);
     local_offset = sensirion_i2c_add_uint16_t_to_buffer(buffer_ptr, local_offset, ambient_pressure);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -300,16 +291,10 @@ int16_t scd4x_get_ambient_pressure_raw(uint16_t* ambient_pressure) {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0xe000);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
+    // Place a i2c_master_transmit_receive()
     vTaskDelay(pdMS_TO_TICKS(1 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
     *ambient_pressure = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
     return local_error;
 }
@@ -321,16 +306,10 @@ int16_t scd4x_perform_forced_recalibration(uint16_t target_co2_concentration,
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x362f);
     local_offset = sensirion_i2c_add_uint16_t_to_buffer(buffer_ptr, local_offset, target_co2_concentration);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
+    // Place a i2c_master_transmit_receive()
     vTaskDelay(pdMS_TO_TICKS(400 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
     *frc_correction = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
     return local_error;
 }
@@ -341,8 +320,9 @@ int16_t scd4x_set_automatic_self_calibration_enabled(uint16_t asc_enabled) {
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x2416);
     local_offset = sensirion_i2c_add_uint16_t_to_buffer(buffer_ptr, local_offset, asc_enabled);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -355,16 +335,10 @@ int16_t scd4x_get_automatic_self_calibration_enabled(uint16_t* asc_enabled) {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x2313);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+    
+    // Place a i2c_master_transmit_receive()
     vTaskDelay(pdMS_TO_TICKS(1 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
     *asc_enabled = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
     return local_error;
 }
@@ -375,8 +349,9 @@ int16_t scd4x_set_automatic_self_calibration_target(uint16_t asc_target) {
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x243a);
     local_offset = sensirion_i2c_add_uint16_t_to_buffer(buffer_ptr, local_offset, asc_target);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -389,16 +364,10 @@ int16_t scd4x_get_automatic_self_calibration_target(uint16_t* asc_target) {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x233f);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+    
+    // Place a i2c_master_transmit_receive()
     vTaskDelay(pdMS_TO_TICKS(1 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
     *asc_target = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
     return local_error;
 }
@@ -408,8 +377,9 @@ int16_t scd4x_start_low_power_periodic_measurement() {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x21ac);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -422,8 +392,9 @@ int16_t scd4x_persist_settings() {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x3615);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -464,16 +435,10 @@ int16_t scd4x_perform_self_test(uint16_t* sensor_status) {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x3639);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
-    vTaskDelay(pdMS_TO_TICKS(10000 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+    
+    // Place a i2c_master_transmit_receive()
+    vTaskDelay(pdMS_TO_TICKS(1 * 1000));
+
     *sensor_status = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
     return local_error;
 }
@@ -483,8 +448,9 @@ int16_t scd4x_perform_factory_reset() {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x3632);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -497,8 +463,9 @@ int16_t scd4x_reinit() {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x3646);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -511,16 +478,10 @@ int16_t scd4x_get_sensor_variant_raw(uint16_t* sensor_variant) {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x202f);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+    
+    // Place a i2c_master_transmit_receive()
     vTaskDelay(pdMS_TO_TICKS(1 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
     *sensor_variant = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
     return local_error;
 }
@@ -530,8 +491,10 @@ int16_t scd4x_measure_single_shot() {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x219d);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -544,8 +507,9 @@ int16_t scd4x_measure_single_shot_rht_only() {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x2196);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -558,8 +522,9 @@ int16_t scd4x_power_down() {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x36e0);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -572,7 +537,9 @@ int16_t scd4x_wake_up() {
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x36f6);
+
     // sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+    
     vTaskDelay(pdMS_TO_TICKS(30 * 1000));
     return local_error;
 }
@@ -583,7 +550,10 @@ int16_t scd4x_set_automatic_self_calibration_initial_period(
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x2445);
-    local_offset = sensirion_i2c_add_uint16_t_to_buffer(buffer_ptr, local_offset, asc_initial_period);// local_error = sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+    local_offset = sensirion_i2c_add_uint16_t_to_buffer(buffer_ptr, local_offset, asc_initial_period);
+    
+    // local_error = sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+    
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -597,16 +567,10 @@ int16_t scd4x_get_automatic_self_calibration_initial_period(
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x2340);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
+    // Place a i2c_master_transmit_receive()
     vTaskDelay(pdMS_TO_TICKS(1 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
     *asc_initial_period = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
     return local_error;
 }
@@ -618,8 +582,9 @@ int16_t scd4x_set_automatic_self_calibration_standard_period(
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x244e);
     local_offset = sensirion_i2c_add_uint16_t_to_buffer(buffer_ptr, local_offset, asc_standard_period);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
+
+    // Place a i2c_master_transmit()
+
     if (local_error != NO_ERROR) {
         return local_error;
     }
@@ -633,16 +598,10 @@ int16_t scd4x_get_automatic_self_calibration_standard_period(
     uint8_t* buffer_ptr = communication_buffer;
     uint16_t local_offset = 0;
     local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0x234b);
-    // local_error =
-    //     sensirion_i2c_write_data(scd41_handle, buffer_ptr, local_offset);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
+    // Place a i2c_master_transmit_receive()
     vTaskDelay(pdMS_TO_TICKS(1 * 1000));
-    // local_error = sensirion_i2c_read_data_inplace(&scd41_handle, buffer_ptr, 2);
-    if (local_error != NO_ERROR) {
-        return local_error;
-    }
+
     *asc_standard_period = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
     return local_error;
 }
