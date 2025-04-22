@@ -22,29 +22,44 @@ extern i2c_master_dev_handle_t scd41_handle;
 
 #define SCD4X_I2C_ADDR 0x62
 
-/*
-Pin and freq settings are common for all sensors here 
-    and defined at main\i2c_driver\i2c_driver.h
-
-    #define SCL_PIN_SCDX 0
-#define SDA_PIN_SCDX 1
-#define I2C_FREQ_HZ 100000 // 100kHz
-*/
-
-
 struct SCD4XSensor {
     float temperature;
     float humidity;
     uint16_t co2_ppm;
 };
 
-void co2_reading(void * pvParameters);  // Fake
+/*
+Fake reading for testing only. 
+Adding to the queue.
+*/
+void co2_reading(void * pvParameters);
+
+/*
+Real task measurements from CO2 sensor.
+Adding to the queue
+*/
 void co2_scd4x_reading(void * pvParameters);
+
+/*
+Update LED colour depending on CO2 PPM level
+In place, reading from the queue/
+*/
 void led_co2(void * pvParameters);
+
+/*
+Create the queue for CO2 measurements.
+Queue len = 1, overwriting, consuming by peeking.
+*/
 void create_mq_co2(void);
+
+/*
+Task to read CO2 measurements coninuously. 
+Sleep betweeen measurements.
+*/
 void task_co2(void);
 
-esp_err_t get_measures(void);
-
+/*
+Add SCD40 device to I2C bus and update device handle glob var.
+*/
 esp_err_t sensor_init(void);
 

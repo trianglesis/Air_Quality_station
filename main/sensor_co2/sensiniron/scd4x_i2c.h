@@ -140,17 +140,6 @@ int16_t scd4x_set_ambient_pressure(uint32_t ambient_pressure);
  */
 int16_t scd4x_get_ambient_pressure(uint32_t* a_ambient_pressure);
 
-/**
- * @brief Read if data is ready.
- *
- * Polls the sensor for whether data from a periodic or single shot measurement
- * is ready to be read out.
- *
- * @param[out] arg_0
- *
- * @return error_code 0 on success, an error code otherwise.
- */
-bool scd4x_get_data_ready_status(i2c_master_dev_handle_t scd41_handle);
 
 /**
  * @brief Reads out the SCD4x sensor variant.
@@ -162,6 +151,19 @@ bool scd4x_get_data_ready_status(i2c_master_dev_handle_t scd41_handle);
  * @return error_code 0 on success, an error code otherwise.
  */
 int16_t scd4x_get_sensor_variant(scd4x_sensor_variant* a_sensor_variant);
+
+/**
+ * @brief Read if data is ready.
+ *
+ * Polls the sensor for whether data from a periodic or single shot measurement
+ * is ready to be read out.
+ *
+ * @param[out] data_ready_status If one or more of the 11 least significant bits
+ * are 1, then the data is ready.
+ *
+ * @return error_code 0 on success, an error code otherwise.
+ */
+bool scd4x_get_data_ready_status(i2c_master_dev_handle_t scd41_handle);
 
 /**
  * @brief Start periodic measurement mode.
@@ -187,33 +189,17 @@ int16_t scd4x_start_periodic_measurement(i2c_master_dev_handle_t scd41_handle);
  *
  * @param[out] co2_concentration CO₂ concentration in ppm
  * @param[out] temperature Convert to degrees celsius by (175 * value / 65535) -
- * 45
+ * 45 | Temperature in milli degrees celsius (°C * 1000)
  * @param[out] relative_humidity Convert to relative humidity in % by (100 *
- * value / 65535)
+ * value / 65535) | Relative humidity in milli percent RH (%RH * 1000)
  *
  * @return error_code 0 on success, an error code otherwise.
  */
-int16_t scd4x_read_measurement_raw(i2c_master_dev_handle_t scd41_handle, 
-                                   uint16_t* co2_concentration,
-                                   uint16_t* temperature,
-                                   uint16_t* relative_humidity);
-
-/**
- * @brief Read sensor output and convert to pyhsical unit.
- *
- * See @ref scd4x_read_measurement_raw() for more details.
- *
- * @param[out] co2 CO₂ concentration in ppm
- * @param[out] temperature_m_deg_c Temperature in milli degrees celsius (°C *
- * 1000)
- * @param[out] humidity_m_percent_rh Relative humidity in milli percent RH
- * (%RH * 1000)
- * @return 0 on success, an error code otherwise
- */
 int16_t scd4x_read_measurement(i2c_master_dev_handle_t scd41_handle, 
-                               uint16_t* co2, 
-                               int32_t* temperature_m_deg_c,
-                               int32_t* humidity_m_percent_rh);
+                                   uint16_t* co2Raw,
+                                   int32_t* temperature_m_deg_c,
+                                   int32_t* humidity_m_percent_rh);
+
 
 /**
  * @brief Stop periodic measurement to change the sensor configuration or to
@@ -508,18 +494,6 @@ int16_t scd4x_get_automatic_self_calibration_target(uint16_t* asc_target);
  */
 int16_t scd4x_start_low_power_periodic_measurement();
 
-/**
- * @brief Read if data is ready.
- *
- * Polls the sensor for whether data from a periodic or single shot measurement
- * is ready to be read out.
- *
- * @param[out] data_ready_status If one or more of the 11 least significant bits
- * are 1, then the data is ready.
- *
- * @return error_code 0 on success, an error code otherwise.
- */
-bool scd4x_get_data_ready_status_raw(i2c_master_dev_handle_t scd41_handle);
 
 /**
  * @brief Store volatile sensor settings in the EEPROM.

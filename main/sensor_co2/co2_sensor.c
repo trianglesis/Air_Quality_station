@@ -4,16 +4,13 @@
 #include "sensirion_common.h"
 #include "sensirion_i2c.h"
 
-
-static const char *TAG_FAKE = "co2-sensor";
+static const char *TAG_FAKE = "co2-fake";
 static const char *TAG = "scd40";
 
-QueueHandle_t mq_co2;
+QueueHandle_t mq_co2;  // Always init early, even empty!
 
-i2c_master_dev_handle_t scd41_handle;
+i2c_master_dev_handle_t scd41_handle; // Update as soon as all other 
 
-
-static uint16_t co2_counter = 0;     // Faking CO2 levels by simple counter
 
 /*
 Generating fake CO2 data
@@ -72,12 +69,43 @@ void co2_reading(void * pvParameters) {
 
 */
 void co2_scd4x_reading(void * pvParameters) {
+    bool dataReady;
+    uint16_t co2Raw;         // ppm
+    int32_t t_mili_deg;  // millicelsius
+    int32_t humid_mili_percent;     // millipercent
+    while (1) {
+        struct SCD4XSensor scd4x_readings = {};
+        // Check if measurements are ready, for 5 sec cycle
+        dataReady = scd4x_get_data_ready_status(scd41_handle);
+        if (!dataReady) {
+            ESP_LOGD(TAG, "CO2 data ready status is not ready! Wait for next check.");
+            vTaskDelay(pdMS_TO_TICKS(1000));  // Waiting 1 sec before checking again!
+            continue;
+        } else {
+            // Now read
+            scd4x_read_measurement(scd41_handle, &co2Raw, &t_mili_deg, &humid_mili_percent);
+            ESP_LOGD(TAG, "RAW Measurements ready co2: %d, t: %ld C Humidity: %ld (raw value)", 
+                co2Raw, 
+                t_mili_deg, 
+                humid_mili_percent);
+            // Post conversion from mili
+            const int co2Ppm = co2Raw;
+            const float t_celsius = t_mili_deg / 1000.0f;
+            const float humid_percent = humid_mili_percent / 1000.0f;
+            ESP_LOGD(TAG, "CO2: %d ppm, Temperature: %.1f C Humidity: %.1f%%\n", 
+                co2Ppm, 
+                t_celsius, 
+                humid_percent);
+            // Add to queue
+            scd4x_readings.co2_ppm = co2Ppm;
+            scd4x_readings.temperature = t_celsius;
+            scd4x_readings.humidity = humid_percent;
+            xQueueOverwrite(mq_co2, (void *)&scd4x_readings);
+            // Waiting before get next measurements, usually not LT 5 sec.
+            vTaskDelay(pdMS_TO_TICKS(wait_co2_next_measure));
+        }
 
-    while (1)
-    {
-        vTaskDelay(pdMS_TO_TICKS(wait_co2_next_measure));
     }
-
 }
 
 /*
@@ -145,39 +173,9 @@ esp_err_t sensor_init(void) {
         vTaskDelay(pdMS_TO_TICKS(5000));
     }
 
-    // Move to task when finished contructing measure function!
-    get_measures();
     return ESP_OK;
 }
 
-esp_err_t get_measures () {
-    bool dataReady;
-    esp_err_t ret;
-
-    dataReady = scd4x_get_data_ready_status(scd41_handle);
-
-    // When data is ready we can get measurements.
-    // Later add this in the loop, in task it can be cycled as in the example
-    if (dataReady) {
-        // Read the measurement data and convert it to common units.
-        uint16_t co2Raw;         // ppm
-        int32_t temperatureRaw;  // millicelsius
-        int32_t humidityRaw;     // millipercent
-        scd4x_read_measurement(scd41_handle, &co2Raw, &temperatureRaw, &humidityRaw);
-        ESP_LOGI(TAG, "RAW Measurements ready co2: %d, t: %ld C Humidity: %ld (raw value)", co2Raw, temperatureRaw, humidityRaw);
-
-        const int co2Ppm = co2Raw;
-        const float temperatureCelsius = temperatureRaw / 1000.0f;
-        const float humidityPercent = humidityRaw / 1000.0f;
-
-        ESP_LOGI(TAG, "CO2: %d ppm, Temperature: %.1f C Humidity: %.1f%%\n", 
-            co2Ppm, 
-            temperatureCelsius, 
-            humidityPercent);
-    }
-
-    return ESP_OK;
-}
 
 /*
 Led HUE based on CO2 levels as task
@@ -206,15 +204,19 @@ void create_mq_co2() {
     if (!mq_co2) {
         ESP_LOGE(TAG, "queue creation failed");
     }
-    // Add device to I2C bus and stop it to prepare for measurements
-    ESP_ERROR_CHECK(sensor_init());
-
 }
 
 void task_co2() {
+    // Add device to I2C bus and stop it to prepare for measurements
+    ESP_ERROR_CHECK(sensor_init());
 
-    xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+    // Real
+    xTaskCreatePinnedToCore(co2_scd4x_reading, "co2_scd4x_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+
+    // Fake
+    // xTaskCreatePinnedToCore(co2_reading, "co2_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
+
+    // Change LED color
     xTaskCreatePinnedToCore(led_co2, "led_co2", 4096, NULL, 8, NULL, tskNO_AFFINITY);
 
-    // xTaskCreatePinnedToCore(co2_scd4x_reading, "co2_scd4x_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
 }

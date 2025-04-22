@@ -85,9 +85,36 @@ int16_t scd4x_get_ambient_pressure(uint32_t* a_ambient_pressure) {
 }
 
 bool scd4x_get_data_ready_status(i2c_master_dev_handle_t scd41_handle) {
-    bool data_ready = false;
-    data_ready = scd4x_get_data_ready_status_raw(scd41_handle);
-    return data_ready;
+    esp_err_t ret;
+    uint16_t data_ready_status = 0;
+    bool dataReady;
+
+    uint8_t buff_r[9] = {0};  // Output: serial number
+    uint8_t* buffer_ptr = communication_buffer;
+    uint16_t local_offset = 0;
+    int wait_timeout = (1 * 1000);
+    local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0xe4b8);
+
+    ret = i2c_master_transmit_receive(scd41_handle, buffer_ptr, sizeof(buffer_ptr), buff_r, sizeof(buff_r), wait_timeout);
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "Get Data ready status and wait 1 sec!");
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    } else if (ret == ESP_ERR_INVALID_ARG) {
+        ESP_LOGE(TAG, "I2C master transmit parameter invalid!");
+        return ESP_FAIL;
+    } else if (ret == ESP_ERR_TIMEOUT) {
+        ESP_LOGE(TAG, "Operation timeout(larger than xfer_timeout_ms) because the bus is busy or hardware crash!");
+        return ESP_FAIL;
+    } else {
+        ESP_LOGE(TAG, "Cannot transmit to device, unknown error!");
+        return ESP_FAIL;
+    }
+
+    data_ready_status = sensirion_common_bytes_to_uint16_t(&buff_r[0]);
+    dataReady = (data_ready_status & 2047) != 0;
+    ESP_LOGI(TAG, "Data ready %d status: %d", data_ready_status, dataReady);
+
+    return dataReady;
 }
 
 int16_t scd4x_get_sensor_variant(scd4x_sensor_variant* a_sensor_variant) {
@@ -133,37 +160,32 @@ int16_t scd4x_start_periodic_measurement(i2c_master_dev_handle_t scd41_handle) {
     }
 }
 
-int16_t scd4x_read_measurement_raw(i2c_master_dev_handle_t scd41_handle, 
-                                   uint16_t* co2_concentration,
-                                   uint16_t* temperature,
-                                   uint16_t* relative_humidity) {
+int16_t scd4x_read_measurement(i2c_master_dev_handle_t scd41_handle, 
+                                    uint16_t* co2Raw, 
+                                    int32_t* temperature_m_deg_c, 
+                                    int32_t* humidity_m_percent_rh) {
     int16_t local_error = NO_ERROR;
-    uint8_t* buffer_ptr = communication_buffer;
-    uint8_t buff_r[9] = {0};  // Output: serial number
-    uint16_t local_offset = 0;
-    int sleep_ms = 30;  // Send cmd and wait 30 ms
-    local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0xec05);
 
+    uint16_t local_t_raw;  // local store before convertion
+    uint16_t local_hum_raw;  // local store before convertion
+
+    uint8_t* buffer_ptr = communication_buffer;
+    uint8_t buff_r[9] = {0};  // Output: measurements
+    uint16_t local_offset = 0;
+    int sleep_ms = 1 * 1000;  // Send cmd and wait 30 ms
+    
+    local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0xec05);
     local_error = i2c_master_transmit_receive(scd41_handle, buffer_ptr, sizeof(buffer_ptr), buff_r, sizeof(buff_r), sleep_ms);
     vTaskDelay(pdMS_TO_TICKS(1 * 1000));
 
-    *co2_concentration = sensirion_common_bytes_to_uint16_t(&buffer_ptr[0]);
-    *temperature = sensirion_common_bytes_to_uint16_t(&buffer_ptr[2]);
-    *relative_humidity = sensirion_common_bytes_to_uint16_t(&buffer_ptr[4]);
-    return local_error;
-}
+    *co2Raw = sensirion_common_bytes_to_uint16_t(&buff_r[0]);
+    local_t_raw = sensirion_common_bytes_to_uint16_t(&buff_r[2]);
+    local_hum_raw = sensirion_common_bytes_to_uint16_t(&buff_r[4]);
 
-int16_t scd4x_read_measurement(i2c_master_dev_handle_t scd41_handle, uint16_t* co2, int32_t* temperature_m_deg_c, int32_t* humidity_m_percent_rh) {
-    int16_t error;
-    uint16_t temperature;
-    uint16_t humidity;
-    error = scd4x_read_measurement_raw(scd41_handle, co2, &temperature, &humidity);
-    if (error) {
-        return error;
-    }
-    *temperature_m_deg_c = ((21875 * (int32_t)temperature) >> 13) - 45000;
-    *humidity_m_percent_rh = ((12500 * (int32_t)humidity) >> 13);
-    return NO_ERROR;
+    *temperature_m_deg_c = ((21875 * (int32_t)local_t_raw) >> 13) - 45000;
+    *humidity_m_percent_rh = ((12500 * (int32_t)local_hum_raw) >> 13);
+
+    return local_error;
 }
 
 
@@ -394,38 +416,6 @@ int16_t scd4x_start_low_power_periodic_measurement() {
     return local_error;
 }
 
-bool scd4x_get_data_ready_status_raw(i2c_master_dev_handle_t scd41_handle) {
-    esp_err_t ret;
-    uint16_t data_ready_status = 0;
-    bool dataReady;
-
-    uint8_t buff_r[9] = {0};  // Output: serial number
-    uint8_t* buffer_ptr = communication_buffer;
-    uint16_t local_offset = 0;
-    int wait_timeout = (1 * 1000);
-    local_offset = sensirion_i2c_add_command16_to_buffer(buffer_ptr, local_offset, 0xe4b8);
-
-    ret = i2c_master_transmit_receive(scd41_handle, buffer_ptr, sizeof(buffer_ptr), buff_r, sizeof(buff_r), wait_timeout);
-    if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "Get Data ready status and wait 1 sec!");
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    } else if (ret == ESP_ERR_INVALID_ARG) {
-        ESP_LOGE(TAG, "I2C master transmit parameter invalid!");
-        return ESP_FAIL;
-    } else if (ret == ESP_ERR_TIMEOUT) {
-        ESP_LOGE(TAG, "Operation timeout(larger than xfer_timeout_ms) because the bus is busy or hardware crash!");
-        return ESP_FAIL;
-    } else {
-        ESP_LOGE(TAG, "Cannot transmit to device, unknown error!");
-        return ESP_FAIL;
-    }
-
-    data_ready_status = sensirion_common_bytes_to_uint16_t(&buff_r[0]);
-    dataReady = (data_ready_status & 2047) != 0;
-    ESP_LOGI(TAG, "Data ready %d status: %d", data_ready_status, dataReady);
-
-    return dataReady;
-}
 
 int16_t scd4x_persist_settings() {
     int16_t local_error = NO_ERROR;

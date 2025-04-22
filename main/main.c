@@ -146,12 +146,10 @@ void app_main() {
     // Create Master Bus for I2C
     ESP_ERROR_CHECK(master_bus_init());
     
-    // Create internal objects for sensors and queues before everything else
+    // Create queue objects early, empty is ok
     create_mq_co2();
-    // Still fake
     create_mq_bme680();
     
-
     // Early init
     led_init();
     // SPI (local) flash partition mount and check:
@@ -164,31 +162,21 @@ void app_main() {
     // Create a set of tasks to read sensors and update LCD, LED and other elements
     xTaskCreatePinnedToCore(lvgl_task, "LVGL task", 8192, NULL, 9, NULL, tskNO_AFFINITY);
 
-    /*
-    Old example setup for LVGL, now moving forward and create multiple tasks with message queue.
-    Post all sensor readings into the queue
-    Create a one bulky function to read all sensors and put readings into the queue,
-    later read from the queue and fill data into LVGL objects, LED colours, webserver API endpoints, whatever.
-
-    TaskHandle_t taskHandle = NULL;
-    BaseType_t res = xTaskCreatePinnedToCore(lvgl_task, "LVGL task", 8192, NULL, 4, &taskHandle, 0);
-    while(true) {
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
-    
-    */
-
     // NVS SET by Wifi module externally
     // Start Wifi AP
     ESP_LOGI(TAG, "Start Wifi and try to connect");
     ESP_ERROR_CHECK(wifi_setup());
     // Simple webserver
     ESP_ERROR_CHECK(start_webserver());
-
+    
+    // Starting sensors requre 5 seconds timeout for each command, so start at the end.
+    // Create internal objects for sensors and queues before everything else
+    
     // delay to let tasks finish the last loop
     vTaskDelay(pdMS_TO_TICKS(500));
     task_co2();
-
+    // Still fake
     // task_bme680();
 }
-// 
+
+// END
