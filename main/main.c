@@ -30,7 +30,6 @@
 // For SQ Line Studio
 #include "ui/ui.h"
 
-
 static const char *TAG = "co2station";
 
 #define SPIN_ITER   350000  //actual CPU cycles consumed will depend on compiler optimization
@@ -169,14 +168,13 @@ void app_main() {
     // Simple webserver
     ESP_ERROR_CHECK(start_webserver());
     
+    // Create internal objects for sensors, queues should be created already!
     // Starting sensors requre 5 seconds timeout for each command, so start at the end.
-    // Create internal objects for sensors and queues before everything else
-    
     // delay to let tasks finish the last loop
     vTaskDelay(pdMS_TO_TICKS(500));
-    task_co2();
-    // Still fake
-    // task_bme680();
+    task_co2();  // Now real
+    task_bme680(); // Still fake
+    // END
 }
 
 // END

@@ -61,5 +61,5 @@ void task_co2(void);
 /*
 Add SCD40 device to I2C bus and update device handle glob var.
 */
-esp_err_t sensor_init(void);
+esp_err_t scd40_sensor_init(void);
 

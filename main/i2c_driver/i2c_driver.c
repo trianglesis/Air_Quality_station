@@ -153,14 +153,12 @@ esp_err_t i2c_receive(i2c_master_dev_handle_t i2c_dev, uint8_t *read_buffer, siz
     }
 }
 
-esp_err_t i2c_transmit_and_receive(
-    i2c_master_dev_handle_t i2c_dev, 
-    const uint8_t *write_buffer, 
-    size_t write_size, 
-    uint8_t *read_buffer, 
-    size_t read_size, 
-    int xfer_timeout_ms
-) {
+esp_err_t i2c_transmit_and_receive(i2c_master_dev_handle_t i2c_dev, 
+                                        const uint8_t *write_buffer, 
+                                        size_t write_size, 
+                                        uint8_t *read_buffer, 
+                                        size_t read_size, 
+                                        int xfer_timeout_ms) {
     esp_err_t ret;
     ret = i2c_master_transmit_receive(i2c_dev, write_buffer, write_size, read_buffer, read_size, xfer_timeout_ms);
     if (ret != ESP_OK) {

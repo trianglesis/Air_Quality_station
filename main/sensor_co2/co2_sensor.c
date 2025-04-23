@@ -118,7 +118,7 @@ TODO: Add SD card read\write option to save states:
 - last measurement or even log
 
 */
-esp_err_t sensor_init(void) {
+esp_err_t scd40_sensor_init(void) {
     esp_err_t ret;
     i2c_device_config_t scd41_device = {
         .dev_addr_length = I2C_ADDR_BIT_LEN_7,
@@ -206,7 +206,7 @@ void create_mq_co2() {
 
 void task_co2() {
     // Add device to I2C bus and stop it to prepare for measurements
-    ESP_ERROR_CHECK(sensor_init());
+    ESP_ERROR_CHECK(scd40_sensor_init());
 
     // Real
     xTaskCreatePinnedToCore(co2_scd4x_reading, "co2_scd4x_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);

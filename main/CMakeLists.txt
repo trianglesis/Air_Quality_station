@@ -23,6 +23,7 @@ idf_component_register(
         "sensor_co2/sensiniron/sensirion_i2c.c"
         "sensor_co2/sensiniron/scd4x_i2c.c"
         "sensor_co2/co2_sensor.c"
+        "sensor_temp/bme680.c"
         "sensor_temp/temp_sensor.c"
         ${SRC_UI}
     INCLUDE_DIRS 

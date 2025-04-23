@@ -1,11 +1,14 @@
-
 #include "temp_sensor.h"
+#include "bme680.h"
 #include <string.h>
 
-static const char *TAG = "BME680";
 static const char *TAG_FAKE = "fake-temp";
+static const char *TAG = "bme680";
 
 QueueHandle_t mq_bme680;
+
+i2c_master_dev_handle_t bme680_handle; // Update as soon as all other 
+
 
 static float BME_temperature = 15.1; // Faking
 static float BME_humidity = 15.1;    // Faking
@@ -61,6 +64,30 @@ void bme680_reading_fake(void * pvParameters) {
     // vTaskDelete(NULL);
 }
 
+/*
+Get I2C bus 
+Add sensor at it, and use device handle
+
+TODO: Add SD card read\write option to save states:
+- last operation mode
+- last power mode
+- calibration values
+- last measurement or even log
+
+*/
+esp_err_t bme680_sensor_init(void) {
+    bme680_t sensor;
+    memset(&sensor, 0, sizeof(bme680_t));
+
+    // Do not send Pins and freq, they are already added by CO2 sensor, address is static in h
+    ESP_ERROR_CHECK(bme680_init_desc(&sensor));
+    ESP_ERROR_CHECK(master_bus_probe_address(BME680_I2C_ADDR_1, 50)); // Wait 50 ms
+
+    // Now init the sensor itself
+    bme680_init_sensor(&sensor);
+
+    return ESP_OK;
+}
 
 void create_mq_bme680() {
     // Message Queue
@@ -71,8 +98,10 @@ void create_mq_bme680() {
 }
 
 void task_bme680() {
-    
-    // ESP_ERROR_CHECK(i2cdev_init());
+
+    // Add device to I2C bus ...
+    ESP_ERROR_CHECK(bme680_sensor_init());
+
     // xTaskCreatePinnedToCore(bme680_reading, "bme680_reading", 4096, NULL, 4, NULL, tskNO_AFFINITY);
 
     xTaskCreatePinnedToCore(bme680_reading_fake, "bme680_reading_fake", 4096, NULL, 4, NULL, tskNO_AFFINITY);

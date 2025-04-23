@@ -505,12 +505,24 @@ You must stop measuring mode at the init and start again, or skip this step and 
 
 Full path and details are in the separate repo: [README.md](https://github.com/trianglesis/I2C-tests/blob/b61df96cac6f98fd48853237cd4339111d41e84b/README.md)
 
+
+
 ## bme680
 
-- https://esp-idf-lib.readthedocs.io/en/latest/groups/bme680.html
+- https://github.com/gschorcht/bme680-esp-idf
 - https://github.com/UncleRus/esp-idf-lib
+- https://esp-idf-lib.readthedocs.io/en/latest/groups/bme680.html
+- https://github.com/boschsensortec/Bosch-BME68x-Library/tree/master/src/bme68x
+- https://github.com/boschsensortec/BME68x_SensorAPI
 
+Reworking the entire sensor seems too complex.
 
+I'll try reuse `UncleRus` module with modern I2C from my implementation.
+- Overcomplicated too.
+
+Checkign `boschsensortec/BME68x_SensorAPI` - yep, it's also not a short-walk.
+
+Getting back to `UncleRus`, it's simpler to migrate it to the new I2C driver.
 
 
 # Assets
