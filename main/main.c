@@ -100,7 +100,7 @@ static void lvgl_task(void * pvParameters) {
             lv_label_set_text_fmt(ui_LabelTemperature, "%.0f", bme680_readings.temperature);
             lv_label_set_text_fmt(ui_LabelHumidity, "%.0f", bme680_readings.humidity);
             lv_label_set_text_fmt(ui_LabelPressure, "%.0f", bme680_readings.pressure);
-            lv_label_set_text_fmt(ui_LabelAirQualityIndx, "AQI %.0f", bme680_readings.air_q_index);
+            lv_label_set_text_fmt(ui_LabelAirQualityIndx, "AQI %.0d", bme680_readings.air_q_index);
 
             // Storage info
             // lv_label_set_text_fmt(ui_Label4, "SD: %ld GB", SDCard_Size);

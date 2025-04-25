@@ -14,7 +14,7 @@
 
 #include "esp_log.h"
 
-#define wait_next_measure 1000 // How often to measure CO2 level in ms
+#define wait_next_measure 2500 // How often to measure CO2 level in ms
 
 extern QueueHandle_t mq_bme680;
 

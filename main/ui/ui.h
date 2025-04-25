@@ -50,6 +50,8 @@ LV_IMG_DECLARE(ui_img_risk_165_142_png);    // assets/risk_165_142.png
 LV_IMG_DECLARE(ui_img_signal_x16_png);    // assets/signal_x16.png
 LV_IMG_DECLARE(ui_img_wifi_x16_png);    // assets/wifi_x16.png
 LV_IMG_DECLARE(ui_img_1678184450);    // assets/no-wifi_x16.png
+LV_IMG_DECLARE(ui_img_wet_to_dry_h90_png);    // assets/Wet_to_dry_h90.png
+LV_IMG_DECLARE(ui_img_hot_to_cold_h90_png);    // assets/Hot_to_Cold_h90.png
 LV_IMG_DECLARE(ui_img_thermometer_x32_png);    // assets/thermometer_x32.png
 LV_IMG_DECLARE(ui_img_humidity_x32_png);    // assets/humidity_x32.png
 LV_IMG_DECLARE(ui_img_gauge_x16_png);    // assets/gauge_x16.png

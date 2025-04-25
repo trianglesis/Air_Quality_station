@@ -74,38 +74,55 @@ void bme680_reading(void * pvParameters) {
         esp_err_t result;
         struct BMESensor bme680_readings = {};
 
-        for(uint8_t i = 0; i < dev_hdl->dev_config.heater_profile_size; i++) {
-            bme680_data_t data;
-            result = bme680_get_data_by_heater_profile(dev_hdl, i, &data);
-            if(result != ESP_OK) {
-                ESP_LOGE(APP_TAG, "bme680 device read failed (%s)", esp_err_to_name(result));
-            }
-            ESP_LOGI(APP_TAG, "%u    %.2f    %.2f          %.2f         %.2f          %.2f               %u        %s        %u        %s            %u (%s)",
-                i,
-                data.air_temperature,
-                data.dewpoint_temperature,
-                data.relative_humidity,
-                data.barometric_pressure/100,
-                data.gas_resistance/1000,
-                data.gas_range,
-                data.gas_valid ? "yes" : "no",
-                data.gas_index,
-                data.heater_stable ? "yes" : "no",
-                data.iaq_score, bme680_air_quality_to_string(data.iaq_score));
-            
-            // Try to add item to queue, fail immediately if queue is full
-            ESP_LOGI(TAG_FAKE, "Sending t: %4.0f, hum: %4.0f, press: %4.0f, res: %4.0f", data.air_temperature, data.relative_humidity, data.barometric_pressure/100, data.gas_resistance/1000);
-
-            bme680_readings.temperature = data.air_temperature;
-            bme680_readings.humidity = data.relative_humidity;
-            bme680_readings.pressure = data.barometric_pressure/100;
-            bme680_readings.resistance = data.gas_resistance/1000;
-            bme680_readings.air_q_index = data.iaq_score;
-            xQueueOverwrite(mq_bme680, (void *)&bme680_readings);
-
-            vTaskDelay(pdMS_TO_TICKS(250));
+        // 9 profiles?
+        // for(uint8_t i = 0; i < dev_hdl->dev_config.heater_profile_size; i++) {
+        //     bme680_data_t data;
+        //     result = bme680_get_data_by_heater_profile(dev_hdl, i, &data);
+        //     if(result != ESP_OK) {
+        //         ESP_LOGE(APP_TAG, "bme680 device read failed (%s)", esp_err_to_name(result));
+        //     }
+        //     ESP_LOGI(APP_TAG, "Index Air(°C) Dew-Point(°C) Humidity(%%) Pressure(hPa) Gas-Resistance(kΩ) Gas-Range Gas-Valid Gas-Index Heater-Stable IAQ-Score");
+        //     ESP_LOGI(APP_TAG, "%u\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\t%u\t%s\t%u\t%s\t%u (%s)",
+        //         i,
+        //         data.air_temperature,
+        //         data.dewpoint_temperature,
+        //         data.relative_humidity,
+        //         data.barometric_pressure/100,
+        //         data.gas_resistance/1000,
+        //         data.gas_range,
+        //         data.gas_valid ? "yes" : "no",
+        //         data.gas_index,
+        //         data.heater_stable ? "yes" : "no",
+        //         data.iaq_score, bme680_air_quality_to_string(data.iaq_score));
+        //     vTaskDelay(pdMS_TO_TICKS(250));
+        // }
+        
+        // Simple?
+        bme680_data_t data;
+        result = bme680_get_data(dev_hdl, &data);
+        if(result != ESP_OK) {
+            ESP_LOGE(APP_TAG, "bme680 device read failed (%s)", esp_err_to_name(result));
         }
-        vTaskDelayUntil( &last_wake_time, 60 );
+        // Once per measure
+        bme680_readings.temperature = data.air_temperature;
+        bme680_readings.humidity = data.relative_humidity;
+        bme680_readings.pressure = data.barometric_pressure/100;
+        bme680_readings.resistance = data.gas_resistance/1000;
+        bme680_readings.air_q_index = data.iaq_score;
+
+        ESP_LOGI(APP_TAG, " \tAir(°C) \tHum(%%) \thPa \tRes(kΩ) \tStable \tIAQ \t(Level)");
+        ESP_LOGI(APP_TAG, " \t%.2f \t\t%.2f \t%.2f \t%.2f \t\t%s \t%d \t(%s)",
+            data.air_temperature,
+            data.relative_humidity,
+            data.barometric_pressure/100,
+            data.gas_resistance/1000,
+            data.heater_stable ? "yes" : "no",
+            data.iaq_score, 
+            bme680_air_quality_to_string(data.iaq_score)
+        );
+
+        xQueueOverwrite(mq_bme680, (void *)&bme680_readings);
+        vTaskDelayUntil( &last_wake_time, wait_next_measure );
     }
 }
 

@@ -518,6 +518,9 @@ Full path and details are in the separate repo: [README.md](https://github.com/t
 After all I found a better and newer implementation and will try it:
 - https://github.com/K0I05/ESP32-S3_ESP-IDF_COMPONENTS/blob/main/components/peripherals/i2c/esp_bme680/README.md
 
+And it worked! Thanks to `K0I05` I can now see all params.
+
+
 Path:
 
 Reworking the entire sensor seems too complex.
