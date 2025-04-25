@@ -515,6 +515,11 @@ Full path and details are in the separate repo: [README.md](https://github.com/t
 - https://github.com/boschsensortec/Bosch-BME68x-Library/tree/master/src/bme68x
 - https://github.com/boschsensortec/BME68x_SensorAPI
 
+After all I found a better and newer implementation and will try it:
+- https://github.com/K0I05/ESP32-S3_ESP-IDF_COMPONENTS/blob/main/components/peripherals/i2c/esp_bme680/README.md
+
+Path:
+
 Reworking the entire sensor seems too complex.
 
 I'll try reuse `UncleRus` module with modern I2C from my implementation.
@@ -524,6 +529,7 @@ Checkign `boschsensortec/BME68x_SensorAPI` - yep, it's also not a short-walk.
 
 Getting back to `UncleRus`, it's simpler to migrate it to the new I2C driver.
 
+I was getting `NACK` for each request even when it gets the regoitier succesfully.
 
 # Assets
 

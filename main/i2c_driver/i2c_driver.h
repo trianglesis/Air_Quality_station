@@ -34,6 +34,8 @@ Standard freq for my sensors.
 */
 #define I2C_FREQ_HZ 100000 // 100kHz - usual
 
+extern i2c_master_bus_handle_t bus_handle;
+
 
 /*
 Create a new master bus

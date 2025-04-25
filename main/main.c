@@ -100,7 +100,7 @@ static void lvgl_task(void * pvParameters) {
             lv_label_set_text_fmt(ui_LabelTemperature, "%.0f", bme680_readings.temperature);
             lv_label_set_text_fmt(ui_LabelHumidity, "%.0f", bme680_readings.humidity);
             lv_label_set_text_fmt(ui_LabelPressure, "%.0f", bme680_readings.pressure);
-            lv_label_set_text_fmt(ui_LabelAirQualityIndx, "AQI %.0f", bme680_readings.resistance);
+            lv_label_set_text_fmt(ui_LabelAirQualityIndx, "AQI %.0f", bme680_readings.air_q_index);
 
             // Storage info
             // lv_label_set_text_fmt(ui_Label4, "SD: %ld GB", SDCard_Size);
@@ -173,7 +173,7 @@ void app_main() {
     // delay to let tasks finish the last loop
     vTaskDelay(pdMS_TO_TICKS(500));
     task_co2();  // Now real
-    task_bme680(); // Still fake
+    task_bme680(); // Try real
     // END
 }
 

@@ -36,6 +36,7 @@ struct BMESensor {
     float humidity;
     float pressure;
     float resistance;
+    uint16_t air_q_index;
 };
 
 void bme680_reading_fake(void * pvParameters);
