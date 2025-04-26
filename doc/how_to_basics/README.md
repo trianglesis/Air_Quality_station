@@ -538,6 +538,34 @@ I was getting `NACK` for each request even when it gets the regoitier succesfull
 
 - https://www.flaticon.com/free-icons/
 
+# TODO:
+
+Fix components:
+
+Made from IDF `hello_world`.
+
+Just as bare example of how to use and builds custom components.
+
+Add component from IDF menu in VS Code.
+
+Update requires:
+
+```cmake
+idf_component_register(
+    SRCS 
+        "hello_world_main.c"
+    PRIV_REQUIRES 
+                spi_flash
+    REQUIRES 
+             comp_one
+             comp_two
+    INCLUDE_DIRS 
+    ""
+)
+```
+
+Everthing will build ok.
+
 # END
 
 ## END
